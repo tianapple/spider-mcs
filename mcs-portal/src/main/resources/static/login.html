@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <link rel="stylesheet" type="text/css" href="jquery-easyui/themes/default/easyui.css"/>
+    <link rel="stylesheet" type="text/css" href="jquery-easyui/themes/icon.css"/>
+    <script type="text/javascript" src="jquery-easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery-easyui/jquery.easyui.min.js"></script>
+    <!--<link rel="stylesheet" type="text/css" href="../demo.css">-->
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="easyui-layout">
+    <div class="easyui-panel" title="登录页面" style="width:100%;max-width:400px;padding:30px 60px;">
+        <form id="ff" method="post" action="login.do">
+            <div style="margin-bottom:20px">
+                <input class="easyui-textbox" name="userName" style="width:100%" data-options="label:'用户名:',required:true,missingMessage:'请输入用户名'">
+            </div>
+            <div style="margin-bottom:20px">
+                <input class="easyui-textbox" name="password" style="width:100%" data-options="label:'密码:',required:true,missingMessage:'请输入密码'" type="password">
+            </div>
+            <div style="text-align:center;padding:5px 0">
+                <input class="easyui-linkbutton" style="width:80px" type="submit" title="submit">登录</a>
+                <!--<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">登录</a>-->
+                <a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px">重置</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+		function submitForm(){
+			$('#ff').form('submit');
+		}
+		function clearForm(){
+			$('#ff').form('clear');
+		}
+
+</script>
+
+<!--<script type="text/javascript">-->
+<!--document.onkeydown = function(e){-->
+<!--var event = e || window.event;-->
+<!--var code = event.keyCode || event.which || event.charCode;-->
+<!--if (code == 13) {-->
+<!--login();-->
+<!--}-->
+<!--}-->
+<!--$(function(){-->
+<!--$("input[name='login']").focus();-->
+<!--});-->
+<!--function cleardata(){-->
+<!--$('#loginForm').form('clear');-->
+<!--}-->
+<!--function login(){-->
+<!--if($("input[name='login']").val()=="" || $("input[name='password']").val()==""){-->
+<!--$("#showMsg").html("用户名或密码为空，请输入");-->
+<!--$("input[name='login']").focus();-->
+<!--}else{-->
+<!--//ajax异步提交-->
+<!--$.ajax({-->
+<!--type:"POST",   //post提交方式默认是get-->
+<!--url:"login.action",-->
+<!--data:$("#loginForm").serialize(),   //序列化-->
+<!--error:function(request) {      // 设置表单提交出错-->
+<!--$("#showMsg").html(request);  //登录错误提示信息-->
+<!--},-->
+<!--success:function(data) {-->
+<!--document.location = "index.action";-->
+<!--}-->
+<!--});-->
+<!--}-->
+<!--}-->
+<!--</script>-->
+</html>

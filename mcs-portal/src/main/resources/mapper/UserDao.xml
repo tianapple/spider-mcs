@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.spider.mcs.main.dao.UserDao">
-    <resultMap id="UserMap" type="org.spider.mcs.entity.User">
+    <resultMap id="UserMap" type="org.spider.mcs.domain.User">
         <result property="userId" column="user_id"/>
         <result property="userName" column="user_name"/>
         <result property="password" column="password"/>
@@ -14,5 +14,12 @@
     </resultMap>
     <select id="getUser" resultMap="UserMap">
         SELECT * FROM mcs_user  where user_name=#{userPame}
+    </select>
+    <select id="getPermissions" resultType="org.spider.mcs.main.domain.UserPermission">
+        SELECT r.name,m.path,p.priv_list
+        FROM mcs_user_role u INNER JOIN mcs_role r ON u.role_id=r.role_id
+        INNER JOIN mcs_permission p ON u.role_id=p.role_id
+        INNER JOIN mcs_menu m ON m.menu_id=p.menu_id
+        WHERE u.user_id=#{userId}
     </select>
 </mapper>

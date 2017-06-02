@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <link rel="stylesheet" type="text/css" th:href="@{jquery-easyui/themes/default/easyui.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{jquery-easyui/themes/icon.css}"/>
+    <!--<link href="css/admin.css" rel="stylesheet"/>-->
+    <script th:src="@{jquery-easyui/jquery.min.js}"></script>
+    <script th:src="@{jquery-easyui/jquery.easyui.min.js}"></script>
+    <title>Title</title>
+</head>
+<body class="easyui-layout">
+<div data-options="region:'north',border:false" style="height: 745x; background: #2596ea; padding: 10px">
+    <img src="images/logo.png"/>EasyUIDemo
+</div>
+<div data-options="region:'south',border:false" style="height: 25px;">
+    <div class="footer">EasyUIDemo</div>
+</div>
+
+<div data-options="region:'west',split:true" title="导航菜单" style="width: 200px;">
+    <div id="menu" class="easyui-accordion" data-options="fit:true,border:false,animate:true,plain:true">
+        <div title="系统设置1" data-options="selected:true">
+            <div style="margin: 5px">
+                <ul class="tree easyui-tree" data-options="animate:true,lines:true">
+                    <li data-options="iconCls:'icon-group'">
+                        <span>基本设置</span>
+                        <ul>
+                            <li data-options="iconCls:'icon-group_add'">
+                                <span>test1</span>
+                            </li>
+                            <li data-options="iconCls:'icon-group_delete'">
+                                <span>test2</span>
+                            </li>
+                            <li data-options="iconCls:'icon-group_edit'">
+                                <span>test3</span>
+                            </li>
+                        </ul>
+                    </li>
+                    <li data-options="state:'closed',iconCls:'icon-joystick'">
+                        <span>系统设置</span>
+                        <ul>
+                            <li data-options="iconCls:'icon-joystick_add'">
+                                <span>test4</span>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div title="系统设置2" style="padding: 10px;">
+            content2
+        </div>
+        <div title="系统设置3" style="padding: 10px">
+            content3
+        </div>
+    </div>
+</div>
+
+<div data-options="region:'center',title:'Main Title',iconCls:'icon-ok'">
+    <table class="easyui-datagrid"
+           data-options="url:'datagrid_data1.json',method:'get',border:false,singleSelect:true,fit:true,fitColumns:true">
+        <thead>
+        <tr>
+            <th data-options="field:'itemid'" width="80">Item ID</th>
+            <th data-options="field:'productid'" width="100">Product ID</th>
+            <th data-options="field:'listprice',align:'right'" width="80">List Price</th>
+            <th data-options="field:'unitcost',align:'right'" width="80">Unit Cost</th>
+            <th data-options="field:'attr'" width="150">Attribute</th>
+            <th data-options="field:'status',align:'center'" width="50">Status</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+</body>
+<script type="text/javascript">
+    $(function() {
+        $.ajax({
+            type : 'POST',
+            dataType : "json",
+            url : 'getMenu',
+            //加载父类节点即一级菜单
+            success : function(data) {
+                $.each(data, function(i, n) {
+                    if (i == 0) {
+                        显示第一个一级菜单下的二级菜单
+                        $('#layout_west_accordion').accordion('add', {
+                            title : n.text,
+                            selected : true,
+                            content : '<div style="padding:10px"><ul name="'+n.text+'"></ul></div>',
+                        });
+                    } else {
+                        $('#layout_west_accordion').accordion('add', {
+                            title : n.text,
+                            selected : false,
+                            content : '<div style="padding:10px"><ul name="'+n.text+'"></ul></div>',
+                        });
+                    }
+
+                });
+            }
+        });
+    });
+
+
+</script>
+</html>

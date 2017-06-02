@@ -21,5 +21,5 @@
         <appender-ref ref="file"/>
     </root>
     <logger name="com.zaxxer.hikari" level="warn"/>
-    <logger name="org.spider.mcs.main.dao" level="debug"/>
+    <logger name="org.spider.mcs.main.dao" level="info"/>
 </configuration>

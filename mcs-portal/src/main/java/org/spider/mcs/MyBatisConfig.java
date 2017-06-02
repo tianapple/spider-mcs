@@ -5,9 +5,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -23,8 +22,8 @@ import javax.sql.DataSource;
 @ConfigurationProperties(prefix = "jdbc.mcs")
 @MapperScan(basePackages = "org.spider.mcs", markerInterface = McsBaseDao.class)
 public class MyBatisConfig {
-    @Autowired
-    private ApplicationContext applicationContext;
+//    @Autowired
+//    private ApplicationContext applicationContext;
 //    @Autowired
 //    private ResourceLoader resourceLoader;
 
@@ -97,14 +96,11 @@ public class MyBatisConfig {
     }
 
     @Bean(name = "mcsSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory() throws Exception {
-        DataSource dataSource = (DataSource) applicationContext.getBean("mcsDataSource");
+    public SqlSessionFactory sqlSessionFactory(@Qualifier("mcsDataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean fb = new SqlSessionFactoryBean();
         fb.setDataSource(dataSource);
-        //下边两句仅仅用于*.xml文件，如果整个持久层操作不需要使用到xml文件的话（只用注解就可以搞定），则不加
-        //fb.setTypeAliasesPackage("org.spider.mcs");//指定基包
-        fb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:mapper/*.xml")); // env.getProperty("mybatis.mapperLocations" 指定xml文件位置
-        //fb.setConfigLocation(resourceLoader.getResource("classpath:mybatis/config.xml"));
+        String mapperPath = "classpath:mapper/*.xml";
+        fb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperPath)); // env.getProperty("mybatis.mapperLocations" 指定xml文件位置
         return fb.getObject();
     }
 }
