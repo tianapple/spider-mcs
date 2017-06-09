@@ -1,4 +1,4 @@
-package org.spider.mcs.main.domain;
+package org.spider.mcs.main.entity;
 
 import org.spider.util.StringUtils;
 
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *  用户所对应的授权信息
+ *
  * Created by tianapple on 2017/6/1.
  */
 public class UserPermission {

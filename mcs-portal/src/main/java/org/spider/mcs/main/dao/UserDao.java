@@ -1,8 +1,9 @@
 package org.spider.mcs.main.dao;
 
 import org.spider.mcs.McsBaseDao;
-import org.spider.mcs.domain.User;
-import org.spider.mcs.main.domain.UserPermission;
+import org.spider.mcs.entity.Mcs_user;
+import org.spider.mcs.main.entity.Mcs_menu;
+import org.spider.mcs.main.entity.UserPermission;
 
 import java.util.List;
 
@@ -11,6 +12,9 @@ import java.util.List;
  */
 public interface UserDao extends McsBaseDao {
     //@Select("SELECT * FROM mcs_user where user_name=#{userName}")
-    User getUser(String userName);
-    List<UserPermission> getPermissions(int userId);
+    Mcs_user getUser(String userName);
+    List<UserPermission> getPermissions(int userId); //获取用户权限数据
+
+    List<Mcs_menu> getMenuList(int userId, int parentId); //获取普通用户授权的菜单
+    List<Mcs_menu> getAdminMenuList(int parentId);  //获取管理员的菜单
 }

@@ -1,5 +1,6 @@
 package org.spider.mcs;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -32,9 +33,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class Application {
 
+    @RequiresPermissions("admin/role/add")
     @RequestMapping("/hello")
     public String hello() {
-        return "hello spring boot";
+        return "hello spring boot, i have [admin/role/add] Permission";
     }
 
     public static void main(String[] args) throws Exception {

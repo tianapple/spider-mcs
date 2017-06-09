@@ -1,0 +1,91 @@
+package org.spider.mcs.main.entity;
+
+import java.util.List;
+
+/**
+ * Created by tianapple on 2017/6/2.
+ */
+public class Mcs_menu {
+    private int menuId;
+    private int parentId;
+    private String name;
+    private String path;
+    private String remark;
+    private int priority;
+    private boolean isEnable;
+    private boolean isAdmin;
+
+    private List<Mcs_menu> childMenus;
+
+    public int getMenuId() {
+        return menuId;
+    }
+
+    public void setMenuId(int menuId) {
+        this.menuId = menuId;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public boolean isEnable() {
+        return isEnable;
+    }
+
+    public void setEnable(boolean enable) {
+        isEnable = enable;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
+    public List<Mcs_menu> getChildMenus() {
+        return childMenus;
+    }
+
+    public void setChildMenus(List<Mcs_menu> childMenus) {
+        this.childMenus = childMenus;
+    }
+}

@@ -11,9 +11,9 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spider.mcs.domain.User;
+import org.spider.mcs.entity.Mcs_user;
 import org.spider.mcs.main.dao.UserDao;
-import org.spider.mcs.main.domain.UserPermission;
+import org.spider.mcs.main.entity.UserPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class AuthRealm extends AuthorizingRealm {
      * 在 doGetAuthenticationInfo() 方法中须要返回一个正确的 SimpleAuthenticationInfo 对象，这样 Shiro 就会和 Subject 的 login() 方法中传入的 token 信息进行比对，完成认证的操作。
      * <p>
      * 我们从参数 AuthenticationToken 对象中取出用户填写的用户名和密码信息，这个 token 其实就是 Subject 使用 login() 方法中传入的 UsernamePasswordToken 对象，
-     * 我们通过这个 UsernamePasswordToken 对象获得用户填写的用户名和密码，然后我们应该通过用户的用户名去数据库查询数据库是否有这个用户名，如果没有，抛出一个用户名不存在异常；如果用户名存在，返回一个用户对象（带密码的），
+     * 我们通过这个 UsernamePasswordToken 对象获得用户填写的用户名和密码，然后我们应该通过用户的用户名去数据库查询数据库是否有这个用户名：如果没有，抛出一个用户名不存在异常；如果用户名存在，返回一个用户对象（带密码的），
      * 再用数据库返回的密码数据和用户填写的密码数据进行比对，如果错误，就抛出异常，如果正确，就要把正确的用户名和密码信息封装成一个 SimpleAuthenticationInfo 对象返回，这才是一个比较完整并且正确的流程
      */
     @Override
@@ -46,7 +46,7 @@ public class AuthRealm extends AuthorizingRealm {
         String pwd = new String(token.getPassword());
         String userName = token.getUsername();
 
-        User user = userDao.getUser(userName);
+        Mcs_user user = userDao.getUser(userName);
         if (user == null) throw new UnknownAccountException(userName);
         if (user.isLock()) throw new LockedAccountException(userName);
         if (!user.getPassword().equalsIgnoreCase(pwd)) throw new IncorrectCredentialsException();
@@ -66,7 +66,7 @@ public class AuthRealm extends AuthorizingRealm {
             throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
         }
         Subject subject = SecurityUtils.getSubject();
-        User user = (User) subject.getSession().getAttribute("user");
+        Mcs_user user = (Mcs_user) subject.getSession().getAttribute("user");
         LOGGER.info("login user is {}", user.getUserName());
         //获取用户角色、权限
         List<UserPermission> userPermissions = userDao.getPermissions(user.getUserId());

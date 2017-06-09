@@ -1,9 +1,9 @@
-package org.spider.mcs.domain;
+package org.spider.mcs.entity;
 
 /**
  * Created by tianapple on 2017/2/4.
  */
-public class User {
+public class Mcs_user {
     private int userId;
     private String userName;
     private String password;
