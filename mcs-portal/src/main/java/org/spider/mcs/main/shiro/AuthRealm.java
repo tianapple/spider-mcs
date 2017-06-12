@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.spider.mcs.entity.Mcs_user;
 import org.spider.mcs.main.dao.UserDao;
 import org.spider.mcs.main.entity.UserPermission;
+import org.spider.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -42,15 +43,23 @@ public class AuthRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-        LOGGER.info("token is {}", token);
         String pwd = new String(token.getPassword());
         String userName = token.getUsername();
+        if (StringUtils.isNullOrEmpty(userName)) {
+            throw new AccountException("用户名为空!");
+        }
 
+        LOGGER.info("{} token is {}", userName, token);
         Mcs_user user = userDao.getUser(userName);
-        if (user == null) throw new UnknownAccountException(userName);
-        if (user.isLock()) throw new LockedAccountException(userName);
-        if (!user.getPassword().equalsIgnoreCase(pwd)) throw new IncorrectCredentialsException();
-
+        if (user == null) {
+            throw new UnknownAccountException("帐号或密码错误!");
+        }
+        if (user.isLock()) {
+            throw new LockedAccountException("帐号被锁定，请联系管理员!");
+        }
+        if (!user.getPassword().equalsIgnoreCase(pwd)) {
+            throw new IncorrectCredentialsException("帐号或密码错误!");
+        }
         setSession("user", user);
         return new SimpleAuthenticationInfo(userName, pwd, getName());
     }
@@ -70,16 +79,16 @@ public class AuthRealm extends AuthorizingRealm {
         LOGGER.info("login user is {}", user.getUserName());
         //获取用户角色、权限
         List<UserPermission> userPermissions = userDao.getPermissions(user.getUserId());
-
-        List<String> permissionList = new ArrayList<>();
+        //收集权限点列表
+        List<String> permissionPointList = new ArrayList<>();
         for (UserPermission userPermission : userPermissions) {
             List<String> list = userPermission.getPermissionList();
             if (list != null && list.size() > 0) {
-                permissionList.addAll(list);
+                permissionPointList.addAll(list);
             }
         }
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        info.addStringPermissions(permissionList);
+        info.addStringPermissions(permissionPointList);
         return info;
     }
 

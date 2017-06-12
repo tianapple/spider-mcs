@@ -8,13 +8,17 @@ import org.slf4j.LoggerFactory;
 import org.spider.mcs.entity.Mcs_user;
 import org.spider.mcs.main.dao.UserDao;
 import org.spider.mcs.main.entity.Mcs_menu;
+import org.spider.mcs.main.entity.TreeData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by tianapple on 2017/5/10.
@@ -33,45 +37,58 @@ public class LoginControllor {
         try {
             Subject subject = SecurityUtils.getSubject();
             subject.login(token);
-            //获取菜单
-            List<Mcs_menu> menus = getMenuList();
-            model.setViewName("index_menu");
-            model.getModel().put("menus", menus);
+            model.setViewName("index");
+            model.getModel().put("msg", "ok");
         } catch (Exception e) {
             LOGGER.warn("{} login error: {}", userName, e);
-            String web = request.getContextPath();
-            String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + web + "/login.html?login_error=1";
-            model.setViewName("redirect:" + basePath);
+            String loginUrl = String.format("redirect:%s://%s:%s%s/login.html"
+                    , request.getScheme(),request.getServerName(),request.getServerPort(),request.getContextPath());
+            model.setViewName(loginUrl);
+            model.getModel().put("msg", e.getMessage());
         }
         return model;
     }
 
-    private List<Mcs_menu> getMenuList() {
+    @ResponseBody
+    @RequestMapping(value = "/getMenu")
+    public List<TreeData> getMenuList() {
         Mcs_user user = getUser();
+        return getMenuList(user, 0);
+    }
+
+    private List<TreeData> getMenuList(Mcs_user user, int parentId) {
         //获取一级菜单
-        List<Mcs_menu> menuList = userDao.getMenuList(user.getUserId(), 0);
+        List<Mcs_menu> menuList = userDao.getMenuList(user.getUserId(), parentId);
         if (user.isAdmin()) {
-            List<Mcs_menu> menuAdminList = userDao.getAdminMenuList(0);
+            List<Mcs_menu> menuAdminList = userDao.getAdminMenuList(parentId);
             if (menuAdminList.size() > 0) {
                 menuList.addAll(menuAdminList);
             }
         }
-        //获取二级菜单
-        for (Mcs_menu menu : menuList) {
-            List<Mcs_menu> childMenus;
-            if (user.isAdmin()) {
-                childMenus = userDao.getAdminMenuList(menu.getMenuId());
-            } else {
-                childMenus = userDao.getMenuList(user.getUserId(), menu.getMenuId());
+
+        List<TreeData> trees = new ArrayList<>();
+
+        //获取子菜单
+        if (menuList != null && menuList.size() > 0) {
+            menuList = menuList.stream().distinct().collect(Collectors.toList()); //排除重复
+            for (Mcs_menu mcsMenu : menuList) {
+                TreeData treeData = TreeData.parse(mcsMenu);
+                trees.add(treeData);
+                List<TreeData> children = getMenuList(user, mcsMenu.getMenuId());
+                if (children.size() != 0) {
+                    treeData.setChildren(children);
+                }
             }
-            menu.setChildMenus(childMenus);
         }
-        return menuList;
+        return trees;
     }
 
     private Mcs_user getUser() {
         Subject subject = SecurityUtils.getSubject();
-        Mcs_user user = (Mcs_user) subject.getSession().getAttribute("user");
-        return user;
+        Object user = subject.getSession().getAttribute("user");
+        if (user != null) {
+            return (Mcs_user) user;
+        }
+        return null;
     }
 }

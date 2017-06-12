@@ -15,6 +15,21 @@ public class Mcs_menu {
     private boolean isEnable;
     private boolean isAdmin;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Mcs_menu mcsMenu = (Mcs_menu) o;
+
+        return menuId == mcsMenu.menuId;
+    }
+
+    @Override
+    public int hashCode() {
+        return menuId;
+    }
+
     private List<Mcs_menu> childMenus;
 
     public int getMenuId() {
