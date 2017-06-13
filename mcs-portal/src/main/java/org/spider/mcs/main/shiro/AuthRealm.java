@@ -12,6 +12,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spider.mcs.entity.Mcs_user;
+import org.spider.mcs.main.dao.LoginDao;
 import org.spider.mcs.main.dao.UserDao;
 import org.spider.mcs.main.entity.UserPermission;
 import org.spider.util.StringUtils;
@@ -28,6 +29,8 @@ public class AuthRealm extends AuthorizingRealm {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private LoginDao loginDao;
 
     /**
      * 第一步：帐号认证：
@@ -50,7 +53,7 @@ public class AuthRealm extends AuthorizingRealm {
         }
 
         LOGGER.info("{} token is {}", userName, token);
-        Mcs_user user = userDao.getUser(userName);
+        Mcs_user user = userDao.getUserByUserName(userName);
         if (user == null) {
             throw new UnknownAccountException("帐号或密码错误!");
         }
@@ -78,7 +81,7 @@ public class AuthRealm extends AuthorizingRealm {
         Mcs_user user = (Mcs_user) subject.getSession().getAttribute("user");
         LOGGER.info("login user is {}", user.getUserName());
         //获取用户角色、权限
-        List<UserPermission> userPermissions = userDao.getPermissions(user.getUserId());
+        List<UserPermission> userPermissions = loginDao.getPermissions(user.getUserId());
         //收集权限点列表
         List<String> permissionPointList = new ArrayList<>();
         for (UserPermission userPermission : userPermissions) {

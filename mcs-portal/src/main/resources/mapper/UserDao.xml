@@ -7,38 +7,7 @@
         <result property="isAdmin" column="is_admin"/>
         <result property="isLock" column="is_lock"/>
     </resultMap>
-    <select id="getUser" resultMap="UserMap">
+    <select id="getUserByUserName" resultMap="UserMap">
         SELECT * FROM mcs_user  where user_name=#{userPame}
-    </select>
-    <!--用户菜单-->
-    <resultMap id="MenuMap" type="org.spider.mcs.main.entity.Mcs_menu">
-        <result property="menuId" column="menu_id"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="isEnable" column="is_enable"/>
-        <result property="isAdmin" column="is_admin"/>
-    </resultMap>
-    <select id="getMenuList" resultMap="MenuMap">
-        <!--SELECT m.*-->
-        <!--FROM mcs_user_role u-->
-        <!--INNER JOIN mcs_permission p ON u.role_id=p.role_id-->
-        <!--INNER JOIN mcs_menu m ON m.menu_id=p.menu_id-->
-        <!--WHERE u.user_id=#{0} and m.parent_id=#{1}-->
-        <!--ORDER BY m.priority-->
-        SELECT m.*
-        FROM mcs_menu m INNER JOIN
-        (SELECT DISTINCT p.menu_id FROM mcs_user_role u INNER JOIN mcs_permission p ON u.role_id=p.role_id WHERE u.user_id=#{0}) p ON m.menu_id=p.menu_id
-        WHERE m.parent_id=#{1}
-        ORDER BY m.priority
-    </select>
-    <select id="getAdminMenuList" resultMap="MenuMap">
-        SELECT *FROM mcs_menu WHERE is_admin=1 and parent_id=#{0} ORDER BY priority
-    </select>
-    <!--用户权限-->
-    <select id="getPermissions" resultType="org.spider.mcs.main.entity.UserPermission">
-        SELECT r.name,m.path,p.priv_list
-        FROM mcs_user_role u INNER JOIN mcs_role r ON u.role_id=r.role_id
-        INNER JOIN mcs_permission p ON u.role_id=p.role_id
-        INNER JOIN mcs_menu m ON m.menu_id=p.menu_id
-        WHERE u.user_id=#{userId}
     </select>
 </mapper>

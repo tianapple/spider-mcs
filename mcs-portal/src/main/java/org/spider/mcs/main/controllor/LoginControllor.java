@@ -6,7 +6,7 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spider.mcs.entity.Mcs_user;
-import org.spider.mcs.main.dao.UserDao;
+import org.spider.mcs.main.dao.LoginDao;
 import org.spider.mcs.main.entity.Mcs_menu;
 import org.spider.mcs.main.entity.TreeData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class LoginControllor {
     private static Logger LOGGER = LoggerFactory.getLogger(LoginControllor.class);
 
     @Autowired
-    private UserDao userDao;
+    private LoginDao loginDao;
 
     @RequestMapping(value = "/login.do")
     public ModelAndView login(String userName, String password, HttpServletRequest request) {
@@ -42,7 +42,7 @@ public class LoginControllor {
         } catch (Exception e) {
             LOGGER.warn("{} login error: {}", userName, e);
             String loginUrl = String.format("redirect:%s://%s:%s%s/login.html"
-                    , request.getScheme(),request.getServerName(),request.getServerPort(),request.getContextPath());
+                    , request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
             model.setViewName(loginUrl);
             model.getModel().put("msg", e.getMessage());
         }
@@ -58,9 +58,9 @@ public class LoginControllor {
 
     private List<TreeData> getMenuList(Mcs_user user, int parentId) {
         //获取一级菜单
-        List<Mcs_menu> menuList = userDao.getMenuList(user.getUserId(), parentId);
+        List<Mcs_menu> menuList = loginDao.getMenuList(user.getUserId(), parentId);
         if (user.isAdmin()) {
-            List<Mcs_menu> menuAdminList = userDao.getAdminMenuList(parentId);
+            List<Mcs_menu> menuAdminList = loginDao.getAdminMenuList(parentId);
             if (menuAdminList.size() > 0) {
                 menuList.addAll(menuAdminList);
             }

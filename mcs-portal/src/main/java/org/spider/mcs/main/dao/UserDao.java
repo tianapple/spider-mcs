@@ -11,9 +11,5 @@ import java.util.List;
  * Created by tianapple on 2017/5/10.
  */
 public interface UserDao extends McsBaseDao {
-    Mcs_user getUser(String userName);
-    List<UserPermission> getPermissions(int userId); //获取用户权限数据
-
-    List<Mcs_menu> getMenuList(int userId, int parentId); //获取普通用户授权的菜单
-    List<Mcs_menu> getAdminMenuList(int parentId);  //获取管理员的菜单
+    Mcs_user getUserByUserName(String userName);
 }

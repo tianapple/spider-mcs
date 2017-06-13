@@ -1,4 +1,4 @@
-package org.spider.mcs;
+package org.spider.mcs.mybatis;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -14,19 +14,11 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 /**
- * mcs主库Java配置类，可灵活定制
+ * 数据库配置基础类
  * <p>
  * Created by tianapple on 2017/5/10.
  */
-@Configuration
-@ConfigurationProperties(prefix = "jdbc.mcs")
-@MapperScan(basePackages = "org.spider.mcs", markerInterface = McsBaseDao.class)
 public class MyBatisConfig {
-//    @Autowired
-//    private ApplicationContext applicationContext;
-//    @Autowired
-//    private ResourceLoader resourceLoader;
-
     private String url;
     private String username;
     private String password;
@@ -40,7 +32,7 @@ public class MyBatisConfig {
     private int maxLifetime = 1800000;
     //连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
     private int maxPoolSize = 20;
-    private int minimumIdle = 4; //
+    private int minimumIdle = 4;
 
     public void setUrl(String url) {
         this.url = url;
@@ -78,8 +70,7 @@ public class MyBatisConfig {
         this.minimumIdle = minimumIdle;
     }
 
-    @Bean(name = "mcsDataSource")
-    public DataSource getDataSource() throws Exception {
+    protected DataSource getDataSource() throws Exception {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("com.mysql.jdbc.Driver");
         config.setConnectionInitSql("select 1");
@@ -95,8 +86,7 @@ public class MyBatisConfig {
         return new HikariDataSource(config);
     }
 
-    @Bean(name = "mcsSqlSessionFactory")
-    public SqlSessionFactory sqlSessionFactory(@Qualifier("mcsDataSource") DataSource dataSource) throws Exception {
+    protected SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean fb = new SqlSessionFactoryBean();
         fb.setDataSource(dataSource);
         String mapperPath = "classpath:mapper/*.xml";
