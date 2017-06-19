@@ -3,9 +3,8 @@ package org.spider.mcs;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,9 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
  * <p>
  * Created by tianapple on 2017/5/9.
  */
-//@SpringBootApplication
-@Configuration
-@ComponentScan
+@SpringBootApplication
+//@Configuration
+//@ComponentScan
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class}) //禁用数据源自动配置
 @RestController
 public class Application {

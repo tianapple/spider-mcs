@@ -2886,7 +2886,7 @@
   padding: 0;
 }
 .tree-node {
-  height: 18px;
+  height: 22px;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -2964,14 +2964,14 @@
   background: url('images/tree_icons.png') no-repeat -240px -18px;
 }
 .tree-title {
-  font-size: 12px;
+  font-size: 14px;
   display: inline-block;
   text-decoration: none;
   vertical-align: top;
   white-space: nowrap;
-  padding: 0 2px;
+  padding: 0 4px;
   height: 18px;
-  line-height: 18px;
+  line-height: 22px;
 }
 .tree-node-proxy {
   font-size: 12px;

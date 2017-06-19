@@ -17,6 +17,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,8 +53,13 @@ public class LoginControllor {
     @ResponseBody
     @RequestMapping(value = "/getMenu")
     public List<TreeData> getMenuList() {
-        Mcs_user user = getUser();
-        return getMenuList(user, 0);
+        try {
+            Mcs_user user = getUser();
+            return getMenuList(user, 0);
+        } catch (Exception e) {
+            LOGGER.warn("", e);
+            return new ArrayList<>();
+        }
     }
 
     private List<TreeData> getMenuList(Mcs_user user, int parentId) {
