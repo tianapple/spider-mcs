@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
  * 如果必须使用XML配置，建议你仍旧从一个 @Configuration 类开始，然后使用@ImportResource 注解加载XML配置文件。
  * <p>
  * Created by tianapple on 2017/5/9.
+ *
+ *
  */
 @SpringBootApplication
 //@Configuration
