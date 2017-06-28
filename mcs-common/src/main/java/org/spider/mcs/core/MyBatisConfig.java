@@ -25,7 +25,7 @@ public class MyBatisConfig {
     private String url;
     private String username;
     private String password;
-    //连接只读数据库时配置为true， 保证安全
+    //连接只读数据库时配置为true， 保证安全1
     private boolean readOnly = false;
     //等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒
     private int connTimeout = 15000;
