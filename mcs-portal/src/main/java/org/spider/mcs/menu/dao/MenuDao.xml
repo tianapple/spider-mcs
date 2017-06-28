@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.spider.mcs.menu.dao.MenuDao">
+
+    <resultMap id="MenuMap" type="org.spider.mcs.menu.entity.Menu">
+        <result property="menuid" column="menu_id"/>
+        <result property="parentid" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="path" column="path"/>
+        <result property="remark" column="remark"/>
+        <result property="priority" column="priority"/>
+        <result property="isEnable" column="is_enable"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="updatetime" column="updatetime"/>
+        <result property="createtime" column="createtime"/>
+    </resultMap>
+
+    <select id="getMenuListPage" resultMap="MenuMap">
+        SELECT * from mcs_menu
+    </select>
+
+</mapper>

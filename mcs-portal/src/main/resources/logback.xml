@@ -16,10 +16,10 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="stdout"/>
         <appender-ref ref="file"/>
     </root>
-    <logger name="com.zaxxer.hikari" level="warn"/>
-    <logger name="org.spider.mcs.main.dao" level="info"/>
+    <logger name="com.zaxxer.hikari" level="debug"/>
+    <logger name="org.spider.mcs.main.dao" level="debug"/>
 </configuration>

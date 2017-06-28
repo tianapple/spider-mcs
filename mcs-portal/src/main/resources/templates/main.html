@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="head">
+    <title>集成播控平台V4</title>
+</head>
+
+<script type="text/javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            url:'/getMenu?pid=-1',
+            success: function(data){
+                $.each(data,function(i,n){
+                    var flag = false;
+                    if(i == 0){
+                        flag = true;
+                    }
+                    $('#menu').accordion('add',{
+                        title: n.text,
+                        selected: flag,
+                        content:'<div style="padding:10px"><ul id="tree'+n.id+'"></ul></div>'
+                    });
+
+                    $("#tree" + n.id).tree({
+                        animate:true,
+                        lines:true,
+                        url: '/getMenu?pid=' + n.id,
+                        onBeforeExpand:function(node,param){
+                            $("#tree" + n.id).tree('options').url = "/getMenu?pid=" + node.id;
+                        },
+                        onClick:function(node){
+                            if(node.attributes.url != ''){
+                                addtab(node.text, node.attributes.url);
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+        var addtab = function (title, url) {
+            if ($('#tabs').tabs('exists', title)) {
+                $('#tabs').tabs('select', title);
+            } else {
+                var content = '未实现';
+                if (url){
+                    content = '<iframe scrolling="no" frameborder="0"  src="'+url+'" style="width:100%;height:100%;"></iframe>';
+                }
+                $('#tabs').tabs('addIframeTab', {
+                    tab:{
+                        title:title,
+                        closable:true
+                    },
+                    iframe:{
+                        src:url,
+                        delay:'fast',
+                        message:'加载中,请稍后...'
+                    }
+                });
+            }
+        }
+    });
+    /*
+    $(function () {
+        var treeData = {};
+        //同步获取
+        $.ajax({
+            type: 'GET',
+            url: '/getMenu',
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+                treeData = json;
+            },
+        });
+
+        //实例化树形菜单
+        $("#tree").tree({
+            data : treeData,
+            lines : true,
+            onClick : function (node) {
+                if (node.attributes) {
+                    open(node.text, node.attributes.url);
+                }
+            }
+        });
+
+        function open(title, url){
+            if ($('#tabs').tabs('exists', title)){
+                $('#tabs').tabs('select', title);
+            } else {
+                var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>';
+                $('#tabs').tabs('add',{
+                    title:title,
+                    content:content,
+                    closable:true
+                });
+            }
+        }
+	});
+*/
+    /*]]>*/
+</script>
+
+<body>
+    <div id="main_layout" class="easyui-layout" data-options="fit:true,border:false">
+        <div data-options="region:'north'" class="header">
+            <div class="topleft">
+<!--
+                <a href="#" target="_parent"><img src="images/logo.png" title="系统首页" /></a>
+-->
+            </div>
+            <div class="topright">
+                <ul>
+                    <li><span><img src="images/help.png" title="帮助"  class="helpimg"/></span><a href="#">帮助</a></li>
+                    <li><a href="#">关于</a></li>
+                    <li><a href="#" target="_parent">退出</a></li>
+                </ul>
+                <div class="user">
+                    <span>admin</span>
+                    <i>消息</i>
+                    <b>5</b>
+                </div>
+            </div>
+        </div>
+
+        <div data-options="region:'west'" title="菜单" style="width:200px;">
+            <div id="menu" class="easyui-accordion"  data-options="fit:true,border:false"> </div>
+        </div>
+
+        <div data-options="region:'center',iconCls:'icon-ok'">
+            <div id="tabs" class="easyui-tabs" data-options="fit:true,border:false">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

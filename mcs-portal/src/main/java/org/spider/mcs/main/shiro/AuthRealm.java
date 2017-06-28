@@ -9,12 +9,12 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spider.mcs.entity.Mcs_user;
-import org.spider.mcs.main.dao.LoginDao;
-import org.spider.mcs.main.dao.UserDao;
+import org.spider.mcs.main.entity.Mcs_user;
 import org.spider.mcs.main.entity.UserPermission;
+import org.spider.mcs.main.service.LoginService;
 import org.spider.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,9 +28,7 @@ public class AuthRealm extends AuthorizingRealm {
     private static Logger LOGGER = LoggerFactory.getLogger(AuthRealm.class);
 
     @Autowired
-    private UserDao userDao;
-    @Autowired
-    private LoginDao loginDao;
+    private LoginService loginService;
 
     /**
      * 第一步：帐号认证：
@@ -48,23 +46,18 @@ public class AuthRealm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         String pwd = new String(token.getPassword());
         String userName = token.getUsername();
-        if (StringUtils.isNullOrEmpty(userName)) {
-            throw new AccountException("用户名为空!");
-        }
 
         LOGGER.info("{} token is {}", userName, token);
-        Mcs_user user = userDao.getUserByUserName(userName);
-        if (user == null) {
-            throw new UnknownAccountException("帐号或密码错误!");
+        Mcs_user user = loginService.getUserByUserName(userName);
+
+        if (user != null) {
+            //ByteSource credentialsSalt = ByteSource.Util.bytes(userName);//这里的参数要给个唯一的;
+            AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(user.getUserName(), user.getPassword(), getName());
+            setSession("user", user);
+            return authcInfo;
+        } else {
+            return null;
         }
-        if (user.isLock()) {
-            throw new LockedAccountException("帐号被锁定，请联系管理员!");
-        }
-        if (!user.getPassword().equalsIgnoreCase(pwd)) {
-            throw new IncorrectCredentialsException("帐号或密码错误!");
-        }
-        setSession("user", user);
-        return new SimpleAuthenticationInfo(userName, pwd, getName());
     }
 
     /**
@@ -81,7 +74,7 @@ public class AuthRealm extends AuthorizingRealm {
         Mcs_user user = (Mcs_user) subject.getSession().getAttribute("user");
         LOGGER.info("login user is {}", user.getUserName());
         //获取用户角色、权限
-        List<UserPermission> userPermissions = loginDao.getPermissions(user.getUserId());
+        List<UserPermission> userPermissions = loginService.getPermissions(user.getUserId());
         //收集权限点列表
         List<String> permissionPointList = new ArrayList<>();
         for (UserPermission userPermission : userPermissions) {

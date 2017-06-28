@@ -124,6 +124,13 @@
                 <artifactId>shiro-ehcache</artifactId>
                 <version>1.2.2</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper</artifactId>
+                <version>4.1.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -153,5 +160,16 @@
                 </executions>
             </plugin>
         </plugins>
+
+        <!--配置Maven 对resource文件 过滤 -->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

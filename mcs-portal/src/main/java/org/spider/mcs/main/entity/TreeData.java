@@ -12,7 +12,7 @@ import java.util.List;
 public class TreeData {
     private int id;
     private String text;
-    private String status = "closed";
+    private String state = "closed";
     private TreeAttribute attributes;
     private List<TreeData> children;
 
@@ -44,12 +44,12 @@ public class TreeData {
         this.text = text;
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setState(String state) {
+        this.state = state;
     }
 
     public TreeAttribute getAttributes() {

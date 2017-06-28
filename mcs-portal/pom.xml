@@ -14,6 +14,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.spider.mcs</groupId>
             <artifactId>mcs-common</artifactId>
             <version>1.0</version>
