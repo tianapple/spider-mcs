@@ -19,7 +19,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.spider.mcs</groupId>
+            <groupId>com.upotv.mcs</groupId>
             <artifactId>mcs-common</artifactId>
             <version>1.0</version>
         </dependency>
