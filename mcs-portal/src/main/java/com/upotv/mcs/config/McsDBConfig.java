@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ConfigurationProperties(prefix = "jdbc.mcs")
-@MapperScan(basePackages = "org.spider.mcs", markerInterface = McsBaseDao.class)
+@MapperScan(basePackages = "com.upotv.mcs", markerInterface = McsBaseDao.class)
 @EnableTransactionManagement
 public class McsDBConfig extends MyBatisConfig {
 
