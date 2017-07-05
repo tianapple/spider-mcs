@@ -1,0 +1,42 @@
+package com.upotv.mcs.main.service.impl;
+
+import com.upotv.mcs.main.entity.Mcs_user;
+import com.upotv.mcs.main.dao.LoginDao;
+import com.upotv.mcs.main.entity.Mcs_menu;
+import com.upotv.mcs.main.entity.UserPermission;
+import com.upotv.mcs.main.service.LoginService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * Created by wow on 2017/6/21.
+ */
+@Service
+public class LoginServiceImpl implements LoginService{
+
+    @Autowired
+    private LoginDao loginDao;
+
+    @Override
+    public Mcs_user getUserByUserName(String userName) {
+        return loginDao.getUserByUserName(userName);
+    }
+
+    @Override
+    public List<UserPermission> getPermissions(int userId) {
+        return loginDao.getPermissions(userId);
+    }
+
+    @Override
+    public List<Mcs_menu> getMenuList(int userId, int parentId) {
+        return loginDao.getMenuList(userId,parentId);
+    }
+
+    @Override
+    public List<Mcs_menu> getAdminMenuList(int parentId) {
+        return loginDao.getAdminMenuList(parentId);
+    }
+
+}

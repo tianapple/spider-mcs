@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.upotv.mcs.menu.dao.MenuDao">
+
+    <resultMap id="McsCodeMap" type="com.upotv.mcs.dict.entity.McsCode">
+        <result property="codeType" column="code_type"/>
+        <result property="codeId" column="code_id"/>
+        <result property="codeName" column="code_name"/>
+        <result property="remark" column="remark"/>
+        <result property="priority" column="priority"/>
+        <result property="isEnable" column="isEnable"/>
+        <result property="updatetime" column="updatetime"/>
+        <result property="createtime" column="createtime"/>
+    </resultMap>
+
+    <select id="getMenuListPage" resultMap="McsCodeMap">
+        SELECT * from mcs_code
+    </select>
+  
+</mapper>

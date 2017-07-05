@@ -19,9 +19,6 @@
 
     upotv.biz.Dict.getValue = function (code, dictStore) {
         for (var k = 0; k < dictStore.length; k++) {
-            console.log(dictStore[k]);
-            console.log(dictStore[k]["codeId"]);
-            console.log(code);
             if(dictStore[k]["codeId"] == code){
 
                 return dictStore[k]["codeName"];

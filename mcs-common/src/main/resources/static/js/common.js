@@ -1,3 +1,4 @@
+
 //将表单数据转为json
 $.fn.serializeObject = function () {
     var o = {};
@@ -15,6 +16,7 @@ $.fn.serializeObject = function () {
     return o;
 };
 
+//全局配置ajax
 $.ajaxSetup({
     dataType: "json",
     complete:function(XMLHttpRequest,textStatus){
@@ -27,3 +29,8 @@ $.ajaxSetup({
         }
     }
 });
+
+//百分比宽度
+function fixWidth(percent) {
+    return document.body.clientWidth * percent ;//根据自身情况更改
+}

@@ -1,0 +1,48 @@
+package com.upotv.mcs.exception;
+
+import org.apache.shiro.authz.AuthorizationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.upotv.mcs.core.ResultMessage;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Created by wow on 2017/6/22.
+ */
+@ControllerAdvice
+public class McsExceptionHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(McsExceptionHandler.class);
+
+
+    @ResponseBody
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResultMessage exceptionHandler(Exception ex, HttpServletResponse response) {
+
+        ResultMessage resp = new ResultMessage();
+
+        if (ex instanceof DuplicateKeyException) {
+            resp.setRetnCode("10001");
+            resp.setRetnMessage("数据库中已存在该记录");
+        } else if (ex instanceof AuthorizationException) {
+            resp.setRetnCode("20001");
+            resp.setRetnMessage("没有权限，请联系管理员授权");
+        } else if (ex instanceof ArgumentNotValidException) {
+            resp.setRetnCode("30001");
+            resp.setRetnMessage(ex.getMessage());
+        } else {
+            resp.setRetnCode("10000");
+            resp.setRetnMessage("系统错误,请联系管理员");
+        }
+
+        //记录异常日志
+        LOGGER.error(ex.getMessage(), ex);
+
+        return resp;
+    }
+}
