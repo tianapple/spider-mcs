@@ -22,6 +22,9 @@ public class MyBatisConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MyBatisConfig.class);
 
+//    @Autowired
+//    protected ApplicationContext applicationContext;
+
     private String url;
     private String username;
     private String password;
@@ -97,6 +100,12 @@ public class MyBatisConfig {
        // fb.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperPath)); // env.getProperty("mybatis.mapperLocations" 指定xml文件位置
         return fb.getObject();
     }
+
+//    protected DataSourceTransactionManager transactionManager(DataSource dataSource) {
+//        DataSourceTransactionManager tm = new DataSourceTransactionManager();
+//        tm.setDataSource(dataSource);
+//        return tm;
+//    }
 
     @Bean
     public PageHelper pageHelper() {
