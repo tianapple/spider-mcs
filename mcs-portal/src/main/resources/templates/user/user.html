@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 
 <head th:include="head"></head>
 
@@ -144,6 +145,7 @@
                 $.messager.alert('提示','请选择要修改的行!','info');
                 return false;
             }
+            $("#user_form").form('load',record);
             $('#user_userName').textbox('textbox').attr('readonly',true);  //设置输入框为禁用
             $("#user_form_password").css("display","none");
 
@@ -207,7 +209,7 @@
                     $.ajax({
                         type: "POST",
                         url: "user/delete",
-                        data:{userId:userId},
+                        data:{userId:record.userId},
                         success: function(msg){
                             if(msg.retnCode == '0000'){
                                 $.messager.alert('提示',"删除成功!",'info',function(){
@@ -253,9 +255,9 @@
             </div>
         </div>
         <div class="tb_btn">
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="create_btn">添加</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="user_update_btn">修改</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="user_del_btn">删除</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="create_btn" shiro:hasPermission="user/manager">添加</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="user_update_btn"  shiro:hasPermission="user/manager">修改</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="user_del_btn"  shiro:hasPermission="user/manager">删除</a>
         </div>
     </div>
 
