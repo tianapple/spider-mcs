@@ -54,14 +54,17 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         logEntity.setPath(uri);
 
         Mcs_user user =  (Mcs_user)request.getSession().getAttribute("user");
-        logEntity.setUsername(user.getUserName());
 
-        request.setAttribute(LOGGER_ENTITY,logEntity);
+        if(user != null){
+            logEntity.setUsername(user.getUserName());
 
-        long beginTime = System.currentTimeMillis();//1、开始时间
-        startTimeThreadLocal.set(beginTime);//线程绑定变量（该数据只有当前请求的线程可见）
+            request.setAttribute(LOGGER_ENTITY,logEntity);
 
-        LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
+            long beginTime = System.currentTimeMillis();//1、开始时间
+            startTimeThreadLocal.set(beginTime);//线程绑定变量（该数据只有当前请求的线程可见）
+
+            LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
+        }
 
         return super.preHandle(request, response, handler);
     }

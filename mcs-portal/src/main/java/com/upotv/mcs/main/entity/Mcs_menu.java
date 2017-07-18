@@ -12,7 +12,15 @@ public class Mcs_menu {
     private String path;
     private String remark;
     private int priority;
+
+    /**
+     *  是否启用，1：启用，0：不启用
+     */
     private boolean isEnable;
+    /**
+     * 0：否
+     * 1：是
+     */
     private boolean isAdmin;
 
     @Override

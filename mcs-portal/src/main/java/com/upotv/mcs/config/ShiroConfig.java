@@ -1,5 +1,6 @@
 package com.upotv.mcs.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.upotv.mcs.main.shiro.AuthRealm;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -93,7 +94,14 @@ public class ShiroConfig {
         return advisor;
     }
 
-
+    /**
+     * 使用标签
+     * @return
+     */
+    @Bean
+    public ShiroDialect shiroDialect() {
+        return new ShiroDialect();
+    }
     /**
      * 认证，加密
      *
