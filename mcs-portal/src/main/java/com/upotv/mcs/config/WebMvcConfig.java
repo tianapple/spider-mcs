@@ -1,6 +1,7 @@
 package com.upotv.mcs.config;
 
 import com.upotv.mcs.interceptor.McsInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -12,6 +13,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
+
+    @Autowired
+    McsInterceptor mcsInterceptor;
 
     //配置静态资源访问
     @Override
@@ -29,9 +33,10 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new McsInterceptor())
+        registry.addInterceptor(mcsInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/js", "/css", "/images")
+                .excludePathPatterns("/login")
                 .excludePathPatterns("/");
         super.addInterceptors(registry);
     }

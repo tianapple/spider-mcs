@@ -13,8 +13,8 @@
         <result property="isAdmin" column="is_admin"/>
         <result property="isLock" column="is_lock"/>
         <result property="remark" column="remark"/>
-        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
 
     <select id="getUserListPage" resultMap="UserMap">

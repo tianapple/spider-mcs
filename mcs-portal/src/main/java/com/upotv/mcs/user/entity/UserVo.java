@@ -1,21 +1,23 @@
 package com.upotv.mcs.user.entity;
 
+import com.upotv.mcs.util.DateUtil;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import java.sql.Timestamp;
+import java.util.Date;
+
 
 /**
  * Created by wow on 2017/6/22.
  */
 public class UserVo {
 
-    @NotEmpty(message="用户名不能为空")
+    @NotEmpty(message = "用户名不能为空")
     private String userName;
 
-    @NotEmpty(message="密码不能为空")
+    @NotEmpty(message = "密码不能为空")
     private String password;
 
-    @NotEmpty(message="姓名不能为空")
+    @NotEmpty(message = "姓名不能为空")
     private String name;
 
     private String email;
@@ -115,4 +117,5 @@ public class UserVo {
     public void setPage(int page) {
         this.page = page;
     }
+
 }

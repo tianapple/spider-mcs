@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/user")
-//@RequiresPermissions("user/view")
 public class UserController {
 
     @Autowired
