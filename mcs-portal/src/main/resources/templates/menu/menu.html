@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="head"></head>
+
+<script type="text/javascript">
+    $(function () {
+        $('#menu_treeList').treegrid({
+            nowrap: false,
+            rownumbers: true,
+            animate:true,
+            collapsible:true,
+            loadMsg:'数据加载中请稍后……',
+            url:"menu/menuManagerPage",
+            idField:'matCode',
+            treeField:'matCode',
+            frozenColumns:[[
+                {title:'',field:'matCode',width:180}
+            ]],
+            columns:[[
+                {title:"编号",field:'id',title:'id',width:120,editor:"text"},
+                {title:"名字",field:'name',title:'name',width:120,editor:"text"}
+            ]],
+            onBeforeLoad:function(row,param){
+                // 此处就是异步加载地所在
+            },
+            onClickRow:function(){
+                /**
+                 ** 如果是新建或者修改，以及删除，则清除查询form表单数据
+                 **/
+                $('#materialSearch').form('clear');
+            }
+        });
+    })
+</script>
+
+<body>
+
+<div data-options="region:'north',title:''"
+     style="height: 25px; padding: 5px;">
+    <a href="#" class="easyui-linkbutton"
+       data-options="iconCls:'icon-edit'" onclick="beginEdit()">编辑</a> <a
+        href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'"
+        onclick="saveEdit()">保存编辑</a> <a href="#" class="easyui-linkbutton"
+                                         data-options="iconCls:'icon-add'" onclick="appendRoot()">新增根目录</a> <a
+        href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add'"
+        onclick="append()">新增目录</a> <a href="#" class="easyui-linkbutton"
+                                       data-options="iconCls:'icon-cancel'" onclick="removeIt()">删除</a>
+</div>
+
+
+<table id="menu_treeList"> </table>
+
+
+<div id="mm" class="easyui-menu" style="width: 120px;">
+    <div onclick="append()" data-options="iconCls:'icon-add'">新增</div>
+    <div onclick="removeIt()" data-options="iconCls:'icon-remove'">删除</div>
+    <div class="menu-sep"></div>
+    <div onclick="collapse()">收起</div>
+    <div onclick="expand()">展开</div>
+</div>
+</body>
+
+</html>
