@@ -1,10 +1,16 @@
 package com.upotv.mcs.operlog.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.upotv.mcs.operlog.dao.LogDao;
 import com.upotv.mcs.operlog.entity.Log;
+import com.upotv.mcs.operlog.entity.LogVo;
 import com.upotv.mcs.operlog.service.LogService;
+import com.upotv.mcs.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by wow on 2017/7/17.
@@ -18,5 +24,11 @@ public class LogServiceImpl implements LogService {
     @Override
     public int insert(Log log) {
         return logDao.insert(log);
+    }
+
+    @Override
+    public Page<Log> getLogListPage(LogVo vo) {
+        PageHelper.startPage(vo.getPage(), vo.getRows());
+        return (Page<Log>) logDao.getLogListPage(vo);
     }
 }

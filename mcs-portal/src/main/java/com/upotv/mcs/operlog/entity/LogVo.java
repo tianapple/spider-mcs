@@ -1,29 +1,39 @@
 package com.upotv.mcs.operlog.entity;
 
-import com.upotv.mcs.util.DateUtil;
-
 import java.util.Date;
 
 /**
  * Created by wow on 2017/7/17.
  */
-public class Log {
-    private int logid;
+public class LogVo {
     private String username;
     private String path;
     private String param;
     private String ip;
     private long duration;
     private int status;
-    private String remark;
+    private String startTime;
+    private String endTime;
+
     private Date createtime;
 
-    public int getLogid() {
-        return logid;
+    private int rows;
+    private int page;
+
+    public String getStartTime() {
+        return startTime;
     }
 
-    public void setLogid(int logid) {
-        this.logid = logid;
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
     public String getUsername() {
@@ -74,20 +84,27 @@ public class Log {
         this.status = status;
     }
 
-    public String getRemark() {
-        return remark;
+    public Date getCreatetime() {
+        return createtime;
     }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getCreateTime() {
-        return DateUtil.getDateTimeFormat(createtime);
-    }
-
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 }

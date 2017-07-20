@@ -55,16 +55,14 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
 
         Mcs_user user =  (Mcs_user)request.getSession().getAttribute("user");
 
-        if(user != null){
-            logEntity.setUsername(user.getUserName());
+        logEntity.setUsername(user.getUserName());
 
-            request.setAttribute(LOGGER_ENTITY,logEntity);
+        request.setAttribute(LOGGER_ENTITY,logEntity);
 
-            long beginTime = System.currentTimeMillis();//1、开始时间
-            startTimeThreadLocal.set(beginTime);//线程绑定变量（该数据只有当前请求的线程可见）
+        long beginTime = System.currentTimeMillis();
+        startTimeThreadLocal.set(beginTime);//线程绑定变量（该数据只有当前请求的线程可见）
 
-            LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
-        }
+        LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
 
         return super.preHandle(request, response, handler);
     }
@@ -76,9 +74,9 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        long endTime = System.currentTimeMillis();//2、结束时间
-        long beginTime = startTimeThreadLocal.get();//得到线程绑定的局部变量（开始时间）
-        long consumeTime = endTime - beginTime;//3、消耗的时间
+        long endTime = System.currentTimeMillis();
+        long beginTime = startTimeThreadLocal.get();
+        long consumeTime = endTime - beginTime;
 
         int status = response.getStatus();
 
@@ -86,10 +84,9 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         logEntity.setDuration(consumeTime);
         logEntity.setStatus(status);
 
-        if(ex != null){
-            StringWriter sw = new StringWriter();
-            ex.printStackTrace(new PrintWriter(sw, true));
-            logEntity.setRemark(sw.toString());
+        Object exception = request.getAttribute("exception");
+        if(exception != null){
+            logEntity.setRemark(exception.toString());
         }
         logService.insert(logEntity);
 

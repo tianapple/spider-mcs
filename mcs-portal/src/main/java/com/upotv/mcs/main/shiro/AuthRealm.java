@@ -85,6 +85,12 @@ public class AuthRealm extends AuthorizingRealm {
         }
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addStringPermissions(permissionPointList);
+
+        //当为管理员时设置当前登陆为admin
+        if(user.isAdmin()){
+            info.addRole("admin");
+        }
+
         return info;
     }
 
