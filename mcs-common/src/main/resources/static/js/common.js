@@ -20,12 +20,16 @@ $.fn.serializeObject = function () {
 $.ajaxSetup({
     dataType: "json",
     complete:function(XMLHttpRequest,textStatus){
-        if(textStatus=="parsererror"){
-            $.messager.alert('提示信息', "登陆超时！请重新登陆！", 'info',function(){
-                window.location.href = '/';
-            });
-        } else if(textStatus=="error"){
-            $.messager.alert('提示信息', "请求超时！请稍后再试！", 'info');
+        if(XMLHttpRequest.responseText == ''){
+            $.messager.alert('提示信息', "AJAX请求错误！请稍后刷新再试！", 'info');
+        }else{
+            if(textStatus=="parsererror"){
+                $.messager.alert('提示信息', "登陆超时！请重新登陆！", 'info',function(){
+                    window.location.href = '/logout';
+                });
+            } else if(textStatus=="error"){
+                $.messager.alert('提示信息', "请求错误！请稍后刷新再试！", 'info');
+            }
         }
     }
 });
