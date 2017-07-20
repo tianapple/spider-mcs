@@ -87,6 +87,7 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         Object exception = request.getAttribute("exception");
         if(exception != null){
             logEntity.setRemark(exception.toString());
+            logEntity.setStatus(500);
         }
         logService.insert(logEntity);
 

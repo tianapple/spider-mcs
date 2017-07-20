@@ -1,4 +1,3 @@
-
 //将表单数据转为json
 $.fn.serializeObject = function () {
     var o = {};
@@ -19,22 +18,30 @@ $.fn.serializeObject = function () {
 //全局配置ajax
 $.ajaxSetup({
     dataType: "json",
-    complete:function(XMLHttpRequest,textStatus){
-        if(XMLHttpRequest.responseText == ''){
-            $.messager.alert('提示信息', "AJAX请求错误！请稍后刷新再试！", 'info');
-        }else{
-            if(textStatus=="parsererror"){
-                $.messager.alert('提示信息', "登陆超时！请重新登陆！", 'info',function(){
-                    window.location.href = '/logout';
-                });
-            } else if(textStatus=="error"){
-                $.messager.alert('提示信息', "请求错误！请稍后刷新再试！", 'info');
-            }
+    type: 'POST',
+    complete: function (XMLHttpRequest, textStatus) {
+        if (XMLHttpRequest.getResponseHeader("sessionstatus") == 'timeout') {
+            var top = getTopWinow();
+            $.messager.alert('提示',"由于您长时间没有操作, session已过期, 请重新登录...",'info',function(){
+                top.window.location.href = '/';
+            });
         }
     }
 });
 
+/**
+ * 在页面中任何嵌套层次的窗口中获取顶层窗口
+ * @return 当前页面的顶层窗口对象
+ */
+function getTopWinow(){
+    var p = window;
+    while(p != p.parent){
+        p = p.parent;
+    }
+    return p;
+}
+
 //百分比宽度
 function fixWidth(percent) {
-    return document.body.clientWidth * percent ;//根据自身情况更改
+    return document.body.clientWidth * percent;//根据自身情况更改
 }
