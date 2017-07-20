@@ -9,7 +9,7 @@ import com.upotv.mcs.core.ResultMessage;
  * Created by wow on 2017/6/22.
  */
 public interface UserService {
-    public Page<User> getUserListPage(UserVo user);
+    public Page<User> getUserListPage(UserVo vo);
 
     public int delete(int userId);
 

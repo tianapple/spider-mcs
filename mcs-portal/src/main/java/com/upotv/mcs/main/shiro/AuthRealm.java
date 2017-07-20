@@ -48,13 +48,15 @@ public class AuthRealm extends AuthorizingRealm {
         LOGGER.info("{} token is {}", userName, token);
         Mcs_user user = loginService.getUserByUserName(userName);
 
-        if (user != null) {
+        if(user == null){
+            return null;
+        }else if(user.isLock()){
+            throw new LockedAccountException("Account [" + user.getUserName() + "] is locked.");
+        }else{
             //ByteSource credentialsSalt = ByteSource.Util.bytes(userName);//这里的参数要给个唯一的;
             AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(user.getUserName(), user.getPassword(), getName());
             setSession("user", user);
             return authcInfo;
-        } else {
-            return null;
         }
     }
 
@@ -83,6 +85,12 @@ public class AuthRealm extends AuthorizingRealm {
         }
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addStringPermissions(permissionPointList);
+
+        //当为管理员时设置当前登陆为admin
+        if(user.isAdmin()){
+            info.addRole("admin");
+        }
+
         return info;
     }
 

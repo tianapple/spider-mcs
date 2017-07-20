@@ -1,5 +1,7 @@
 package com.upotv.mcs.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Created by wow on 2017/3/21.
  */
@@ -14,6 +16,10 @@ public class ResultMessage {
     // 错误信息
     private String retnMessage;
 
+    //错误堆栈
+    @JsonIgnore
+    private String errorStack;
+
     public ResultMessage() {
     }
 
@@ -27,6 +33,14 @@ public class ResultMessage {
 
     public String getRetnMessage() {
         return retnMessage;
+    }
+
+    public String getErrorStack() {
+        return errorStack;
+    }
+
+    public void setErrorStack(String errorStack) {
+        this.errorStack = errorStack;
     }
 
     public void setRetnMessage(String retnMessage) {

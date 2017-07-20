@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 
 <head th:include="head"></head>
 
@@ -7,9 +8,16 @@
 
     /*<![CDATA[*/
     $(document).ready(function() {
+        //性别
+        var genderDict = upotv.biz.Dict.getDict("sex",true);
+        //是否锁定
+        var isLockDict = upotv.biz.Dict.getDict("isEnable",true);
+        //是否管理员
+        var isAdminDict = upotv.biz.Dict.getDict("isAdmin",true);
+
         $('#user_dataList').datagrid({
             fit : true,
-            toolbar:'#tb',
+            toolbar:'#user_tb',
             width:'100%',
             height:'100%',
             url:'/user/getUserListPage',
@@ -20,77 +28,60 @@
             nowrap:true,
             striped: true,
             rownumbers:true,
-            fitColumns:true,
+            //fitColumns:true,
             showFooter:true,
             pageSize:20,
             pageList:[20,30,50],
             columns:[[
                 {field:'userId',hidden:true},
-                {field:'userName',title:'登录名',width:fixWidth(0.1)},
-                {field:'name',title:'用户姓名', width:fixWidth(0.05)},
-                {field:'phone',title:'手机号', width:fixWidth(0.1)},
-                {field:'email',title:'邮箱', width:fixWidth(0.15)},
-                {field:'gender',title:'性别',width:fixWidth(0.05),
+                {field:'name',title:'用户姓名',align:'center', width:120},
+                {field:'phone',title:'手机号',align:'center', width:120},
+                {field:'email',title:'邮箱',align:'center', width:200},
+                {field:'gender',title:'性别',align:'center',width:80,
                     formatter: function (value, row, index) {
-                        if(value == 1){
-                            return "男";
-                        }else if(value == 0) {
-                            return "女";
-                        }
+                        return upotv.biz.Dict.getValue(value,genderDict);
                     }
                 },
-                {field:'isAdmin',title:'是否管理员',align:'center', width:fixWidth(0.05),
+                {field:'isAdmin',title:'是否管理员',align:'center', width:120,
                     formatter:function(value, row, index){
-                        if(0 == value){
-                            return '<a href="javascript:user_update_admin_btn('+row.userId + ',' + index +')" class="easyui-linkbutton" name="user_update_lock_btn" >取消管理员</a>';
-                        }else{
-                            return '<a href="javascript:user_update_admin_btn('+row.userId + ',' + index +')" class="easyui-linkbutton" name="user_update_lock_btn" >设置管理员</a>';
-                        }
+                        return upotv.biz.Dict.getValue(value,isAdminDict);
                     }
                 },
-                {field:'isLock',title:'是否锁定',align:'center',width:fixWidth(0.05),
+                {field:'isLock',title:'是否锁定',align:'center',width:120,
                     formatter:function(value, row, index){
-                        if(0 == value){
-                            return '<a href="javascript:user_update_lock_btn('+row.userId + ',' + index +')" class="easyui-linkbutton" name="user_update_lock_btn" >锁定</a>';
-                        }else{
-                            return '<a href="javascript:user_update_lock_btn('+row.userId + ',' + index +')" class="easyui-linkbutton" name="user_update_lock_btn" >取消锁定</a>';
-                        }
+                        return upotv.biz.Dict.getValue(value,isLockDict);
                     }
                 },
-                {field:'updateTime',title:'更新时间', width:fixWidth(0.1)},
-                {field:'createTime',title:'创建时间', width:fixWidth(0.1)},
-                {field:'remark',title:'备注', width:fixWidth(0.15)},
-                {field:'operate',title:'操作',align:'center',width:fixWidth(0.15),
-                    formatter:function(value, row, index){
-                        return '<a href="javascript:userUpdateBtn('+row.userId + ',' + index +')" class="easyui-linkbutton" name="user_update_btn" ></a>' +
-                                    '<a href="javascript:userDelBtn('+row.userId + ',' + index +')" class="easyui-linkbutton" name="user_del_btn" ></a>';
-                    }
-                }
+                {field:'updateTime',title:'更新时间',align:'center', width:200},
+                {field:'createTime',title:'创建时间',align:'center', width:200},
+                {field:'remark',title:'备注', width:500}
             ]],
-            onLoadSuccess:function(data){
-                $("a[name='user_update_btn']").linkbutton({text:'修改',plain:true,iconCls:'icon-edit'});
-                $("a[name='user_del_btn']").linkbutton({text:'删除',plain:true,iconCls:'icon-remove'});
-            }
+            frozenColumns:[[
+                {field:'userName',title:'登录名',align:'center',width:120}
+            ]]
         });
 
-        //性别
-        var genderDict = [{codeId:1,codeName:'男'},{codeId:0,codeName:'女'}];
         $("#user_gender").combobox({
             valueField: 'codeId',
             textField: 'codeName',
-            data:genderDict,
-            value:1
+            data:genderDict
         });
 
-        //查询
-        $("#query_btn").click(function(){
-            var params = $('#user_qry_form').serializeObject();
-            $('#user_dataList').datagrid('load',params);
+        $("#user_lock").combobox({
+            valueField: 'codeId',
+            textField: 'codeName',
+            data:isAdminDict
+        });
+
+        $("#user_admin").combobox({
+            valueField: 'codeId',
+            textField: 'codeName',
+            data:isLockDict
         });
 
         //新增用户
         //默认为非管理员、账号为开启状态
-        $("#create_btn").click(function(){
+        $("#user_create_btn").click(function(){
             $('#user_userName').textbox('textbox').attr('readonly',false);  //设置输入框为禁用
             $("#user_form_password").css("display","block");
 
@@ -135,104 +126,183 @@
 
             $dialog.show();
         });
-    });
 
-    //更新用户
-    function userUpdateBtn(userId,index){
-        var record = $('#user_dataList').datagrid('getData').rows[index];
-        $("#user_form").form('load',record);
+        //修改用户信息
+        $("#user_update_btn").click(function(){
+            var record = $('#user_dataList').datagrid('getSelected');
+            if(!record){
+                $.messager.alert('提示','请选择要修改的行!','info');
+                return false;
+            }
+            $("#user_form").form('load',record);
+            $('#user_userName').textbox('textbox').attr('readonly',true);  //设置输入框为禁用
+            $("#user_form_password").css("display","none");
 
-        $('#user_userName').textbox('textbox').attr('readonly',true);  //设置输入框为禁用
-        $("#user_form_password").css("display","none");
+            var $dialog = $('#user_dialog');
 
-        var $dialog = $('#user_dialog');
-
-        $dialog.dialog({
-            title:'修改用户信息',
-            modal: true,
-            closed: false,
-            onClose : function() {
-                $(this).form('clear');
-            },
-            buttons:[{
-                text:'保存',
-                iconCls:'icon-ok',
-                handler:function(){
-                    $.messager.progress({title:'正在执行'});
-                    $('#user_form').form('submit',{
-                        url:'user/update',
-                        onSubmit:function(param){
-                            var isValid = $(this).form('enableValidation').form('validate');
-                            if (!isValid){
-                                $.messager.progress('close');	// hide progress bar while the form is invalid
+            $dialog.dialog({
+                title:'修改用户信息',
+                modal: true,
+                closed: false,
+                onClose : function() {
+                    $(this).form('clear');
+                },
+                buttons:[{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        $.messager.progress({title:'正在执行'});
+                        $('#user_form').form('submit',{
+                            url:'user/update',
+                            onSubmit:function(param){
+                                var isValid = $(this).form('enableValidation').form('validate');
+                                if (!isValid){
+                                    $.messager.progress('close');	// hide progress bar while the form is invalid
+                                }
+                            },
+                            success: function (data) {
+                                data = $.parseJSON(data);
+                                if(data.retnCode == '0000'){
+                                    $.messager.alert('提示',"修改成功!",'info',function(){
+                                        $dialog.dialog('close');
+                                        $('#user_dataList').datagrid('reload');
+                                    });
+                                }else{
+                                    $.messager.alert('提示',data.retnMessage,'error');
+                                }
+                                $.messager.progress('close');
                             }
-                        },
-                        success: function (data) {
-                            data = $.parseJSON(data);
-                            if(data.retnCode == '0000'){
-                                $.messager.alert('提示',"修改成功!",'info',function(){
-                                    $dialog.dialog('close');
+                        });
+                    }
+                },{
+                    text:'关闭',
+                    iconCls:'icon-no',
+                    handler:function(){
+                        $dialog.dialog('close');
+                    }
+                }]
+            });
+
+            $dialog.show();
+        });
+
+        $("#user_del_btn").click(function(){
+            var record = $('#user_dataList').datagrid('getSelected');
+            if(!record){
+                $.messager.alert('提示','请选择要删除的行!','info');
+                return false;
+            }
+
+            $.messager.confirm('提示','确定要删除该用户吗?',function(result){
+                if (result){
+                    $.ajax({
+                        type: "POST",
+                        url: "user/delete",
+                        data:{userId:record.userId},
+                        success: function(msg){
+                            if(msg.retnCode == '0000'){
+                                $.messager.alert('提示',"删除成功!",'info',function(){
                                     $('#user_dataList').datagrid('reload');
                                 });
                             }else{
-                                $.messager.alert('提示',data.retnMessage,'error');
+                                $.messager.alert('提示',msg.retnMessage,'info');
                             }
-                            $.messager.progress('close');
                         }
                     });
                 }
-            },{
-                text:'关闭',
-                iconCls:'icon-no',
-                handler:function(){
-                    $dialog.dialog('close');
+            });
+        });
+
+        $('#ss').searchbox({
+            width:300,
+            searcher:function(value,name){
+                var params = {};
+                if(name == 'name'){
+                    params = {name : value}
+                }else if(name == 'userName'){
+                    params = {userName : value}
                 }
-            }]
+
+                $('#user_dataList').datagrid('load',params);
+            },
+            menu:'#mm',
+            prompt:'请输入...'
         });
 
-        $dialog.show();
-    }
-
-    //删除
-    function userDelBtn(userId,index){
-        $.messager.confirm('提示','确定要删除该用户吗?',function(result){
-            if (result){
-                $.ajax({
-                    type: "POST",
-                    url: "user/delete",
-                    data:{userId:userId},
-                    success: function(msg){
-                        if(msg.retnCode == '0000'){
-                            $.messager.alert('提示',"删除成功!",'info',function(){
-                                $('#user_dataList').datagrid('reload');
-                            });
-                        }else{
-                            $.messager.alert('提示',msg.retnMessage,'info');
-                        }
+        //设置角色
+        $("#user_relate_role_btn").click(function(){
+            var $dialog = $('#realte_role_dialog');
+            $dialog.dialog({
+                title:'设置用户角色',
+                modal: true,
+                closed: false,
+                buttons:[{
+                    text:'保存',
+                    iconCls:'icon-save',
+                    handler:function(){
+                        $dialog.dialog('close');
                     }
-                });
-            }
+                },{
+                    text:'关闭',
+                    iconCls:'icon-no',
+                    handler:function(){
+                        $dialog.dialog('close');
+                    }
+                }]
+            });
+            $dialog.show();
         });
-    }
+
+        $('#realte_role_dataList').datagrid({
+            fit : true,
+            toolbar:relate_role_tb,
+            width:'100%',
+            height:'100%',
+            url:'/user/getUserListPage',
+            loadMsg:'数据加载中,请稍后……',
+            singleSelect: true,
+            autoRowHeight:false,
+            pagination: true,
+            nowrap:true,
+            striped: true,
+            rownumbers:true,
+            fitColumns:true,
+            showFooter:true,
+            pageSize:20,
+            pageList:[20,30,50],
+            columns:[[
+                {field:'userId',hidden:true},
+                {field:'name',title:'用户姓名',align:'center', width:120}
+            ]],
+            frozenColumns:[[
+                {field:'userName',title:'登录名',align:'center',width:120}
+            ]]
+        });
+
+    });
 
     /*]]>*/
 </script>
 
 <body>
     <table id="user_dataList"></table>
-    <div id="tb">
+    <div id="user_tb">
         <div class="tb_qry">
-            <form id="user_qry_form">
-                用户名：<input name="userName" class="easyui-textbox" style="width:120px;height:23px"/>
-                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="query_btn">查询</a>
-            </form>
+            <input id="ss"/>
+            <div id="mm" style="width:120px">
+                <div data-options="name:'userName'">登陆名</div>
+                <div data-options="name:'name'">用户姓名</div>
+            </div>
         </div>
         <div class="tb_btn">
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="create_btn" >添加</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="user_create_btn" shiro:hasPermission="user/manager">添加</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="user_update_btn" shiro:hasPermission="user/manager">修改</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="user_del_btn" shiro:hasPermission="user/manager">删除</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="user_relate_role_btn" shiro:hasPermission="user/manager">关联角色</a>
         </div>
     </div>
 
-    <div id="user_dialog" style="display:none;width:400px;padding:15px 40px">
+    <div id="user_dialog" style="display:none;width:400px;height:450px;padding:15px 40px">
         <form id="user_form" method="post">
             <div style="margin-bottom:10px">
                 <div>用户名:</div>
@@ -252,6 +322,16 @@
                 </select>
             </div>
             <div style="margin-bottom:10px">
+                <div>是否管理员:</div>
+                <select id="user_lock" name="isLock"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
+                </select>
+            </div>
+            <div style="margin-bottom:10px">
+                <div>是否锁定:</div>
+                <select id="user_admin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
+                </select>
+            </div>
+            <div style="margin-bottom:10px">
                 <div>Email:</div>
                 <input name="email" class="easyui-textbox" data-options="prompt:'请输入Email...',validType:'email'" style="width:100%;height:32px"/>
             </div>
@@ -264,6 +344,14 @@
                 <input name="remark" class="easyui-textbox" style="width:100%;height:32px"/>
             </div>
         </form>
+    </div>
+
+    <div id="realte_role_dialog" style="display:none;width:800px;height:450px">
+        <table id="realte_role_dataList"></table>
+        <div id="relate_role_tb">
+            <div class="tb_qry">
+            </div>
+        </div>
     </div>
 
 </body>

@@ -5,15 +5,13 @@ import java.util.Date;
 /**
  * Created by wow on 2017/6/28.
  */
-public class McsCode {
+public class McsCodeVo {
+
     private String codeType;
     private String codeId;
     private String codeName;
-    private String remark;
     private String priority;
     private String isEnable;
-    private Date updatetime;
-    private Date createtime;
 
     public String getCodeType() {
         return codeType;
@@ -39,14 +37,6 @@ public class McsCode {
         this.codeName = codeName;
     }
 
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     public String getPriority() {
         return priority;
     }
@@ -62,5 +52,4 @@ public class McsCode {
     public void setIsEnable(String isEnable) {
         this.isEnable = isEnable;
     }
-
 }
