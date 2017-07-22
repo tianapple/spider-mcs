@@ -35,9 +35,10 @@ if [ ! -d "$LOGS_DIR" ]; then
     mkdir "$LOGS_DIR"
 fi
 
-#if [ ! -d "$DEPLOY_Module_DIR" ]; then
-#    mkdir "$DEPLOY_Module_DIR"
-#fi
+Module_DIR=$DEPLOY_DIR/lib_module
+if [ ! -d "$Module_DIR" ]; then
+    mkdir "$Module_DIR"
+fi
 
 #STDOUT_FILE=$LOGS_DIR/stdout.log
 
