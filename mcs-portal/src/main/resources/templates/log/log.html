@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="head">
+    <title>集成播控平台V4</title>
+</head>
+
 <script type="text/javascript">
     /*<![CDATA[*/
     $(document).ready(function() {
@@ -66,40 +73,43 @@
     /*]]>*/
 </script>
 
-<div class="easyui-layout" data-options="fit:true,border:false">
-    <div data-options="region:'center',fit:true,border:false">
-        <table id="log_dataList"></table>
+<body>
+    <div class="easyui-layout" data-options="fit:true,border:false">
+        <div data-options="region:'center',fit:true,border:false">
+            <table id="log_dataList"></table>
+        </div>
     </div>
-</div>
 
-<div id="log_tb" class="toolbar" style="display: none;">
-    <div class="tb_qry">
-        <form id="log_qry_form">
-            用户id:<input name="username" class="easyui-textbox" style="width:120px;height:23px"/>
-            状态:<input name="status" class="easyui-textbox" style="width:120px;height:23px"/>
-            请求路径:<input name="path" class="easyui-textbox" style="width:200px;height:23px"/>
-            创建时间:<input class="easyui-datetimebox" name="startTime" style="width:150px" readonly="readonly"/>至<input class="easyui-datetimebox" name="endTime" style="width:150px"/>
-            <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="log_query_btn">查询</a>
+    <div id="log_tb" class="toolbar" style="display: none;">
+        <div class="tb_qry">
+            <form id="log_qry_form">
+                用户id:<input name="username" class="easyui-textbox" style="width:120px;height:23px"/>
+                状态:<input name="status" class="easyui-textbox" style="width:120px;height:23px"/>
+                请求路径:<input name="path" class="easyui-textbox" style="width:200px;height:23px"/>
+                创建时间:<input class="easyui-datetimebox" name="startTime" style="width:150px" readonly="readonly"/>至<input class="easyui-datetimebox" name="endTime" style="width:150px"/>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="log_query_btn">查询</a>
+            </form>
+        </div>
+        <div class="tb_btn">
+            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="log_view_btn">查看</a>
+        </div>
+    </div>
+
+    <div id="log_dialog" style="display:none;width:400px;height:450px;padding:15px 40px">
+        <form id="log_form" method="post">
+            <div style="margin-bottom:10px">
+                <div>请求路径:</div>
+                <input name="path" data-options="multiline:true"  class="easyui-textbox" style="width:100%;height:50px"/>
+            </div>
+            <div style="margin-bottom:10px">
+                <div>请求参数:</div>
+                <input name="param" data-options="multiline:true"  class="easyui-textbox" style="width:100%;height:100px"/>
+            </div>
+            <div style="margin-bottom:10px">
+                <div>提示信息:</div>
+                <input name="remark" data-options="multiline:true"  class="easyui-textbox" style="width:100%;height:100px"/>
+            </div>
         </form>
     </div>
-    <div class="tb_btn">
-        <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="log_view_btn">查看</a>
-    </div>
-</div>
-
-<div id="log_dialog" style="display:none;width:400px;height:450px;padding:15px 40px">
-    <form id="log_form" method="post">
-        <div style="margin-bottom:10px">
-            <div>请求路径:</div>
-            <input name="path" data-options="multiline:true"  class="easyui-textbox" style="width:100%;height:50px"/>
-        </div>
-        <div style="margin-bottom:10px">
-            <div>请求参数:</div>
-            <input name="param" data-options="multiline:true"  class="easyui-textbox" style="width:100%;height:100px"/>
-        </div>
-        <div style="margin-bottom:10px">
-            <div>提示信息:</div>
-            <input name="remark" data-options="multiline:true"  class="easyui-textbox" style="width:100%;height:100px"/>
-        </div>
-    </form>
-</div>
+</body>
+</html>

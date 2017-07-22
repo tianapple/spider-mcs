@@ -12,7 +12,6 @@ public class Mcs_menu {
     private String path;
     private String remark;
     private int priority;
-    private String openModel;
 
     /**
      *  是否启用，1：启用，0：不启用
@@ -111,13 +110,5 @@ public class Mcs_menu {
 
     public void setChildMenus(List<Mcs_menu> childMenus) {
         this.childMenus = childMenus;
-    }
-
-    public String getOpenModel() {
-        return openModel;
-    }
-
-    public void setOpenModel(String openModel) {
-        this.openModel = openModel;
     }
 }

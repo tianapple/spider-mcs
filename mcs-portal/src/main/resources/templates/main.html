@@ -41,10 +41,7 @@
                                     iconCls : node.iconCls
                                 };
                                 var url = node.attributes.url;
-                                if (node.openModel == 'ajax') {
-                                    opts.href = url;
-                                    addTab(opts);
-                                } else if (url) {
+                                if (url) {
                                     addIframe(node.text,url);
                                 }
                             }
@@ -53,15 +50,6 @@
                 });
             }
         });
-
-        function addTab(opts) {
-            var t = $('#tabs');
-            if (t.tabs('exists', opts.title)) {
-                t.tabs('select', opts.title);
-            } else {
-                t.tabs('add', opts);
-            }
-        }
 
         function addIframe(title, url) {
             var t = $('#tabs');
