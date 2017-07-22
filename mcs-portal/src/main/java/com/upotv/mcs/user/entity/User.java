@@ -1,6 +1,10 @@
 package com.upotv.mcs.user.entity;
 
+import com.upotv.mcs.util.DateUtil;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Created by wow on 2017/6/22.
@@ -17,8 +21,8 @@ public class User {
     private int isAdmin;
     private int isLock;
     private String remark;
-    private String updateTime;
-    private String createTime;
+    private Date updateTime;
+    private Date createTime;
 
     public int getUserId() {
         return userId;
@@ -101,18 +105,19 @@ public class User {
     }
 
     public String getUpdateTime() {
-        return updateTime;
+        return DateUtil.getDateTimeFormat(updateTime);
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 
     public String getCreateTime() {
-        return createTime;
+        return DateUtil.getDateTimeFormat(createTime);
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
 }

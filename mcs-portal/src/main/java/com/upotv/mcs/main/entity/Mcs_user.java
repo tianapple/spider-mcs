@@ -11,7 +11,19 @@ public class Mcs_user {
     private String email;
     private String phone;
     private int gender;
+
+    /**
+     * 是否管理员
+     * 1：是
+     * 0：否
+     */
     private boolean isAdmin;
+
+    /**
+     * 是否锁定
+     * 1：是
+     * 0：否
+     */
     private boolean isLock;
 
     public int getUserId() {

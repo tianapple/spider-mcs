@@ -1,5 +1,6 @@
 package com.upotv.mcs.exception;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +10,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * Created by wow on 2017/6/22.
@@ -21,8 +25,8 @@ public class McsExceptionHandler {
 
 
     @ResponseBody
-    @ExceptionHandler(value = RuntimeException.class)
-    public ResultMessage exceptionHandler(Exception ex, HttpServletResponse response) {
+    @ExceptionHandler(value = Exception.class)
+    public ResultMessage exceptionHandler(HttpServletRequest request, HttpServletResponse response,Exception ex) {
 
         ResultMessage resp = new ResultMessage();
 
@@ -39,6 +43,12 @@ public class McsExceptionHandler {
             resp.setRetnCode("10000");
             resp.setRetnMessage("系统错误,请联系管理员");
         }
+
+        StringWriter sw = new StringWriter();
+        ex.printStackTrace(new PrintWriter(sw, true));
+        resp.setErrorStack(sw.toString());
+
+        request.setAttribute("exception", JSON.toJSONString(resp));
 
         //记录异常日志
         LOGGER.error(ex.getMessage(), ex);

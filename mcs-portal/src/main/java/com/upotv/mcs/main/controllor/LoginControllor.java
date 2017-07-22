@@ -5,6 +5,7 @@ import com.upotv.mcs.main.entity.Mcs_user;
 import com.upotv.mcs.main.entity.TreeData;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,15 @@ public class LoginControllor {
     @Autowired
     private LoginService loginService;
 
+    @RequestMapping("/")
+    public String index(Model model) {
+        if (isRelogin()) {
+            return "main";
+        } else {
+            return "login";
+        }
+    }
+
     /**
      * 用户登陆
      *
@@ -42,20 +53,19 @@ public class LoginControllor {
      * @return
      */
     @RequestMapping("/login") //url
-    public void dologin(HttpServletResponse response, Mcs_user user, Model model) throws IOException {
+    public void dologin(HttpServletResponse response,HttpSession session, Mcs_user user, Model model) throws IOException {
         String info = loginUser(user);
-        if (!"success".equals(info)) {
-            model.addAttribute("failMsg", info);
-            response.sendRedirect("/");
-        } else {
-            model.addAttribute("successMsg", "登陆成功！");//返回到页面说夹带的参数
-            model.addAttribute("name", user.getUserName());
+        session.setAttribute("loginMsg",info);
+
+        if ("success".equals(info)) {
             response.sendRedirect("/main");
+        } else {
+            response.sendRedirect("/");
         }
     }
 
     private String loginUser(Mcs_user user) {
-        if (isRelogin(user)) {
+        if (isRelogin()) {
             return "success"; // 如果已经登陆，无需重新登录
         }
         return shiroLogin(user); // 调用shiro的登陆验证
@@ -78,6 +88,8 @@ public class LoginControllor {
             return "用户不存在或者密码错误！";
         } catch (IncorrectCredentialsException ex) {
             return "用户不存在或者密码错误！";
+        } catch (LockedAccountException ex) {
+            return "账号被锁定！";
         } catch (Exception ex) {
             ex.printStackTrace();
             return "内部错误，请重试！";
@@ -88,10 +100,9 @@ public class LoginControllor {
     /**
      * 验证是否登陆
      *
-     * @param user
      * @return
      */
-    private boolean isRelogin(Mcs_user user) {
+    private boolean isRelogin() {
         Subject us = SecurityUtils.getSubject();
         if (us.isAuthenticated()) {
             return true; // 参数未改变，无需重新登录，默认为已经登录成功
@@ -116,11 +127,12 @@ public class LoginControllor {
                 ex.printStackTrace();
             }
         }
-        response.sendRedirect("/login");
+        response.sendRedirect("/");
     }
 
     /**
      * 获得根菜单
+     *
      * @return
      */
     @ResponseBody
@@ -146,56 +158,6 @@ public class LoginControllor {
     }
 
 
-
-    /**
-     * 获得菜单
-     * @return
-
-    @ResponseBody
-    @RequestMapping(value = "/getMenu")
-    public List<TreeData> getMenuList() {
-        try {
-            Mcs_user user = getUser();
-            return getMenuList(user, 0);
-        } catch (Exception e) {
-            LOGGER.warn("", e);
-            return new ArrayList<>();
-        }
-    }
-     */
-    /**
-     * 获得菜单列表
-     * @param user
-     * @param parentId
-     * @return
-
-    private List<TreeData> getMenuList(Mcs_user user, int parentId) {
-        //获取一级菜单
-        List<Mcs_menu> menuList = loginService.getMenuList(user.getUserId(), parentId);
-        if (user.isAdmin()) {
-            List<Mcs_menu> menuAdminList = loginService.getAdminMenuList(parentId);
-            if (menuAdminList.size() > 0) {
-                menuList.addAll(menuAdminList);
-            }
-        }
-
-        List<TreeData> trees = new ArrayList<>();
-
-        //获取子菜单
-        if (menuList != null && menuList.size() > 0) {
-            menuList = menuList.stream().distinct().collect(Collectors.toList()); //排除重复
-            for (Mcs_menu mcsMenu : menuList) {
-                TreeData treeData = TreeData.parse(mcsMenu);
-                trees.add(treeData);
-                List<TreeData> children = getMenuList(user, mcsMenu.getMenuId());
-                if (children.size() != 0) {
-                    treeData.setChildren(children);
-                }
-            }
-        }
-        return trees;
-    }
-     */
     private Mcs_user getUser() {
         Subject subject = SecurityUtils.getSubject();
         Object user = subject.getSession().getAttribute("user");
@@ -204,25 +166,4 @@ public class LoginControllor {
         }
         return null;
     }
-
-    /*
-    @RequestMapping(value = "/login.do")
-    public ModelAndView login(String userName, String password, HttpServletRequest request) {
-        UsernamePasswordToken token = new UsernamePasswordToken(userName, password);
-        ModelAndView model = new ModelAndView();
-        try {
-            Subject subject = SecurityUtils.getSubject();
-            subject.login(token);
-            model.setViewName("index");
-            model.getModel().put("msg", "ok");
-        } catch (Exception e) {
-            LOGGER.warn("{} login error: {}", userName, e);
-            String loginUrl = String.format("redirect:%s://%s:%s%s/login.html"
-                    , request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath());
-            model.setViewName(loginUrl);
-            model.getModel().put("msg", e.getMessage());
-        }
-        return model;
-    }
-    */
 }
