@@ -12,6 +12,7 @@ import java.util.List;
 public class TreeData {
     private int id;
     private String text;
+    private String openModel;
     private String state = "closed";
     private TreeAttribute attributes;
     private List<TreeData> children;
@@ -20,6 +21,7 @@ public class TreeData {
         TreeData data = new TreeData();
         data.setId(mcsMenu.getMenuId());
         data.setText(mcsMenu.getName());
+        data.setOpenModel(mcsMenu.getOpenModel());
         if (!StringUtils.isNullOrEmpty(mcsMenu.getPath())) {
             TreeAttribute attribute = new TreeAttribute();
             attribute.setUrl(mcsMenu.getPath());
@@ -66,5 +68,13 @@ public class TreeData {
 
     public void setChildren(List<TreeData> children) {
         this.children = children;
+    }
+
+    public String getOpenModel() {
+        return openModel;
+    }
+
+    public void setOpenModel(String openModel) {
+        this.openModel = openModel;
     }
 }

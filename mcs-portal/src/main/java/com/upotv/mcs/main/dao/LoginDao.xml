@@ -5,6 +5,7 @@
     <resultMap id="MenuMap" type="com.upotv.mcs.main.entity.Mcs_menu">
         <result property="menuId" column="menu_id"/>
         <result property="parentId" column="parent_id"/>
+        <result property="openModel" column="open_model"/>
         <result property="isEnable" column="is_enable"/>
         <result property="isAdmin" column="is_admin"/>
     </resultMap>
