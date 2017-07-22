@@ -15,7 +15,7 @@
     </resultMap>
 
     <select id="getLogListPage" resultMap="LogMap">
-        SELECT * FROM mcs_log <include refid="logListPageWhere"/>
+        SELECT * FROM mcs_log <include refid="logListPageWhere"/> order by logid DESC
     </select>
 
     <sql id="logListPageWhere">
