@@ -1,8 +1,7 @@
 package com.upotv.mcs.user.dao;
 
 import com.upotv.mcs.core.McsBaseDao;
-import com.upotv.mcs.user.entity.User;
-import com.upotv.mcs.user.entity.UserVo;
+import com.upotv.mcs.user.entity.*;
 
 import java.util.List;
 
@@ -19,4 +18,10 @@ public interface UserDao extends McsBaseDao {
     public int insert(UserVo vo);
 
     public int update(UserVo vo);
+
+    public List<UserRole> getUserRoleListPage(UserRoleQryVo vo);
+
+    public int insertUserRole(UserRoleVo vo);
+
+    public int delUserRole(UserRoleVo vo);
 }

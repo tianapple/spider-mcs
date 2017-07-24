@@ -1,4 +1,4 @@
-package com.upotv.mcs.main.controllor;
+package com.upotv.mcs.main.controller;
 
 import com.upotv.mcs.main.entity.Mcs_menu;
 import com.upotv.mcs.main.entity.Mcs_user;
@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
  * Created by tianapple on 2017/5/10.
  */
 @Controller
-public class LoginControllor {
-    private static Logger LOGGER = LoggerFactory.getLogger(LoginControllor.class);
+public class LoginController {
+    private static Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
     private LoginService loginService;
