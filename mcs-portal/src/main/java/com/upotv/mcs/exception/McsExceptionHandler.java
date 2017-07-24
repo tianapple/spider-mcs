@@ -26,7 +26,7 @@ public class McsExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
-    public ResultMessage exceptionHandler(HttpServletRequest request, HttpServletResponse response,Exception ex) {
+    public ResultMessage exceptionHandler(HttpServletRequest request, HttpServletResponse response, Exception ex) {
 
         ResultMessage resp = new ResultMessage();
 
@@ -36,11 +36,11 @@ public class McsExceptionHandler {
         } else if (ex instanceof AuthorizationException) {
             resp.setRetnCode("20001");
             resp.setRetnMessage("没有权限，请联系管理员授权");
-        } else if (ex instanceof ArgumentNotValidException) {
+        } else if (ex instanceof ParamValidException) {
             resp.setRetnCode("30001");
             resp.setRetnMessage(ex.getMessage());
         } else {
-            resp.setRetnCode("10000");
+            resp.setRetnCode(resp.getRetnCode());
             resp.setRetnMessage("系统错误,请联系管理员");
         }
 
