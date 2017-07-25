@@ -42,7 +42,7 @@ $.ajaxSetup({
     complete: function (XMLHttpRequest, textStatus) {
         if (XMLHttpRequest.getResponseHeader("sessionstatus") == 'timeout') {
             var top = getTopWinow();
-            $.messager.alert('提示',"由于您长时间没有操作, session已过期, 请重新登录...",'info',function(){
+            $.messager.alert('提示',"由于您长时间没有操作,请重新登录...",'info',function(){
                 top.window.location.href = '/';
             });
         }

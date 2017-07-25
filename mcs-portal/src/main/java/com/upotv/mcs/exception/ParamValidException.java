@@ -23,11 +23,8 @@ public class ParamValidException extends RuntimeException {
     public String getMessage() {
         List<Map> list = new ArrayList<>();
         for (ObjectError error : fieldErrors) {
-            FieldError e = (FieldError) error;
-            String paramName = e.getField();
-            String msg = e.getDefaultMessage();
+            String msg = error.getDefaultMessage();
             Map<String, String> param = new HashMap<>();
-            param.put("paramName", paramName);
             param.put("paramMsg", msg);
             list.add(param);
         }
