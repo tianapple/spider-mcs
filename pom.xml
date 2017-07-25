@@ -97,6 +97,13 @@
                 <artifactId>pagehelper</artifactId>
                 <version>4.1.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.github.sd4324530</groupId>
+                <artifactId>fastexcel</artifactId>
+                <version>0.0.4</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
