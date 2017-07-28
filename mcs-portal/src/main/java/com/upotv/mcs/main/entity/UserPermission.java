@@ -13,7 +13,7 @@ import java.util.List;
 public class UserPermission {
     private String name;
     private String path;
-    private String priv_list;
+    private String priv;
 
     public String getName() {
         return name;
@@ -31,24 +31,20 @@ public class UserPermission {
         this.path = path;
     }
 
-    public String getPriv_list() {
-        return priv_list;
+    public String getPriv() {
+        return priv;
     }
 
-    public void setPriv_list(String priv_list) {
-        this.priv_list = priv_list;
+    public void setPriv(String priv) {
+        this.priv = priv;
     }
 
     public List<String> getPermissionList() {
         List<String> permissionList = new ArrayList<>();
-        if (StringUtils.isNullOrEmpty(priv_list) || StringUtils.isNullOrEmpty(path)) {
+        if (StringUtils.isNullOrEmpty(priv) || StringUtils.isNullOrEmpty(path)) {
             return permissionList;
         }
-
-        String[] strs = priv_list.split(",");
-        for (String str : strs) {
-            permissionList.add(path + "/" + str);
-        }
+        permissionList.add(path + "/" + priv);
 
         return permissionList;
     }
