@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
 <head th:include="head"></head>
-
 <script type="text/javascript">
     $(function(){
         $('#role_dataList').datagrid({
@@ -132,7 +130,6 @@
 
         //删除用户
         $("#delete_btn").click(function(){
-            alert($('#role_dataList').datagrid('getSelected').roleid);
             $.messager.confirm('提示','确定要删除该角色吗?',function(result){
                 if (result){
                     $.ajax({
@@ -151,7 +148,7 @@
                     });
                 }
             });
-        });
+        })
     });
 </script>
 
@@ -185,5 +182,4 @@
         </form>
     </div>
 </body>
-
 </html>

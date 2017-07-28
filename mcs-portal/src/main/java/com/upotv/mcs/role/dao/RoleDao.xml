@@ -55,4 +55,21 @@
         DELETE  from mcs_role where role_id = #{roleid}
     </delete>
 
+    <insert id="insertPermission" parameterType="com.upotv.mcs.role.entity.PermissionVo">
+        insert into mcs_permission
+          (menu_id,role_id,priv,is_half,create_time)
+        values
+          (#{menu_id},#{role_id},#{priv},#{is_half},now())
+    </insert>
+
+    <delete id="deletePermission">
+        DELETE  from mcs_permission where role_id = #{role_id}
+    </delete>
+
+    <select id="getPermissionList" resultType="com.upotv.mcs.role.entity.PermissionVo">
+        select menu_id,
+          role_id,
+          priv
+        from mcs_permission where role_id = #{role_id} and is_half = 1
+    </select>
 </mapper>
