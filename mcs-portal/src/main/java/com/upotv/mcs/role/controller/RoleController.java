@@ -3,7 +3,6 @@ package com.upotv.mcs.role.controller;
 import com.github.pagehelper.Page;
 import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
-import com.upotv.mcs.exception.ArgumentNotValidException;
 import com.upotv.mcs.role.entity.PermissionVo;
 import com.upotv.mcs.role.entity.Role;
 import com.upotv.mcs.role.entity.RoleVo;
@@ -60,18 +59,12 @@ public class RoleController {
     @ResponseBody
     @RequestMapping("/insert")
     public ResultMessage insert(@Validated RoleVo vo, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ArgumentNotValidException(result);
-        }
         return roleService.insert(vo);
     }
 
     @ResponseBody
     @RequestMapping("/update")
     public ResultMessage update(@Validated RoleVo vo, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ArgumentNotValidException(result);
-        }
         return roleService.update(vo);
     }
 

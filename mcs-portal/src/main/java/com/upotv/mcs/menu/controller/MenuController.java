@@ -1,7 +1,6 @@
 package com.upotv.mcs.menu.controller;
 
 import com.upotv.mcs.core.ResultMessage;
-import com.upotv.mcs.exception.ArgumentNotValidException;
 import com.upotv.mcs.menu.entity.Menu;
 import com.upotv.mcs.menu.entity.MenuPrivVo;
 import com.upotv.mcs.menu.entity.MenuVo;
@@ -45,18 +44,12 @@ public class MenuController {
     @ResponseBody
     @RequestMapping("/insert")
     public ResultMessage insert(@Validated MenuVo vo, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ArgumentNotValidException(result);
-        }
         return menuService.insert(vo);
     }
 
     @ResponseBody
     @RequestMapping("/update")
     public ResultMessage update(@Validated MenuVo vo, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ArgumentNotValidException(result);
-        }
         return menuService.update(vo);
     }
 
@@ -70,9 +63,6 @@ public class MenuController {
     @ResponseBody
     @RequestMapping("/insertMenuPriv")
     public ResultMessage delete(@Validated MenuPrivVo vo, BindingResult result) {
-        if (result.hasErrors()) {
-            throw new ArgumentNotValidException(result);
-        }
         return menuService.insertMenuPriv(vo);
     }
 

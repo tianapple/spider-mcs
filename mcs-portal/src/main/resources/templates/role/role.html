@@ -2,13 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:include="head"></head>
 <script type="text/javascript">
+    /*<![CDATA[*/
     $(function(){
         $('#role_dataList').datagrid({
             fit : true,
             toolbar:'#tb',
             width:'100%',
             height:'100%',
-            url:'/role/getRoleListPage',
+            url:'role/getRoleListPage',
             loadMsg:'数据加载中,请稍后……',
             singleSelect: true,
             autoRowHeight:false,
@@ -22,10 +23,10 @@
             pageList:[20,30,50],
             columns:[[
                 {field:'roleid',hidden:true},
-                {field:'name',title:'角色名称', width:fixWidth(0.2)},
-                {field:'remark',title:'备注', width:fixWidth(0.3)},
-                {field:'updateTime',title:'更新时间', width:fixWidth(0.2)},
-                {field:'createTime',title:'创建时间', width:fixWidth(0.2)}
+                {field:'name',title:'角色名称'},
+                {field:'remark',title:'备注'},
+                {field:'updateTime',title:'更新时间'},
+                {field:'createTime',title:'创建时间'}
             ]]
         });
 
@@ -150,6 +151,7 @@
             });
         })
     });
+    /*]]>*/
 </script>
 
 <body>
