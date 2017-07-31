@@ -60,11 +60,12 @@ public abstract class BaseController {
     /**
      * 下载文件
      */
-    protected ResponseEntity<Resource> download(String fileName,List<T> list) throws Exception {
+    protected <F> ResponseEntity<Resource> downloadXls(String fileName, List<F> list) throws Exception {
         String exportPath = exportXls + "/" + fileName + new Date().getTime() + ".xls";
         FastExcel fastExcel = new FastExcel(exportPath);
         fastExcel.createExcel(list);
-        return download(new File(exportPath), fileName);
+        File file = new File(exportPath);
+        return download(file, file.getName());
     }
 
     /**
