@@ -1,8 +1,12 @@
 package com.upotv.mcs.core;
 
+import com.github.sd4324530.fastexcel.FastExcel;
 import com.upotv.mcs.util.StringEscapeEditor;
 import org.apache.log4j.LogManager;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.SecurityUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -18,14 +22,19 @@ import org.springframework.web.util.UriUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wow on 2017/7/22.
  */
 public abstract class BaseController {
+
+    @Value("${exportXls}")
+    private String exportXls;
 
     @InitBinder
     public void initBinder(ServletRequestDataBinder binder) {
@@ -41,6 +50,7 @@ public abstract class BaseController {
 
     /**
      * redirect跳转
+     *
      * @param url 目标url
      */
     protected String redirect(String url) {
@@ -49,16 +59,18 @@ public abstract class BaseController {
 
     /**
      * 下载文件
-     * @param file 文件
      */
-    protected ResponseEntity<Resource> download(File file) {
-        String fileName = file.getName();
-        return download(file, fileName);
+    protected ResponseEntity<Resource> download(String fileName,List<T> list) throws Exception {
+        String exportPath = exportXls + "/" + fileName + new Date().getTime() + ".xls";
+        FastExcel fastExcel = new FastExcel(exportPath);
+        fastExcel.createExcel(list);
+        return download(new File(exportPath), fileName);
     }
 
     /**
      * 下载
-     * @param file 文件
+     *
+     * @param file     文件
      * @param fileName 生成的文件名
      * @return {ResponseEntity}
      */
