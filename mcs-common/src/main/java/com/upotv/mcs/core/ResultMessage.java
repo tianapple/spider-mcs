@@ -50,4 +50,8 @@ public class ResultMessage {
     public void setErrorStack(String errorStack) {
         this.errorStack = errorStack;
     }
+
+    public String getErrorStack() {
+        return errorStack;
+    }
 }

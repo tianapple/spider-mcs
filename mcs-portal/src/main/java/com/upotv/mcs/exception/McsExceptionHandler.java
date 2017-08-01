@@ -40,7 +40,7 @@ public class McsExceptionHandler {
             resp.setRetnCode("30001");
             resp.setRetnMessage(ex.getMessage());
         } else {
-            resp.setRetnCode(resp.getRetnCode());
+            resp.setRetnCode("9999");
             resp.setRetnMessage("系统错误,请联系管理员");
         }
 
@@ -48,7 +48,7 @@ public class McsExceptionHandler {
         ex.printStackTrace(new PrintWriter(sw, true));
         resp.setErrorStack(sw.toString());
 
-        request.setAttribute("exception", JSON.toJSONString(resp));
+        request.setAttribute("exception", resp);
 
         //记录异常日志
         LOGGER.error(ex.getMessage(), ex);

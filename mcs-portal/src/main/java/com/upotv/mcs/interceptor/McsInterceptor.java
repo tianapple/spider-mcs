@@ -2,6 +2,7 @@ package com.upotv.mcs.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.main.entity.Mcs_user;
 import com.upotv.mcs.operlog.entity.Log;
 import com.upotv.mcs.operlog.service.LogService;
@@ -86,9 +87,9 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         logEntity.setDuration(consumeTime);
         logEntity.setStatus(status);
 
-        Object exception = request.getAttribute("exception");
+        ResultMessage exception = (ResultMessage)request.getAttribute("exception");
         if (exception != null) {
-            logEntity.setRemark(exception.toString());
+            logEntity.setRemark(exception.getErrorStack());
             logEntity.setStatus(500);
         }
         logService.insert(logEntity);
