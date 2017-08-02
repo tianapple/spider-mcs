@@ -2,6 +2,7 @@ package com.upotv.mcs.interceptor;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.main.entity.Mcs_user;
 import com.upotv.mcs.operlog.entity.Log;
 import com.upotv.mcs.operlog.service.LogService;
@@ -29,6 +30,7 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(McsInterceptor.class);
 
     private static final String LOGGER_ENTITY = "logger_entity";
+    private static final String BASE_PATH = "basePath";
 
     private NamedThreadLocal<Long> startTimeThreadLocal = new NamedThreadLocal<Long>("StopWatch-StartTime");
 
@@ -45,25 +47,26 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         //请求方法
         String method = request.getMethod();
         //获取请求参数信息
-        String paramData = JSON.toJSONString(request.getParameterMap(), SerializerFeature.DisableCircularReferenceDetect,SerializerFeature.WriteMapNullValue);
+        String paramData = JSON.toJSONString(request.getParameterMap(), SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.WriteMapNullValue);
         //客户端IP
         logEntity.setIp(request.getRemoteAddr());
         //请求参数内容json字符串
         logEntity.setParam(paramData);
 
         logEntity.setPath(uri);
-
-        Mcs_user user =  (Mcs_user)request.getSession().getAttribute("user");
-
+        Mcs_user user = (Mcs_user) request.getSession().getAttribute("user");
         logEntity.setUsername(user.getUserName());
-
-        request.setAttribute(LOGGER_ENTITY,logEntity);
 
         long beginTime = System.currentTimeMillis();
         startTimeThreadLocal.set(beginTime);//线程绑定变量（该数据只有当前请求的线程可见）
 
-        LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
+        String path = request.getContextPath();
+        String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 
+        request.setAttribute(BASE_PATH, basePath);
+        request.setAttribute(LOGGER_ENTITY, logEntity);
+
+        LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
         return super.preHandle(request, response, handler);
     }
 
@@ -80,13 +83,14 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
 
         int status = response.getStatus();
 
-        Log logEntity = (Log)request.getAttribute(LOGGER_ENTITY);
+        Log logEntity = (Log) request.getAttribute(LOGGER_ENTITY);
         logEntity.setDuration(consumeTime);
         logEntity.setStatus(status);
 
-        Object exception = request.getAttribute("exception");
-        if(exception != null){
-            logEntity.setRemark(exception.toString());
+        ResultMessage exception = (ResultMessage)request.getAttribute("exception");
+        if (exception != null) {
+            logEntity.setRemark(exception.getErrorStack());
+            logEntity.setStatus(500);
         }
         logService.insert(logEntity);
 

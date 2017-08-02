@@ -3,13 +3,14 @@ package com.upotv.mcs.user.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.upotv.mcs.user.dao.UserDao;
-import com.upotv.mcs.user.entity.User;
-import com.upotv.mcs.user.entity.UserVo;
+import com.upotv.mcs.user.entity.*;
 import com.upotv.mcs.user.service.UserService;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import com.upotv.mcs.core.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by wow on 2017/6/22.
@@ -19,6 +20,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
 
     @Override
     public Page<User> getUserListPage(UserVo vo) {
@@ -54,6 +56,24 @@ public class UserServiceImpl implements UserService {
 
         int cnt = userDao.update(vo);
         return  new ResultMessage(ResultMessage.SUCCESS,cnt+"");
+    }
+
+    @Override
+    public Page<UserRole> getUserRoleListPage(UserRoleQryVo vo) {
+        PageHelper.startPage(vo.getPage(), vo.getRows());
+        return (Page<UserRole>)userDao.getUserRoleListPage(vo);
+    }
+
+    @Override
+    public int relateRole(UserRoleVo vo) {
+        if(vo.getRoles().size() == 0){
+            return 0;
+        }
+        if("add".equals(vo.getAction())){
+            return userDao.insertUserRole(vo);
+        }else{
+            return userDao.delUserRole(vo);
+        }
     }
 
 

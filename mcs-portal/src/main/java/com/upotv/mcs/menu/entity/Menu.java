@@ -13,9 +13,12 @@ public class Menu {
     private String remark;
     private String priority;
     private int isEnable;
+    private String isEnableName;
     private int isAdmin;
-    private Timestamp updatetime;
-    private Timestamp createtime;
+    private String updatetime;
+    private String createtime;
+    private String priv_id;
+    private String priv_name;
 
     public int getMenuid() {
         return menuid;
@@ -81,19 +84,43 @@ public class Menu {
         this.isAdmin = isAdmin;
     }
 
-    public Timestamp getUpdatetime() {
+    public String getUpdatetime() {
         return updatetime;
     }
 
-    public void setUpdatetime(Timestamp updatetime) {
+    public void setUpdatetime(String updatetime) {
         this.updatetime = updatetime;
     }
 
-    public Timestamp getCreatetime() {
+    public String getCreatetime() {
         return createtime;
     }
 
-    public void setCreatetime(Timestamp createtime) {
+    public void setCreatetime(String createtime) {
         this.createtime = createtime;
+    }
+
+    public String getIsEnableName() {
+        return isEnableName;
+    }
+
+    public void setIsEnableName(String isEnableName) {
+        this.isEnableName = isEnableName;
+    }
+
+    public String getPriv_id() {
+        return priv_id;
+    }
+
+    public void setPriv_id(String priv_id) {
+        this.priv_id = priv_id;
+    }
+
+    public String getPriv_name() {
+        return priv_name;
+    }
+
+    public void setPriv_name(String priv_name) {
+        this.priv_name = priv_name;
     }
 }

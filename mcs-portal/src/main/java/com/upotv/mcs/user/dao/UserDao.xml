@@ -53,11 +53,40 @@
         where  user_name = #{userName}
     </update>
 
-
-
     <delete id="delete" parameterType="int">
         DELETE  from mcs_user where user_id = #{userId}
     </delete>
 
+    <resultMap id="UserRoleMap" type="com.upotv.mcs.user.entity.UserRole">
+        <result property="userId" column="user_id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="state" column="state"/>
+        <result property="createtime" column="create_time"/>
+    </resultMap>
 
+    <select id="getUserRoleListPage" resultMap="UserRoleMap">
+        SELECT  ur.user_id,role.`role_id`,role.`name`,role.`remark`,role.`create_time` ,IFNULL(ur.`role_id`,-1)state  FROM mcs_role role
+            LEFT JOIN (SELECT user_id,role_id FROM mcs_user_role WHERE user_id = #{userId})ur ON role.role_id = ur.role_id
+        order by role.create_time
+    </select>
+
+    <insert id="insertUserRole" parameterType="com.upotv.mcs.user.entity.UserRoleVo">
+        REPLACE into mcs_user_role (user_id,role_id,create_time) values
+        <foreach collection="roles" item="item" index="index"  open="" separator="," close="">
+        (
+          #{userId},
+          #{item},
+          now()
+        )
+        </foreach>
+    </insert>
+
+    <delete id="delUserRole">
+        delete from mcs_user_role where user_id = #{userId} and role_id in
+        <foreach collection="roles" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

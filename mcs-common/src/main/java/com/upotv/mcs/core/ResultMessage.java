@@ -7,20 +7,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class ResultMessage {
 
+    //成功
     public static final String SUCCESS = "0000";
+
+    //失败
     public static final String FAILE = "9999";
 
     // 状态码
     private String retnCode;
 
     // 错误信息
-    private String retnMessage;
+    private Object retnMessage;
 
     //错误堆栈
     @JsonIgnore
     private String errorStack;
 
     public ResultMessage() {
+    }
+
+    public ResultMessage(String retnCode, Object retnMessage) {
+        this.retnCode = retnCode;
+        this.retnMessage = retnMessage;
     }
 
     public String getRetnCode() {
@@ -31,24 +39,19 @@ public class ResultMessage {
         this.retnCode = retnCode;
     }
 
-    public String getRetnMessage() {
+    public Object getRetnMessage() {
         return retnMessage;
     }
 
-    public String getErrorStack() {
-        return errorStack;
+    public void setRetnMessage(Object retnMessage) {
+        this.retnMessage = retnMessage;
     }
 
     public void setErrorStack(String errorStack) {
         this.errorStack = errorStack;
     }
 
-    public void setRetnMessage(String retnMessage) {
-        this.retnMessage = retnMessage;
-    }
-
-    public ResultMessage(String retnCode, String retnMessage) {
-        this.retnCode = retnCode;
-        this.retnMessage = retnMessage;
+    public String getErrorStack() {
+        return errorStack;
     }
 }

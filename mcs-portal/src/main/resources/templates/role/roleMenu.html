@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" type="text/css" th:href="@{/js/jquery-ztree/themes/zTreeStyle.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/js/jquery-easyui/themes/default/easyui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/js/jquery-easyui/themes/icon.css}"/>
+
+<script type="text/javascript" th:src="@{/js/jquery-ztree/jquery.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-ztree/jquery.ztree.core-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-ztree/jquery.ztree.excheck-3.5.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-easyui/jquery.easyui.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-easyui/locale/easyui-lang-zh_CN.js}"></script>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    $(function(){
+        var setting = {
+            check: {enable: true},
+            data: {simpleData: {enable: true}}
+        }
+        $.ajax({
+            url: "../menu/roleMenu",
+            success: function(msg){
+                msg =eval("(" + msg + ")");
+                if(msg.retnCode == '0000'){
+                    var nodes= eval("(" + msg.retnMessage + ")");
+                    $.fn.zTree.init($("#menu_tree"), setting, nodes);
+                }else{
+                    $.messager.alert('提示',msg.retnMessage,'info');
+                }
+            }
+        });
+
+        $.ajax({
+            url: "../role/getRoleList",
+            success: function(msg){
+                var data = eval("(" + msg + ")");
+                $(data).each(function(i,rl){
+                    $("#roleList").append("<option value="+rl.roleid+">"+rl.name+"</option>");
+                });
+            }
+        });
+
+        $('#roleList').bind('change',function(){
+            var zTree = $.fn.zTree.getZTreeObj("menu_tree");
+            zTree.checkAllNodes(false);
+            $.ajax({
+                url: "../role/getPermissionList",
+                data:{role_id:$('#roleList').val()},
+                success: function(msg){
+                    var data = eval("(" + msg + ")");
+                    $(data).each(function(i,rl){
+                        zTree.checkNode(zTree.getNodeByParam("id", rl.menu_id, null), true, true);
+                    });
+                }
+            });
+        });
+
+        $('#update_btn').bind('click',function(){
+            if($("#roleList").val()==''){$.messager.alert('提示','请选择角色','info');return;}
+            var zTree = $.fn.zTree.getZTreeObj("menu_tree");
+            var checkeds=zTree.getCheckedNodes(true);
+            var nodes = '';
+            var parentNodes='';
+            for(var i=0; i<checkeds.length; i++){
+                if(!checkeds[i].getCheckStatus().half)
+                {
+                    if (nodes != '') nodes += ',';
+                    nodes += checkeds[i].id;
+                }else{
+                    if (parentNodes != '') parentNodes += ',';
+                    parentNodes += checkeds[i].id;
+                }
+
+            }
+            nodes+="@";
+            nodes+=parentNodes;
+            $.ajax({
+                url: "../role/insertPermission",
+                data:{role_id:$('#roleList').val(),menu_ids:nodes},
+                success: function(msg){
+                    msg =eval("(" + msg + ")");
+                    $.messager.alert('提示',msg.retnMessage,'info');
+                }
+            });
+        });
+    });
+    /*]]>*/
+</script>
+
+<body>
+<select id="roleList" panelHeight="auto" style="width:150px;height:32px">
+    <option value=''>----请选择角色----</option>
+</select>
+<ul id="menu_tree" class="ztree">
+
+</ul>
+<div class="tb_btn">
+    <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-save" id="update_btn" >保存</a>
+</div>
+</body>
+</html>

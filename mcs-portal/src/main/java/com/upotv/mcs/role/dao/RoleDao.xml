@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.upotv.mcs.role.dao.RoleDao">
+
+    <resultMap id="RoleMap" type="com.upotv.mcs.role.entity.Role">
+        <result property="roleid" column="role_id"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getRoleListPage" resultMap="RoleMap">
+        SELECT role_id,
+          name,
+          remark,
+          update_time,
+          create_time
+        from mcs_role <include refid="roleListPageWhere"/>
+    </select>
+
+    <sql id="roleListPageWhere">
+        <where>
+            <if test="name != null and  name!= ''"> name LIKE CONCAT('%',#{name},'%')</if>
+        </where>
+    </sql>
+
+    <select id="getRoleByName" resultMap="RoleMap">
+        SELECT role_id,
+          name,
+          remark,
+          update_time,
+          create_time
+        from mcs_role where name = #{name}
+    </select>
+
+    <insert id="insert" parameterType="com.upotv.mcs.role.entity.RoleVo">
+        insert into mcs_role
+          (name,remark,update_time,create_time)
+        values
+          (#{name},#{remark},now(),now())
+    </insert>
+
+    <update id="update" parameterType="com.upotv.mcs.role.entity.RoleVo">
+        update mcs_role
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = now()
+        </set>
+        where role_id = #{roleid}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE  from mcs_role where role_id = #{roleid}
+    </delete>
+
+    <insert id="insertPermission" parameterType="com.upotv.mcs.role.entity.PermissionVo">
+        insert into mcs_permission
+          (menu_id,role_id,priv,is_half,create_time)
+        values
+          (#{menu_id},#{role_id},#{priv},#{is_half},now())
+    </insert>
+
+    <delete id="deletePermission">
+        DELETE  from mcs_permission where role_id = #{role_id}
+    </delete>
+
+    <select id="getPermissionList" resultType="com.upotv.mcs.role.entity.PermissionVo">
+        select menu_id,
+          role_id,
+          priv
+        from mcs_permission where role_id = #{role_id} and is_half = 1
+    </select>
+</mapper>

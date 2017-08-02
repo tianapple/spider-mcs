@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="head">
-    <title>集成播控平台V4</title>
-</head>
+<head th:include="head"></head>
+<title>集成播控平台V4</title>
 
 <script type="text/javascript">
-    /*<![CDATA[*/
+/*<![CDATA[*/
     $(document).ready(function() {
         $.ajax({
             type: 'POST',
@@ -33,7 +32,17 @@
                         },
                         onClick:function(node){
                             if(node.attributes.url != ''){
-                                addtab(node.text, node.attributes.url);
+                                var opts = {
+                                    title : node.text,
+                                    border : false,
+                                    closable : true,
+                                    fit : true,
+                                    iconCls : node.iconCls
+                                };
+                                var url = node.attributes.url;
+                                if (url) {
+                                    addIframe(node.text,url);
+                                }
                             }
                         }
                     });
@@ -41,9 +50,10 @@
             }
         });
 
-        var addtab = function (title, url) {
-            if ($('#tabs').tabs('exists', title)) {
-                $('#tabs').tabs('select', title);
+        function addIframe(title, url) {
+            var t = $('#tabs');
+            if (t.tabs('exists', title)) {
+                t.tabs('select', title);
             } else {
                 var content = '未实现';
                 if (url){
@@ -63,46 +73,8 @@
             }
         }
     });
-    /*
-    $(function () {
-        var treeData = {};
-        //同步获取
-        $.ajax({
-            type: 'GET',
-            url: '/getMenu',
-            async: false,
-            dataType: 'json',
-            success: function (json) {
-                treeData = json;
-            },
-        });
 
-        //实例化树形菜单
-        $("#tree").tree({
-            data : treeData,
-            lines : true,
-            onClick : function (node) {
-                if (node.attributes) {
-                    open(node.text, node.attributes.url);
-                }
-            }
-        });
-
-        function open(title, url){
-            if ($('#tabs').tabs('exists', title)){
-                $('#tabs').tabs('select', title);
-            } else {
-                var content = '<iframe scrolling="auto" frameborder="0"  src="' + url + '" style="width:100%;height:100%;"></iframe>';
-                $('#tabs').tabs('add',{
-                    title:title,
-                    content:content,
-                    closable:true
-                });
-            }
-        }
-	});
-*/
-    /*]]>*/
+/*]]>*/
 </script>
 
 <body>
@@ -116,7 +88,7 @@
             <div class="topright">
                 <ul>
                     <li><span><img src="images/help.png" title="帮助"  class="helpimg"/></span><a href="#">帮助</a></li>
-                    <li><a href="#">关于</a></li>
+                    <li>修改密码</li>
                     <li><a href="/logout" target="_parent">退出</a></li>
                 </ul>
                 <div class="user">

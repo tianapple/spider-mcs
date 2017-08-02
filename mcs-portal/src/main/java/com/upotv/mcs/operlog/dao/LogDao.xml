@@ -15,8 +15,17 @@
     </resultMap>
 
     <select id="getLogListPage" resultMap="LogMap">
-        SELECT * FROM mcs_log
+        SELECT * FROM mcs_log <include refid="logListPageWhere"/> order by logid DESC
     </select>
+
+    <sql id="logListPageWhere">
+        where 1=1
+        <if test="username != null and  username!= ''"> and username = #{username} </if>
+        <if test="status != null and status != ''"> AND status = #{status} </if>
+        <if test="path != null and path != ''"> AND path like '%${path}%' </if>
+        <if test="startTime != null and startTime != ''"> AND createtime >= #{startTime} </if>
+        <if test="endTime != null and endTime != ''"> AND createtime &lt;= #{endTime} </if>
+    </sql>
 
     <insert id="insert" parameterType="com.upotv.mcs.operlog.entity.Log">
         INSERT INTO mcs_log (username, path, param, ip,duration, status, remark, createtime)
