@@ -14,8 +14,13 @@
     </resultMap>
 
     <select id="getDictListPage" resultMap="McsCodeMap">
-        SELECT * from mcs_code
+        SELECT * from mcs_code <include refid="dictListPageWhere"/> ORDER BY code_type,priority
     </select>
+
+    <sql id="dictListPageWhere">
+        where 1=1
+        <if test="codeType != null and  codeType!= ''"> and code_type = #{codeType} </if>
+    </sql>
 
     <select id="getAllDict" resultMap="McsCodeMap">
         SELECT * from mcs_code where is_enable = 1 ORDER BY code_type,priority
@@ -24,5 +29,5 @@
     <select id="getDictByType" resultMap="McsCodeMap" parameterType="String">
         SELECT code_type,code_id,code_name,remark,priority,is_enable from mcs_code where code_type = #{codeType} and is_enable = 1 ORDER BY priority
     </select>
-  
+
 </mapper>

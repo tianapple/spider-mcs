@@ -1,57 +1,224 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 
-<head th:include="head"></head>
+<head th:include="head">
+
+</head>
 
 <script type="text/javascript">
+
 
     /*<![CDATA[*/
     $(document).ready(function() {
 
+        $('#dict_dataList').datagrid({
+            fit : true,
+            toolbar:'#dict_tb',
+            width:'100%',
+            height:'100%',
+            url:'/dict/getDictListPage',
+            loadMsg:'数据加载中,请稍后……',
+            singleSelect: true,
+            autoRowHeight:false,
+            pagination: true,
+            nowrap:true,
+            striped: true,
+            rownumbers:true,
+            //fitColumns:true,
+            showFooter:true,
+            pageSize:20,
+            pageList:[20,30,50],
+            columns:[[
+                {field:"ck" ,checkbox:true},
+                {field:'codeType',title:'字典类型',width:100},
+                {field:'codeId',title:'字典ID',width:150},
+                {field:'codeName',title:'字典名称', width:100},
+                {field:'remark',title:'备注',width:100},
+                {field:'priority',title:'排序', width:100},
+                {field:'isEnable',title:'是否启用', width:100},
+                {field:'updatetime',title:'更新时间', width:200},
+                {field:'createtime',title:'创建时间', width:200}
+            ]],
+        });
+
+
+        //查询
+        $("#label_query_btn").click(function(){
+            var params = $('#label_qry_form').serializeObject();
+            $('#label_dataList').datagrid('load',params);
+        });
+
+        //新增标签信息
+        $("#label_create_btn").click(function(){
+            var $dialog = $('#label_dialog');
+            $dialog.show();
+            $dialog.dialog({
+                title:'增加标签',
+                modal: true,
+                closed: false,
+                onClose : function() {
+                    $(this).form('clear');
+                },
+                buttons:[{
+                    text:'确定',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        $('#label_form').form('submit',{
+                            url:'label/add',
+                            onSubmit:function(){
+                                return $(this).form('enableValidation').form('validate');
+                            },
+                            success: function (data) {
+                             data = $.parseJSON(data);
+                                if(data.retnCode == '0000'){
+                                    $.messager.alert('提示',"添加成功!",'info',function(){
+                                        $dialog.dialog('close');
+                                        $('#label_dataList').datagrid('reload');
+                                    });
+                                }else{
+                                    $.messager.alert('提示',data.retnMessage,'error');
+                                }
+                            }
+                        });
+                    }
+                },{
+                    text:'关闭',
+                    iconCls:'icon-no',
+                    handler:function(){
+                        $dialog.dialog('close');
+                    }
+                }]
+            });
+        });
+         //修改标签信息
+         $("#label_update_btn").click(function(){
+            var rows = $('#label_dataList').datagrid('getSelections');
+            if(rows.length != 1){
+               $.messager.alert('提示',"请选择一条数据执行操作");
+                return false;
+             }
+            var record = $('#label_dataList').datagrid('getSelected');
+            $("#label_form").form('load',record)
+            var $dialog = $('#label_dialog');
+            $dialog.show();
+            $dialog.dialog({
+                 title:'修改标签信息',
+                 modal: true,
+                 closed: false,
+                 onClose : function() {
+                $(this).form('clear');
+            },
+            buttons:[{
+                text:'确定',
+                iconCls:'icon-ok',
+                handler:function(){
+                $.messager.progress({title:'正在执行'});
+                $('#label_form').form('submit',{
+                    url:'label/update',
+                    onSubmit:function(param){
+                        var isValid = $(this).form('enableValidation').form('validate');
+                        if (!isValid){
+                            $.messager.progress('close');  // hide progress bar while the form is invalid
+                        }
+                    },
+                    success: function (data) {
+                        data = $.parseJSON(data);
+                        if(data.retnCode == '0000'){
+                            $.messager.alert('提示',"修改成功!",'info',function(){
+                                $dialog.dialog('close');
+                                $('#label_dataList').datagrid('reload');
+                            });
+                        }else{
+                            $.messager.alert('提示',data.retnMessage,'error');
+                        }
+                        $.messager.progress('close');
+                    }
+                });
+            }
+            },{
+                text:'关闭',
+                iconCls:'icon-no',
+                handler:function(){
+                $dialog.dialog('close');
+            }
+            }]
+            });
+        });
+        //删除标签
+        $("#label_del_btn").click(function(){
+            var rows = $('#label_dataList').datagrid('getSelections');
+            if(rows.length != 1){
+               $.messager.alert('提示',"请选择一条数据执行操作");
+                return false;
+            }
+            var record = $('#label_dataList').datagrid('getSelected');
+            $.messager.confirm('提示','确定要删除该用户吗?',function(result){
+                 if (result){
+                    $.ajax({
+                        type: "POST",
+                        url: "label/del",
+                        data:{labelId:record.labelId},
+                        success: function(msg){
+                            if(msg.retnCode == '0000'){
+                                $.messager.alert('提示',"删除成功!",'info',function(){
+                                $('#label_dataList').datagrid('reload');
+                                });
+                            }else{
+                                $.messager.alert('提示',msg.retnMessage,'info');
+                            }
+                        }
+                    });
+                 }
+            });
+        });
     });
 
+
     /*]]>*/
+
+
 </script>
 
 <body>
-    <table id="user_dataList"></table>
-    <div id="tb">
-        <div class="tb_qry">
-            <input id="ss"/>
-            <div id="mm" style="width:120px">
-                <div data-options="name:'userName'">登陆名</div>
-                <div data-options="name:'name'">用户姓名</div>
-            </div>
-        </div>
-        <div class="tb_btn">
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="user_create_btn" shiro:hasPermission="user/manager">添加</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="user_update_btn" shiro:hasPermission="user/manager">修改</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="user_del_btn" shiro:hasPermission="user/manager">删除</a>
-        </div>
-    </div>
-
-    <div id="user_dialog" style="display:none;width:400px;height:450px;padding:15px 40px">
-        <form id="user_form" method="post">
-            <div style="margin-bottom:10px">
-                <div>用户名:</div>
-                <input id="user_userName" name="userName"  data-options="required:true"  class="easyui-textbox" style="width:100%;height:32px"/>
-            </div>
-            <div style="margin-bottom:10px" id="user_form_password">
-                <div>密码:</div>
-                <input name="password" class="easyui-passwordbox" data-options="required:true"  style="width:100%;height:32px"/>
-            </div>
-            <div style="margin-bottom:10px">
-                <div>姓名:</div>
-                <input name="name" class="easyui-textbox" data-options="required:true"  style="width:100%;height:32px"/>
-            </div>
-            <div style="margin-bottom:10px">
-                <div>性别:</div>
-                <select id="user_gender" name="gender"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-                </select>
-            </div>
+<table id="dict_dataList"></table>
+<div id="dict_tb">
+    <div class="tb_qry">
+        <form id="dict_qry_form">
+            字典类型：<input name="codeType" class="easyui-textbox" style="width:120px;height:23px"/>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="dict_query_btn" shiro:hasPermission="dict/view">查询</a>
         </form>
     </div>
+    <div class="tb_btn">
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="label_create_btn" shiro:hasPermission="label/manager">添加</a>
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="label_update_btn" shiro:hasPermission="label/manager">修改</a>
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="label_del_btn" shiro:hasPermission="label/manager">删除</a>
+    </div>
+</div>
+
+<div id="label_dialog" style="display:none;width:400px;padding:15px 40px;">
+    <form id="label_form" method="post">
+        <input name="labelId" type="hidden"/>
+        <div style="margin-bottom:10px">
+            <div>标签名称：</div>
+            <input name="labelName" class="easyui-textbox" data-options="required:true"
+                   style="width:100%;height:28px"/>
+        </div>
+        <div style="margin-bottom:10px">
+            <div>标签类型：</div>
+            <select id="labelType_id" name="labelTypeId" class="easyui-combobox" data-options="required:true"
+                    style="width:100%;height:28px" />
+        </div>
+        <div style="margin-bottom:10px">
+            <div>标签别名：</div>
+            <input name="labelAlias" class="easyui-textbox"
+                   style="width:100%;height:28px"/>
+        </div>
+        <div style="margin-bottom:10px">
+            <div>备注：</div>
+            <input name="remark" class="easyui-textbox"  style="width:100%;height:28px"/>
+        </div>
+    </form>
+</div>
 
 </body>
 

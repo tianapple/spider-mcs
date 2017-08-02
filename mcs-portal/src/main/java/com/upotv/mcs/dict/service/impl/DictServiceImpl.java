@@ -1,7 +1,10 @@
 package com.upotv.mcs.dict.service.impl;
 
+import com.github.pagehelper.Page;
 import com.upotv.mcs.dict.dao.DictDao;
 import com.upotv.mcs.dict.entity.McsCode;
+import com.upotv.mcs.dict.entity.McsCodeSelectVo;
+import com.upotv.mcs.dict.entity.McsCodeVo;
 import com.upotv.mcs.dict.service.DictService;
 import jdk.nashorn.internal.objects.annotations.Constructor;
 import org.slf4j.Logger;
@@ -56,5 +59,10 @@ public class DictServiceImpl implements DictService {
             list = dictDao.getDictByType(typecode);
         }
         return list;
+    }
+
+    @Override
+    public Page<McsCode> getDictListPage(McsCodeSelectVo vo) {
+        return (Page<McsCode>) dictDao.getDictListPage(vo);
     }
 }

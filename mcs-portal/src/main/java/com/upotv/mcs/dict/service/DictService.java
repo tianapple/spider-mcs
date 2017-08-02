@@ -1,6 +1,8 @@
 package com.upotv.mcs.dict.service;
 
+import com.github.pagehelper.Page;
 import com.upotv.mcs.dict.entity.McsCode;
+import com.upotv.mcs.dict.entity.McsCodeSelectVo;
 
 import java.util.List;
 
@@ -10,4 +12,5 @@ import java.util.List;
 public interface DictService {
     public List<McsCode> getDict(String typecode, boolean cache);
 
+    Page<McsCode> getDictListPage(McsCodeSelectVo vo);
 }

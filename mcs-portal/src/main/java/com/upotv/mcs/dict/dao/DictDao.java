@@ -2,6 +2,7 @@ package com.upotv.mcs.dict.dao;
 
 import com.upotv.mcs.core.McsBaseDao;
 import com.upotv.mcs.dict.entity.McsCode;
+import com.upotv.mcs.dict.entity.McsCodeSelectVo;
 import com.upotv.mcs.dict.entity.McsCodeVo;
 import com.upotv.mcs.menu.controller.MenuController;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public interface DictDao extends McsBaseDao {
 
-    public List<McsCode> getDictListPage(McsCode code);
+    public List<McsCode> getDictListPage(McsCodeSelectVo code);
 
     /**
      * 根据指定类型下的可用的字典
