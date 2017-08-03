@@ -48,7 +48,7 @@ public class McsExceptionHandler {
         ex.printStackTrace(new PrintWriter(sw, true));
         resp.setErrorStack(sw.toString());
 
-        request.setAttribute("exception", resp);
+        request.setAttribute("mcs_exception", resp);
 
         //记录异常日志
         LOGGER.error(ex.getMessage(), ex);

@@ -32,4 +32,8 @@
         VALUES (#{username}, #{path}, #{param}, #{ip},#{duration}, #{status}, #{remark}, now())
     </insert>
 
+    <delete id="delete">
+        DELETE FROM `mcs_log` WHERE DATE_SUB(CURDATE(), INTERVAL 30 day) >= createtime limit 100000
+    </delete>
+
 </mapper>
