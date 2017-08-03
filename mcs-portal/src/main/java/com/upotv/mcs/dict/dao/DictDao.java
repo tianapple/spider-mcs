@@ -28,5 +28,12 @@ public interface DictDao extends McsBaseDao {
      */
     public List<McsCode> getAllDict();
 
+    int checkDictByTypeAndId(McsCodeVo vo);
+
+    int add(McsCodeVo vo);
+
+    int update(McsCodeVo vo);
+
+    int del(Integer id);
 }
 

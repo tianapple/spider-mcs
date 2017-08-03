@@ -1,19 +1,29 @@
 package com.upotv.mcs.dict.entity;
 
+
 import java.util.Date;
 
 /**
  * Created by wow on 2017/6/28.
  */
 public class McsCode {
+    private Integer id;
     private String codeType;
     private String codeId;
     private String codeName;
     private String remark;
-    private String priority;
-    private String isEnable;
+    private Integer priority;
+    private Integer isEnable;
     private Date updatetime;
     private Date createtime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCodeType() {
         return codeType;
@@ -47,20 +57,35 @@ public class McsCode {
         this.remark = remark;
     }
 
-    public String getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    public String getIsEnable() {
+    public Integer getIsEnable() {
         return isEnable;
     }
 
-    public void setIsEnable(String isEnable) {
+    public void setIsEnable(Integer isEnable) {
         this.isEnable = isEnable;
     }
 
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
+    }
 }

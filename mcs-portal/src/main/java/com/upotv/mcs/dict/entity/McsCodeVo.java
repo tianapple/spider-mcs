@@ -1,5 +1,7 @@
 package com.upotv.mcs.dict.entity;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.util.Date;
 
 /**
@@ -7,11 +9,24 @@ import java.util.Date;
  */
 public class McsCodeVo {
 
+    private Integer id;
+    @NotEmpty(message = "字典类型不能为空")
     private String codeType;
+    @NotEmpty(message = "字典ID不能为空")
     private String codeId;
+    @NotEmpty(message = "字典名称不能为空")
     private String codeName;
-    private String priority;
-    private String isEnable;
+    private String remark;
+    private Integer priority;
+    private Integer isEnable;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCodeType() {
         return codeType;
@@ -37,19 +52,27 @@ public class McsCodeVo {
         this.codeName = codeName;
     }
 
-    public String getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 
-    public String getIsEnable() {
+    public Integer getIsEnable() {
         return isEnable;
     }
 
-    public void setIsEnable(String isEnable) {
+    public void setIsEnable(Integer isEnable) {
         this.isEnable = isEnable;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

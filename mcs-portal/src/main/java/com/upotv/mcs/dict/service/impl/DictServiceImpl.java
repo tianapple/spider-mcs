@@ -1,6 +1,8 @@
 package com.upotv.mcs.dict.service.impl;
 
 import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.dict.dao.DictDao;
 import com.upotv.mcs.dict.entity.McsCode;
 import com.upotv.mcs.dict.entity.McsCodeSelectVo;
@@ -63,6 +65,37 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public Page<McsCode> getDictListPage(McsCodeSelectVo vo) {
+        PageHelper.startPage(vo.getPage(), vo.getRows());
         return (Page<McsCode>) dictDao.getDictListPage(vo);
+    }
+
+    @Override
+    public ResultMessage add(McsCodeVo vo) {
+        //校验同一字典类型下的字典id不能重复
+        int checkCount = dictDao.checkDictByTypeAndId(vo);
+        if(checkCount == 0){
+            int count = dictDao.add(vo);
+            return new ResultMessage(ResultMessage.SUCCESS,"添加成功");
+        }else{
+            return new ResultMessage(ResultMessage.FAILE,"添加失败");
+        }
+    }
+
+    @Override
+    public ResultMessage update(McsCodeVo vo) {
+        //校验同一字典类型下的字典id不能重复
+        int checkCount = dictDao.checkDictByTypeAndId(vo);
+        if(checkCount == 0){
+            int count = dictDao.update(vo);
+            return new ResultMessage(ResultMessage.SUCCESS,"添加成功");
+        }else{
+            return new ResultMessage(ResultMessage.FAILE,"添加失败");
+        }
+    }
+
+    @Override
+    public ResultMessage del(Integer id) {
+        int count = dictDao.del(id);
+        return new ResultMessage(ResultMessage.SUCCESS,"删除成功");
     }
 }

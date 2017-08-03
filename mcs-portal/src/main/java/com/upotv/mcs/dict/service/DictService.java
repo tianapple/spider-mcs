@@ -1,8 +1,10 @@
 package com.upotv.mcs.dict.service;
 
 import com.github.pagehelper.Page;
+import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.dict.entity.McsCode;
 import com.upotv.mcs.dict.entity.McsCodeSelectVo;
+import com.upotv.mcs.dict.entity.McsCodeVo;
 
 import java.util.List;
 
@@ -13,4 +15,10 @@ public interface DictService {
     public List<McsCode> getDict(String typecode, boolean cache);
 
     Page<McsCode> getDictListPage(McsCodeSelectVo vo);
+
+    ResultMessage add(McsCodeVo vo);
+
+    ResultMessage update(McsCodeVo vo);
+
+    ResultMessage del(Integer id);
 }

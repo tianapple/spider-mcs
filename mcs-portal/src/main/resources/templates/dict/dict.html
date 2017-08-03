@@ -11,6 +11,9 @@
     /*<![CDATA[*/
     $(document).ready(function() {
 
+         //是否启用
+        var isEnableDict = [{codeId:"1",codeName:"启用"},{codeId:"2",codeName:"不启用"}];
+
         $('#dict_dataList').datagrid({
             fit : true,
             toolbar:'#dict_tb',
@@ -30,30 +33,48 @@
             pageList:[20,30,50],
             columns:[[
                 {field:"ck" ,checkbox:true},
+                {field:'id',hidden:true},
                 {field:'codeType',title:'字典类型',width:100},
                 {field:'codeId',title:'字典ID',width:150},
                 {field:'codeName',title:'字典名称', width:100},
                 {field:'remark',title:'备注',width:100},
                 {field:'priority',title:'排序', width:100},
-                {field:'isEnable',title:'是否启用', width:100},
+                {field:'isEnable',title:'是否启用', width:100,
+                    formatter:function(value, row, index){
+                        return upotv.biz.Dict.getValue(value,isEnableDict);
+                    }
+                },
                 {field:'updatetime',title:'更新时间', width:200},
                 {field:'createtime',title:'创建时间', width:200}
             ]],
         });
 
+          $("#dict_isEnable_id").combobox({
+            valueField: 'codeId',
+            textField: 'codeName',
+            panelHeight:"auto",
+            editable:false,
+            data:isEnableDict
+        });
 
         //查询
-        $("#label_query_btn").click(function(){
-            var params = $('#label_qry_form').serializeObject();
-            $('#label_dataList').datagrid('load',params);
+        $("#dict_query_btn").click(function(){
+            var params = $('#dict_qry_form').serializeObject();
+            $('#dict_dataList').datagrid('load',params);
+        });
+
+        //清空
+         $("#dict_clean_btn").click(function(){
+            $("#dict_qry_form").form('clear');
+            $('#dict_dataList').datagrid('reload',{codeType: null});
         });
 
         //新增标签信息
-        $("#label_create_btn").click(function(){
-            var $dialog = $('#label_dialog');
+        $("#dict_create_btn").click(function(){
+            var $dialog = $('#dict_dialog');
             $dialog.show();
             $dialog.dialog({
-                title:'增加标签',
+                title:'增加数据字典',
                 modal: true,
                 closed: false,
                 onClose : function() {
@@ -63,17 +84,21 @@
                     text:'确定',
                     iconCls:'icon-ok',
                     handler:function(){
-                        $('#label_form').form('submit',{
-                            url:'label/add',
+                        $('#dict_form').form('submit',{
+                            url:'dict/add',
                             onSubmit:function(){
                                 return $(this).form('enableValidation').form('validate');
                             },
                             success: function (data) {
                              data = $.parseJSON(data);
+                                if(data.retnCode == '9999'){
+                                    $.messager.alert('提示', "字典类型下已经存在相同的字典ID!");
+                                    return false;
+                                }
                                 if(data.retnCode == '0000'){
                                     $.messager.alert('提示',"添加成功!",'info',function(){
                                         $dialog.dialog('close');
-                                        $('#label_dataList').datagrid('reload');
+                                        $('#dict_dataList').datagrid('reload');
                                     });
                                 }else{
                                     $.messager.alert('提示',data.retnMessage,'error');
@@ -91,15 +116,16 @@
             });
         });
          //修改标签信息
-         $("#label_update_btn").click(function(){
-            var rows = $('#label_dataList').datagrid('getSelections');
+         $("#dict_update_btn").click(function(){
+            var rows = $('#dict_dataList').datagrid('getSelections');
             if(rows.length != 1){
                $.messager.alert('提示',"请选择一条数据执行操作");
                 return false;
              }
-            var record = $('#label_dataList').datagrid('getSelected');
-            $("#label_form").form('load',record)
-            var $dialog = $('#label_dialog');
+            var record = $('#dict_dataList').datagrid('getSelected');
+            $("#dict_form").form('load',record)
+            var $dialog = $('#dict_dialog');
+            $('#dict_codeType_id').textbox('textbox').attr('readonly',true);  //设置输入框为禁用
             $dialog.show();
             $dialog.dialog({
                  title:'修改标签信息',
@@ -113,8 +139,8 @@
                 iconCls:'icon-ok',
                 handler:function(){
                 $.messager.progress({title:'正在执行'});
-                $('#label_form').form('submit',{
-                    url:'label/update',
+                $('#dict_form').form('submit',{
+                    url:'dict/update',
                     onSubmit:function(param){
                         var isValid = $(this).form('enableValidation').form('validate');
                         if (!isValid){
@@ -123,10 +149,15 @@
                     },
                     success: function (data) {
                         data = $.parseJSON(data);
+                        if(data.retnCode == '9999'){
+                            $.messager.alert('提示', "字典类型下已经存在相同的字典ID!");
+                            $.messager.progress('close');
+                            return false;
+                        }
                         if(data.retnCode == '0000'){
                             $.messager.alert('提示',"修改成功!",'info',function(){
                                 $dialog.dialog('close');
-                                $('#label_dataList').datagrid('reload');
+                                $('#dict_dataList').datagrid('reload');
                             });
                         }else{
                             $.messager.alert('提示',data.retnMessage,'error');
@@ -145,23 +176,23 @@
             });
         });
         //删除标签
-        $("#label_del_btn").click(function(){
-            var rows = $('#label_dataList').datagrid('getSelections');
+        $("#dict_del_btn").click(function(){
+            var rows = $('#dict_dataList').datagrid('getSelections');
             if(rows.length != 1){
                $.messager.alert('提示',"请选择一条数据执行操作");
                 return false;
             }
-            var record = $('#label_dataList').datagrid('getSelected');
+            var record = $('#dict_dataList').datagrid('getSelected');
             $.messager.confirm('提示','确定要删除该用户吗?',function(result){
                  if (result){
                     $.ajax({
                         type: "POST",
-                        url: "label/del",
-                        data:{labelId:record.labelId},
+                        url: "dict/del",
+                        data:{id:record.id},
                         success: function(msg){
                             if(msg.retnCode == '0000'){
                                 $.messager.alert('提示',"删除成功!",'info',function(){
-                                $('#label_dataList').datagrid('reload');
+                                $('#dict_dataList').datagrid('reload');
                                 });
                             }else{
                                 $.messager.alert('提示',msg.retnMessage,'info');
@@ -185,37 +216,48 @@
     <div class="tb_qry">
         <form id="dict_qry_form">
             字典类型：<input name="codeType" class="easyui-textbox" style="width:120px;height:23px"/>
-            <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="dict_query_btn" shiro:hasPermission="dict/view">查询</a>
+            <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search" id="dict_query_btn" shiro:hasPermission="dict/view">查询</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" id="dict_clean_btn" shiro:hasPermission="dict/view">清空</a>
         </form>
     </div>
     <div class="tb_btn">
-        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="label_create_btn" shiro:hasPermission="label/manager">添加</a>
-        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="label_update_btn" shiro:hasPermission="label/manager">修改</a>
-        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="label_del_btn" shiro:hasPermission="label/manager">删除</a>
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="dict_create_btn" shiro:hasPermission="dict/manager" >添加</a>
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="dict_update_btn" shiro:hasPermission="dict/manager">修改</a>
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="dict_del_btn" shiro:hasPermission="dict/manager">删除</a>
     </div>
 </div>
 
-<div id="label_dialog" style="display:none;width:400px;padding:15px 40px;">
-    <form id="label_form" method="post">
-        <input name="labelId" type="hidden"/>
+<div id="dict_dialog" style="display:none;width:400px;padding:15px 40px;">
+    <form id="dict_form" method="post">
+        <input type="hidden" name="id"/>
         <div style="margin-bottom:10px">
-            <div>标签名称：</div>
-            <input name="labelName" class="easyui-textbox" data-options="required:true"
+            <div>字典类型：</div>
+            <input id="dict_codeType_id" name="codeType" class="easyui-textbox" data-options="required:true"
                    style="width:100%;height:28px"/>
         </div>
         <div style="margin-bottom:10px">
-            <div>标签类型：</div>
-            <select id="labelType_id" name="labelTypeId" class="easyui-combobox" data-options="required:true"
-                    style="width:100%;height:28px" />
+            <div>字典ID：</div>
+            <input name="codeId" class="easyui-textbox" data-options="required:true"
+                   style="width:100%;height:28px"/>
         </div>
         <div style="margin-bottom:10px">
-            <div>标签别名：</div>
-            <input name="labelAlias" class="easyui-textbox"
+            <div>字典名称：</div>
+            <input name="codeName" class="easyui-textbox" data-options="required:true"
                    style="width:100%;height:28px"/>
         </div>
         <div style="margin-bottom:10px">
             <div>备注：</div>
-            <input name="remark" class="easyui-textbox"  style="width:100%;height:28px"/>
+            <input name="remark" class="easyui-textbox" data-options="required:true"  style="width:100%;height:28px"/>
+        </div>
+        <div style="margin-bottom:10px">
+            <div>排序：</div>
+            <input name="priority" class="easyui-textbox" data-options="required:true"
+                   style="width:100%;height:28px"/>
+        </div>
+        <div style="margin-bottom:10px">
+            <div>是否启用：</div>
+            <select id="dict_isEnable_id" name="isEnable" class="easyui-combobox" data-options="required:true"
+                    style="width:100%;height:28px" />
         </div>
     </form>
 </div>
