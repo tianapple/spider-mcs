@@ -21,13 +21,12 @@ public class ParamValidException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        List<Map> list = new ArrayList<>();
+        StringBuffer sb = new StringBuffer();
         for (ObjectError error : fieldErrors) {
             String msg = error.getDefaultMessage();
-            Map<String, String> param = new HashMap<>();
-            param.put("paramMsg", msg);
-            list.add(param);
+            String objectName = error.getObjectName();
+            sb.append(objectName).append(":").append(msg).append(";");
         }
-        return JSON.toJSONString(list);
+        return sb.toString();
     }
 }

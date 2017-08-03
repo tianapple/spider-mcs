@@ -87,11 +87,12 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         logEntity.setDuration(consumeTime);
         logEntity.setStatus(status);
 
-        ResultMessage exception = (ResultMessage)request.getAttribute("exception");
+        ResultMessage exception = (ResultMessage)request.getAttribute("mcs_exception");
         if (exception != null) {
             logEntity.setRemark(exception.getErrorStack());
             logEntity.setStatus(500);
         }
+
         logService.insert(logEntity);
 
         super.afterCompletion(request, response, handler, ex);
