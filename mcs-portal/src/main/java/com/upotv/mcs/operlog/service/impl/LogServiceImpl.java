@@ -8,6 +8,7 @@ import com.upotv.mcs.operlog.entity.LogVo;
 import com.upotv.mcs.operlog.service.LogService;
 import com.upotv.mcs.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,5 +31,19 @@ public class LogServiceImpl implements LogService {
     public Page<Log> getLogListPage(LogVo vo) {
         PageHelper.startPage(vo.getPage(), vo.getRows());
         return (Page<Log>) logDao.getLogListPage(vo);
+    }
+
+    @Scheduled(cron="0 0 1 * * ?")
+    private void deletelog() {
+        int i = 0;
+        int j = 0;
+
+        int i_idx = 0;
+        int j_idx = 0;
+
+        do{
+            i = logDao.delete();
+        }while( i > 0 && ++i_idx < 50);
+
     }
 }

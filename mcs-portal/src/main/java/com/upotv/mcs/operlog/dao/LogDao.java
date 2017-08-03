@@ -14,4 +14,6 @@ public interface LogDao extends McsBaseDao {
 
     public List<Log> getLogListPage(LogVo vo);
 
+    int delete();
+
 }
