@@ -69,5 +69,73 @@ h2{font-weight:normal;}
 .user b{display:inline-block;width:20px;height:18px; background:url(../images/msg.png);text-align:center; font-weight:normal; color:#fff;font-size:14px;margin-right:13px; margin-top:7px; line-height:18px;}
 .user i a{display:inline-block;margin-right:5px;font-style:normal;line-height:30px; font-size:14px;color:#b8ceda;}
 
-/*查询条*/
-#tb{padding:5px;height:auto}
+/*查询区域*/
+.toolbar {
+    display: none;
+    padding: 5px;
+}
+
+.toolbar .tb_qry {
+    width: 95%;
+}
+
+.toolbar .tb_qry .inp {
+    float: left;
+    width: 230px;
+    line-height: 23px;
+    padding: 2px 0;
+}
+
+.toolbar .tb_qry .inp .title {
+    float: left;
+    text-align: right;
+    width: 75px;
+    margin-right: 5px;
+}
+
+.toolbar .tb_qry .inp .text {
+    width: 150px;
+    float: left;
+}
+
+.toolbar .tb_qry .qrybtn {
+    padding: 0 15px;
+    float: left;
+}
+
+.toolbar .tb_btn {
+
+}
+
+.clear {
+    clear: both
+}
+
+/*弹出框*/
+.dialog {
+    width: 95%;
+    display: none;
+    padding: 15px 5px
+}
+
+.dialog .inp {
+    line-height: 23px;
+    padding: 3px 0;
+}
+
+.dialog .inp .title {
+    float: left;
+    text-align: right;
+    width: 75px;
+    padding: 0 10px;
+}
+
+.dialog .inp .text input {
+    width: 300px;
+    float: left;
+}
+
+.dialog .inp .text select {
+    width: 300px;
+    float: left;
+}
