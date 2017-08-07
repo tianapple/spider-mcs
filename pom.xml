@@ -152,12 +152,5 @@
                 </executions>
             </plugin>
         </plugins>
-
-        <!--配置Maven 对resource文件 过滤 -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
     </build>
 </project>
