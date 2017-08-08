@@ -55,7 +55,12 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
 
         logEntity.setPath(uri);
         Mcs_user user = (Mcs_user) request.getSession().getAttribute("user");
-        logEntity.setUsername(user.getUserName());
+        if(user != null){
+            logEntity.setUsername(user.getUserName());
+        }else{
+            logEntity.setUsername("interface");
+        }
+
 
         long beginTime = System.currentTimeMillis();
         startTimeThreadLocal.set(beginTime);//线程绑定变量（该数据只有当前请求的线程可见）

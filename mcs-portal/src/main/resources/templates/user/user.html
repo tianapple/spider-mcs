@@ -8,14 +8,15 @@
 
     /*<![CDATA[*/
     $(document).ready(function() {
+
         //性别
-        var genderDict = upotv.biz.Dict.getDict("sex",true);
+        var genderDict = [{codeId:"0",codeName:"女"},{codeId:"1",codeName:"男"}];
 
         //是否锁定
-        var isLockDict = upotv.biz.Dict.getDict("isEnable",true);
+        var isLockDict = [{codeId:"0",codeName:"不启用"},{codeId:"1",codeName:"启用"}];
 
         //是否管理员
-        var isAdminDict = upotv.biz.Dict.getDict("isAdmin",true);
+        var isAdminDict = [{codeId:"1",codeName:"是"},{codeId:"0",codeName:"否"}];
 
         $('#user_dataList').datagrid({
             fit : true,
