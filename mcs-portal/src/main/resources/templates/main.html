@@ -20,12 +20,14 @@
                     $('#menu').accordion('add',{
                         title: n.text,
                         selected: flag,
+                        iconCls : n.iconCls,
                         content:'<div style="padding:10px"><ul id="tree'+n.id+'"></ul></div>'
                     });
 
                     $("#tree" + n.id).tree({
                         animate:true,
                         lines:true,
+                        lines:false,
                         url: '/getMenu?pid=' + n.id,
                         onBeforeExpand:function(node,param){
                             $("#tree" + n.id).tree('options').url = "/getMenu?pid=" + node.id;
@@ -93,7 +95,7 @@
             </div>
             <div class="topright" style="width: 167px">
                 <div style="margin: 60px 0 0 20px;color: #fafafa;">
-                <span th:text="${session.user.userName}" style="float: left;display: block"></span>
+                <span style="float: left;display: block"><shiro:principal property="userName" /></span>
                 <a href="javascript:void(0)" onclick="logout()" style="float: left;padding-left: 20px;color: #fafafa;">安全退出</a>
                 </div>
             </div>

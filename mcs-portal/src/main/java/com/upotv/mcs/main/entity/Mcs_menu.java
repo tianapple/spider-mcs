@@ -12,6 +12,24 @@ public class Mcs_menu {
     private String path;
     private String remark;
     private int priority;
+    private String icon;
+    private int opened;
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public int getOpened() {
+        return opened;
+    }
+
+    public void setOpened(int opened) {
+        this.opened = opened;
+    }
 
     /**
      *  是否启用，1：启用，0：不启用

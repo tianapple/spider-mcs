@@ -2,6 +2,7 @@ package com.upotv.mcs.main.controller;
 
 import com.upotv.mcs.main.entity.Mcs_menu;
 import com.upotv.mcs.main.entity.Mcs_user;
+import com.upotv.mcs.main.entity.TreeAttribute;
 import com.upotv.mcs.main.entity.TreeData;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,9 +55,9 @@ public class LoginController {
      * @return
      */
     @RequestMapping("/login") //url
-    public void dologin(HttpServletResponse response,HttpSession session, Mcs_user user, Model model) throws IOException {
+    public void dologin(HttpServletResponse response, HttpSession session, Mcs_user user, Model model) throws IOException {
         String info = loginUser(user);
-        session.setAttribute("loginMsg",info);
+        session.setAttribute("loginMsg", info);
 
         if ("success".equals(info)) {
             response.sendRedirect("/main");
@@ -131,39 +133,80 @@ public class LoginController {
     }
 
     /**
-     * 获得根菜单
+     * 获得菜单
      *
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/getMenu")
-    public List<TreeData> getMenu(int pid) {
-        Mcs_user user = getUser();
-        List<Mcs_menu> menuList = loginService.getMenuList(user.getUserId(), pid);
+    public List<TreeData> getMenu(@RequestParam(value = "pid", defaultValue = "-1") Integer pid) {
+        List<TreeData> treeDataList = new ArrayList<>();
+        List<Mcs_menu> menuList = getMenuList(pid);
 
-        if (user.isAdmin()) {
-            List<Mcs_menu> menuAdminList = loginService.getAdminMenuList(pid);
-            if (menuAdminList.size() > 0) {
-                menuList.addAll(menuAdminList);
+        for (Mcs_menu menu : menuList) {
+            treeDataList.add(TreeData.parse(menu));
+        }
+
+        if(pid != -1){
+            initMenu(treeDataList);
+        }
+        return treeDataList;
+    }
+
+    private void initMenu(List<TreeData> rootTreeDataList) {
+        for(TreeData rootData : rootTreeDataList){
+            List<Mcs_menu> menuList = getMenuList(rootData.getId());
+            List<TreeData> treeDataList = new ArrayList<>();
+            for (Mcs_menu menu : menuList) {
+                treeDataList.add(TreeData.parse(menu));
+            }
+            rootData.setState("open");
+            rootData.setChildren(treeDataList);
+            initMenu(treeDataList);
+        }
+    }
+
+    private List<Mcs_menu> getMenuList(int pid){
+        Mcs_user user = (Mcs_user) SecurityUtils.getSubject().getPrincipal();
+
+        List<Mcs_menu> menuList = new ArrayList<>();
+        if ("admin".equals(user.getUserName())) {
+            menuList = loginService.getSuperAdminMenuList(pid);
+        } else {
+            //所分配的菜单
+            menuList = loginService.getMenuList(user.getUserId(), pid);
+            //管理员特定菜单
+            if (user.isAdmin()) {
+                List<Mcs_menu> menuAdminList = loginService.getAdminMenuList(pid);
+                if (menuAdminList.size() > 0) {
+                    menuList.addAll(menuAdminList);
+                }
             }
         }
         menuList = menuList.stream().distinct().collect(Collectors.toList()); //排除重复
-
-        List<TreeData> trees = new ArrayList<>();
-        for (Mcs_menu mcsMenu : menuList) {
-            TreeData treeData = TreeData.parse(mcsMenu);
-            trees.add(treeData);
-        }
-        return trees;
+        return menuList;
     }
 
+    private List<TreeData> initMenu(int pid) {
+        List<TreeData> treeDataList = new ArrayList<>();
 
-    private Mcs_user getUser() {
-        Subject subject = SecurityUtils.getSubject();
-        Object user = subject.getSession().getAttribute("user");
-        if (user != null) {
-            return (Mcs_user) user;
+        List<Mcs_menu> menuList = getMenuList(pid);
+
+        for (Mcs_menu menu : menuList) {
+            TreeData treeData = new TreeData();
+            treeData.setId(menu.getMenuId());
+            treeData.setIconCls(menu.getIcon());
+            treeData.setText(menu.getName());
+
+            TreeAttribute attribute = new TreeAttribute();
+            attribute.setUrl(menu.getPath());
+            treeData.setAttributes(attribute);
+            treeDataList.add(treeData);
+
+            List<TreeData> child = initMenu(menu.getMenuId());
+            treeData.setChildren(child);
+            treeData.setState("open");
         }
-        return null;
+        return treeDataList;
     }
 }

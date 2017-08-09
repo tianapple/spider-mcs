@@ -11,16 +11,16 @@ import java.util.List;
  * Created by tianapple on 2017/6/1.
  */
 public class UserPermission {
-    private String name;
+    private String menuName;
     private String path;
     private String priv;
 
-    public String getName() {
-        return name;
+    public String getMenuName() {
+        return menuName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
     }
 
     public String getPath() {
@@ -37,15 +37,5 @@ public class UserPermission {
 
     public void setPriv(String priv) {
         this.priv = priv;
-    }
-
-    public List<String> getPermissionList() {
-        List<String> permissionList = new ArrayList<>();
-        if (StringUtils.isNullOrEmpty(priv) || StringUtils.isNullOrEmpty(path)) {
-            return permissionList;
-        }
-        permissionList.add(path + "/" + priv);
-
-        return permissionList;
     }
 }

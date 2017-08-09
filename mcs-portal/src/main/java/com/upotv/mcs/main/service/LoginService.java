@@ -24,6 +24,10 @@ public interface LoginService {
      */
     List<UserPermission> getPermissions(int userId);
 
+    List<UserPermission> getSuperAdminPermissions(); //超级管理员
+
+    List<UserPermission> getAdminPermissions(); //管理员
+
     /**
      * 获取普通用户授权的菜单
      * @param userId
@@ -38,5 +42,7 @@ public interface LoginService {
      * @return
      */
     List<Mcs_menu> getAdminMenuList(int parentId);
+
+    List<Mcs_menu> getSuperAdminMenuList(int parentId);
 
 }

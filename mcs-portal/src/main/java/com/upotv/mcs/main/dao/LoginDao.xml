@@ -8,26 +8,45 @@
         <result property="isEnable" column="is_enable"/>
         <result property="isAdmin" column="is_admin"/>
     </resultMap>
+
     <select id="getMenuList" resultMap="MenuMap">
-        SELECT m.*
-        FROM mcs_menu m INNER JOIN
-        (SELECT DISTINCT p.menu_id FROM mcs_user_role u INNER JOIN mcs_permission p ON u.role_id=p.role_id WHERE u.user_id=#{0}) p ON m.menu_id=p.menu_id and m.is_enable = 1
-        WHERE m.parent_id=#{1}
+        SELECT m.* FROM mcs_menu m
+            INNER JOIN (SELECT DISTINCT p.menu_id FROM mcs_user_role u INNER JOIN mcs_permission p ON u.role_id=p.role_id WHERE u.user_id=#{0}) p ON m.menu_id=p.menu_id
+        WHERE m.parent_id=#{1} and m.is_enable = 1
         ORDER BY m.priority
     </select>
+
     <select id="getAdminMenuList" resultMap="MenuMap">
-        SELECT *FROM mcs_menu WHERE is_admin=1 and parent_id=#{0} ORDER BY priority
+        SELECT *FROM mcs_menu WHERE is_admin=1 and parent_id=#{0} and is_enable = 1 ORDER BY priority
     </select>
 
-    <!--用户权限-->
+    <select id="getSuperAdminMenuList" resultMap="MenuMap">
+        SELECT *FROM mcs_menu WHERE  parent_id=#{0} ORDER BY priority
+    </select>
+
+    <!--普通用户权限-->
     <select id="getPermissions" resultType="com.upotv.mcs.main.entity.UserPermission">
-        SELECT r.name,m.path,p.priv FROM mcs_user_role u
-        INNER JOIN mcs_role r ON u.role_id=r.role_id
-        INNER JOIN mcs_permission p ON u.role_id=p.role_id
-        INNER JOIN mcs_menu m ON m.menu_id=p.menu_id and m.is_enable = 1
-        WHERE u.user_id=#{userId}
+        SELECT menu.`name` menuName,menu.`path`,CONCAT(menu.`path`,'/',permission.`priv`)priv FROM `mcs_permission` permission
+            JOIN `mcs_menu` menu ON permission.`menu_id` = menu.`menu_id`
+            JOIN `mcs_user_role` ur ON ur.`role_id` = permission.`role_id`
+        WHERE  (menu.`path` != NULL OR menu.`path` !='') and ur.`user_id` = #{userId}
     </select>
 
+    <!--超级管理员权限-->
+    <select id="getSuperAdminPermissions" resultType="com.upotv.mcs.main.entity.UserPermission">
+        SELECT menu.`name` menuName,menu.`path`,CONCAT(menu.`path`,'/',priv.`priv_id`)priv FROM `mcs_menu_priv` priv
+            JOIN `mcs_menu` menu ON priv.`menu_id` = menu.`menu_id`
+        WHERE  (menu.`path` != NULL OR menu.`path` !='')
+    </select>
+
+    <!--管理员权限-->
+    <select id="getAdminPermissions" resultType="com.upotv.mcs.main.entity.UserPermission">
+        SELECT menu.`name` menuName,menu.`path`,CONCAT(menu.`path`,'/',permission.`priv`)priv FROM `mcs_permission` permission
+            JOIN `mcs_menu` menu ON permission.`menu_id` = menu.`menu_id`
+            JOIN `mcs_user_role` ur ON ur.`role_id` = permission.`role_id`
+            JOIN `mcs_user` u ON u.`user_id` = ur.`user_id`
+        WHERE  (menu.`path` != NULL OR menu.`path` !='')  AND u.`is_admin` = 1
+    </select>
 
     <resultMap id="UserMap" type="com.upotv.mcs.main.entity.Mcs_user">
         <result property="userId" column="user_id"/>

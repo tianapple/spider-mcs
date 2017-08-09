@@ -5,6 +5,7 @@ import com.upotv.mcs.main.dao.LoginDao;
 import com.upotv.mcs.main.entity.Mcs_menu;
 import com.upotv.mcs.main.entity.UserPermission;
 import com.upotv.mcs.main.service.LoginService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,18 @@ public class LoginServiceImpl implements LoginService{
     }
 
     @Override
-    public List<UserPermission> getPermissions(int userId) {
+    public List<UserPermission> getPermissions(@Param("userId") int userId) {
         return loginDao.getPermissions(userId);
+    }
+
+    @Override
+    public List<UserPermission> getSuperAdminPermissions() {
+        return loginDao.getSuperAdminPermissions();
+    }
+
+    @Override
+    public List<UserPermission> getAdminPermissions() {
+        return loginDao.getAdminPermissions();
     }
 
     @Override
@@ -37,6 +48,11 @@ public class LoginServiceImpl implements LoginService{
     @Override
     public List<Mcs_menu> getAdminMenuList(int parentId) {
         return loginDao.getAdminMenuList(parentId);
+    }
+
+    @Override
+    public List<Mcs_menu> getSuperAdminMenuList(int parentId) {
+        return loginDao.getSuperAdminMenuList(parentId);
     }
 
 }

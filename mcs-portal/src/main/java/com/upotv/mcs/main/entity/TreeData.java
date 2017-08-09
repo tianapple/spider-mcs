@@ -12,20 +12,30 @@ import java.util.List;
 public class TreeData {
     private int id;
     private String text;
+    private String iconCls;
     private String state = "closed";
     private TreeAttribute attributes;
     private List<TreeData> children;
 
-    public static TreeData parse(Mcs_menu mcsMenu) {
-        TreeData data = new TreeData();
-        data.setId(mcsMenu.getMenuId());
-        data.setText(mcsMenu.getName());
-        if (!StringUtils.isNullOrEmpty(mcsMenu.getPath())) {
+    public static TreeData parse(Mcs_menu menu) {
+        TreeData treeData = new TreeData();
+        treeData.setId(menu.getMenuId());
+        treeData.setIconCls(menu.getIcon());
+        treeData.setText(menu.getName());
+        if (!StringUtils.isNullOrEmpty(menu.getPath())) {
             TreeAttribute attribute = new TreeAttribute();
-            attribute.setUrl(mcsMenu.getPath());
-            data.setAttributes(attribute);
+            attribute.setUrl(menu.getPath());
+            treeData.setAttributes(attribute);
         }
-        return data;
+        return treeData;
+    }
+
+    public String getIconCls() {
+        return iconCls;
+    }
+
+    public void setIconCls(String iconCls) {
+        this.iconCls = iconCls;
     }
 
     public int getId() {

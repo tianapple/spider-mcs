@@ -48,14 +48,13 @@ public class AuthRealm extends AuthorizingRealm {
         LOGGER.info("{} token is {}", userName, token);
         Mcs_user user = loginService.getUserByUserName(userName);
 
-        if(user == null){
+        if (user == null) {
             return null;
-        }else if(user.isLock()){
+        } else if (user.isLock()) {
             throw new LockedAccountException("Account [" + user.getUserName() + "] is locked.");
-        }else{
+        } else {
             //ByteSource credentialsSalt = ByteSource.Util.bytes(userName);//这里的参数要给个唯一的;
-            AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(user.getUserName(), user.getPassword(), getName());
-            setSession("user", user);
+            AuthenticationInfo authcInfo = new SimpleAuthenticationInfo(user, user.getPassword(), getName());
             return authcInfo;
         }
     }
@@ -70,67 +69,31 @@ public class AuthRealm extends AuthorizingRealm {
         if (principals == null) {
             throw new AuthorizationException("PrincipalCollection method argument cannot be null.");
         }
-        Subject subject = SecurityUtils.getSubject();
-        Mcs_user user = (Mcs_user) subject.getSession().getAttribute("user");
-        LOGGER.info("login user is {}", user.getUserName());
-        //获取用户角色、权限
-        List<UserPermission> userPermissions = loginService.getPermissions(user.getUserId());
-        //收集权限点列表
+
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        //Mcs_user user = (Mcs_user) SecurityUtils.getSubject().getPrincipal();
+        Mcs_user user = (Mcs_user) principals.getPrimaryPrincipal();
+
+        List<UserPermission> userPermissions = new ArrayList<>();
+        //如果是超级管理员查询出所有的功能权限，给认证对象
+        if("admin".equals(user.getUserName())){
+             userPermissions = loginService.getSuperAdminPermissions();
+        }else{
+            userPermissions = loginService.getPermissions(user.getUserId());
+            //如果是管理员用户
+            if(user.isAdmin()){
+                List<UserPermission> adminPermission = loginService.getAdminPermissions();
+                if(adminPermission.size() > 0){
+                    userPermissions.addAll(adminPermission);
+                }
+            }
+        }
         List<String> permissionPointList = new ArrayList<>();
         for (UserPermission userPermission : userPermissions) {
-            List<String> list = userPermission.getPermissionList();
-            if (list != null && list.size() > 0) {
-                permissionPointList.addAll(list);
-            }
+            permissionPointList.add(userPermission.getPriv());
         }
-        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        LOGGER.debug("longin user：{},权限列表:{}",user.getUserName(),permissionPointList);
         info.addStringPermissions(permissionPointList);
-
-        //当为管理员时设置当前登陆为admin
-        if(user.isAdmin()){
-            info.addRole("admin");
-        }
-
         return info;
     }
-
-    private void setSession(Object key, Object value) {
-        Subject currentUser = SecurityUtils.getSubject();
-        if (currentUser != null) {
-            Session session = currentUser.getSession();
-            if (session != null) {
-                session.setAttribute(key, value);
-            }
-        }
-    }
-
-//    //认证.登录
-//    @Override
-//    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-//        UsernamePasswordToken utoken=(UsernamePasswordToken) token;//获取用户输入的token
-//        String username = utoken.getUsername();
-//        User user = userDao.findUserByUserName(username);
-//        return new SimpleAuthenticationInfo(user, user.getPassword(),this.getClass().getName());//放入shiro.调用CredentialsMatcher检验密码
-//    }
-//
-//    //授权
-//    @Override
-//    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principal) {
-//        User user=(User) principal.fromRealm(this.getClass().getName()).iterator().next();//获取session中的用户
-//        List<String> permissions=new ArrayList<>();
-//        Set<Role> roles = user.getRoles();
-//        if(roles.size()>0) {
-//            for(Role role : roles) {
-//                Set<Module> modules = role.getModules();
-//                if(modules.size()>0) {
-//                    for(Module module : modules) {
-//                        permissions.add(module.getMname());
-//                    }
-//                }
-//            }
-//        }
-//        SimpleAuthorizationInfo info=new SimpleAuthorizationInfo();
-//        info.addStringPermissions(permissions);//将权限放入shiro中.
-//        return info;
-//    }
 }
