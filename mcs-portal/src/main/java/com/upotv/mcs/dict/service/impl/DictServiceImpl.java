@@ -35,7 +35,7 @@ public class DictServiceImpl implements DictService {
     private DictDao dictDao;
 
     @PostConstruct
-    private void initDict() {
+    public int initDict() {
         LOGGER.debug("初始化字典表");
         List<McsCode> dictList = dictDao.getAllDict();
         for (McsCode mcsCode : dictList) {
@@ -45,6 +45,7 @@ public class DictServiceImpl implements DictService {
             CopyOnWriteArrayList<McsCode> lists = typecodes.get(mcsCode.getCodeType());
             lists.add(mcsCode);
         }
+        return typecodes.size();
     }
 
     /*

@@ -12,6 +12,9 @@ import java.util.List;
  * Created by wow on 2017/6/28.
  */
 public interface DictService {
+
+    public int initDict();
+
     public List<McsCode> getDict(String typecode, boolean cache);
 
     Page<McsCode> getDictListPage(McsCodeSelectVo vo);

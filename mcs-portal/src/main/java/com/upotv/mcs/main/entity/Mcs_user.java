@@ -1,9 +1,11 @@
 package com.upotv.mcs.main.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by tianapple on 2017/2/4.
  */
-public class Mcs_user {
+public class Mcs_user implements Serializable{
     private int userId;
     private String userName;
     private String password;

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by tianapple on 2017/5/31.
@@ -92,6 +93,7 @@ public class AuthRealm extends AuthorizingRealm {
         for (UserPermission userPermission : userPermissions) {
             permissionPointList.add(userPermission.getPriv());
         }
+        permissionPointList = permissionPointList.stream().distinct().collect(Collectors.toList());
         LOGGER.debug("longin user：{},权限列表:{}",user.getUserName(),permissionPointList);
         info.addStringPermissions(permissionPointList);
         return info;

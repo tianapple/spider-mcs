@@ -50,22 +50,31 @@ public class DictController {
 
     @ResponseBody
     @RequestMapping("/add")
-    @RequiresPermissions("dict/manage")
+    @RequiresPermissions("dict/manager")
     public ResultMessage add(@Validated McsCodeVo vo){
         return dictService.add(vo);
     }
 
     @ResponseBody
     @RequestMapping("/update")
-    @RequiresPermissions("dict/manage")
+    @RequiresPermissions("dict/manager")
     public ResultMessage update(@Validated McsCodeVo vo){
         return dictService.update(vo);
     }
 
     @ResponseBody
     @RequestMapping("/del")
-    @RequiresPermissions("dict/manage")
+    @RequiresPermissions("dict/manager")
     public ResultMessage del(@NotNull Integer id){
         return dictService.del(id);
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/init")
+    @RequiresPermissions("dict/manager")
+    public ResultMessage init(){
+        int cnt = dictService.initDict();
+        return new ResultMessage(ResultMessage.SUCCESS,cnt);
     }
 }
