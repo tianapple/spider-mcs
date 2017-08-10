@@ -1,5 +1,6 @@
 package com.upotv.mcs.menu.dao;
 
+import com.github.pagehelper.Page;
 import com.upotv.mcs.menu.entity.Menu;
 import com.upotv.mcs.core.McsBaseDao;
 import com.upotv.mcs.menu.entity.MenuPrivVo;
@@ -15,7 +16,7 @@ public interface MenuDao extends McsBaseDao {
 
     public List<Menu> getMenuListPage(Menu menu);
 
-    List<Menu> getMenuManagerList(Menu menu);
+    Page<Menu> getMenuManagerList(Menu menu);
 
     List<Menu> getRoleMenuList();
 
@@ -29,12 +30,13 @@ public interface MenuDao extends McsBaseDao {
 
     String getMenuids(int menuid);
 
-    int delete(int menuid);
-
-    int deleteMenuPriv(@Param(value="menuids")String[] menuids);
-
-    int deletePermission(@Param(value="menuids")String[] menuids);
-
     int insertMenuPriv(MenuPrivVo vo);
 
+    int checkMenu(Integer menuid);
+
+    void delete(Integer menuid);
+
+    void deleteMenuPriv(Integer menuid);
+
+    void deletePermission(Integer menuid);
 }

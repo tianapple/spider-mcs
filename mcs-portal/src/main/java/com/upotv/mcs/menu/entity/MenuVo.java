@@ -1,15 +1,17 @@
 package com.upotv.mcs.menu.entity;
 
+import com.upotv.mcs.util.DateUtil;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import java.sql.Timestamp;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * Created by wow on 2017/6/20.
  */
 public class MenuVo {
-    private int menuid;
-    private int parentid;
+    private Integer menuid;
+    private Integer parentid;
     @NotEmpty(message="菜单名称不能为空")
     private String name;
     @NotEmpty(message="菜单地址不能为空")
@@ -17,24 +19,27 @@ public class MenuVo {
     private String remark;
     @NotEmpty(message="菜单排序不能为空")
     private String priority;
-    private int isEnable;
-    private int isAdmin;
-    private String updatetime;
-    private String createtime;
+    private Integer isEnable;
+    @NotNull(message="管理员权限不能为空")
+    private Integer isAdmin;
+    @NotEmpty(message="菜单图标不能为空")
+    private String iconCls;
+    private Date updatetime;
+    private Date createtime;
 
-    public int getMenuid() {
+    public Integer getMenuid() {
         return menuid;
     }
 
-    public void setMenuid(int menuid) {
+    public void setMenuid(Integer menuid) {
         this.menuid = menuid;
     }
 
-    public int getParentid() {
+    public Integer getParentid() {
         return parentid;
     }
 
-    public void setParentid(int parentid) {
+    public void setParentid(Integer parentid) {
         this.parentid = parentid;
     }
 
@@ -70,35 +75,43 @@ public class MenuVo {
         this.priority = priority;
     }
 
-    public int getIsEnable() {
+    public Integer getIsEnable() {
         return isEnable;
     }
 
-    public void setIsEnable(int isEnable) {
+    public void setIsEnable(Integer isEnable) {
         this.isEnable = isEnable;
     }
 
-    public int getIsAdmin() {
+    public Integer getIsAdmin() {
         return isAdmin;
     }
 
-    public void setIsAdmin(int isAdmin) {
+    public void setIsAdmin(Integer isAdmin) {
         this.isAdmin = isAdmin;
     }
 
-    public String getUpdatetime() {
-        return updatetime;
+    public String getIconCls() {
+        return iconCls;
     }
 
-    public void setUpdatetime(String updatetime) {
+    public void setIconCls(String iconCls) {
+        this.iconCls = iconCls;
+    }
+
+    public String getUpdatetime() {
+        return DateUtil.getDateTimeFormat(updatetime);
+    }
+
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
     public String getCreatetime() {
-        return createtime;
+        return DateUtil.getDateTimeFormat(createtime);
     }
 
-    public void setCreatetime(String createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 }

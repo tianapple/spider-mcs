@@ -10,12 +10,11 @@
         <result property="remark" column="remark"/>
         <result property="priority" column="priority"/>
         <result property="isEnable" column="is_enable"/>
-        <result property="isEnableName" column="isEnableName"/>
         <result property="isAdmin" column="is_admin"/>
         <result property="updatetime" column="update_time"/>
         <result property="createtime" column="create_time"/>
         <result property="priv_id" column="priv_id"/>
-        <result property="priv_name" column="priv_name"/>
+        <result property="iconCls" column="icon"/>
     </resultMap>
 
     <select id="getMenuListPage" resultMap="MenuMap">
@@ -29,13 +28,12 @@
         mu.path,
         mu.remark,
         mu.priority,
+        mu.icon,
         is_enable,
-        (CASE WHEN mu.is_enable = 0 then '无效' else '有效' END ) as isEnableName,
         mu.is_admin,
         mu.update_time,
         mu.create_time,
-        GROUP_CONCAT(priv.priv_id) priv_id,
-        GROUP_CONCAT(priv.priv_name) priv_name
+        GROUP_CONCAT(priv.priv_id) priv_id
         from mcs_menu mu left join mcs_menu_priv as priv on mu.menu_id=priv.menu_id
         <where>
             <if test="parentid != 0">
@@ -78,9 +76,9 @@
     
     <insert id="insert" parameterType="com.upotv.mcs.menu.entity.MenuVo">
         insert into mcs_menu
-          (parent_id,name,path,priority,is_enable,remark,update_time,create_time)
+          (parent_id,name,path,priority,is_enable,is_admin,icon,remark,update_time,create_time)
         values
-          (#{parentid},#{name},#{path},#{priority},#{isEnable},#{remark},now(),now())
+          (#{parentid},#{name},#{path},#{priority},#{isEnable},#{isAdmin},#{iconCls},#{remark},now(),now())
         <selectKey resultType="int" keyProperty="menuid">
             select max(menu_id) menuid from mcs_menu
         </selectKey>
@@ -92,6 +90,8 @@
             <if test="name != null">name = #{name},</if>
             <if test="path != null">path = #{path},</if>
             <if test="remark != null">remark = #{remark},</if>
+            is_admin = #{isAdmin},
+            icon = #{iconCls},
             priority = #{priority},
             is_enable = #{isEnable},
             update_time = now()
@@ -103,22 +103,20 @@
         select GROUP_CONCAT(menu_id) from mcs_menu where parent_id = #{menuid} or menu_id = #{menuid}
     </select>
 
+    <select id="checkMenu" resultType="Integer">
+        SELECT COUNT(0) FROM mcs_menu WHERE parent_id = #{menuid}
+    </select>
+
     <delete id="delete" parameterType="int">
-        DELETE  from mcs_menu where menu_id = #{menuid} or parent_id = #{menuid}
+        DELETE  from mcs_menu where menu_id = #{menuid}
     </delete>
 
    <delete id="deleteMenuPriv">
-       DELETE  from mcs_menu_priv where menu_id in
-       <foreach collection="menuids" item="menuid" open="(" separator="," close=")">
-           #{menuid}
-       </foreach>
+       DELETE  from mcs_menu_priv where menu_id  = #{menuid}
    </delete>
 
     <delete id="deletePermission">
-        DELETE  from mcs_permission where menu_id in
-        <foreach collection="menuids" item="menuid" open="(" separator="," close=")">
-            #{menuid}
-        </foreach>
+        DELETE  from mcs_permission where menu_id = #{menuid}
     </delete>
 
     <insert id="insertMenuPriv" parameterType="com.upotv.mcs.menu.entity.MenuPrivVo">

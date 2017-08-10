@@ -1,10 +1,11 @@
 package com.upotv.mcs.menu.controller;
 
+import com.github.pagehelper.Page;
+import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.menu.entity.Menu;
 import com.upotv.mcs.menu.entity.MenuPrivVo;
 import com.upotv.mcs.menu.entity.MenuVo;
-import com.upotv.mcs.role.entity.PermissionVo;
 import com.upotv.mcs.menu.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class MenuController {
 
     @ResponseBody
     @RequestMapping("/menuManagerPage")
-    public Map<String,Object> menuManager(Menu vo) {
+    public ResultData menuManager(Menu vo) {
         return menuService.menuManager(vo);
     }
 
@@ -55,14 +57,13 @@ public class MenuController {
 
     @ResponseBody
     @RequestMapping("/delete")
-    public ResultMessage delete(int menuid) {
-       int cnt = menuService.delete(menuid);
-        return new ResultMessage("0000",  cnt+"");
+    public ResultMessage delete(@NotNull Integer menuid) {
+        return menuService.delete(menuid);
     }
 
     @ResponseBody
     @RequestMapping("/insertMenuPriv")
-    public ResultMessage delete(@Validated MenuPrivVo vo, BindingResult result) {
+    public ResultMessage insertMenuPriv(@Validated MenuPrivVo vo, BindingResult result) {
         return menuService.insertMenuPriv(vo);
     }
 
@@ -71,4 +72,7 @@ public class MenuController {
     public ResultMessage roleMenu(){
         return menuService.roleMenu();
     }
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.upotv.mcs.menu.service;
 
+import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.menu.entity.Menu;
 import com.upotv.mcs.menu.entity.MenuPrivVo;
@@ -15,13 +16,13 @@ import java.util.Map;
 public interface MenuService {
     List<Menu> getMenuListPage(Menu menu);
 
-    Map<String,Object> menuManager(Menu vo);
+    ResultData menuManager(Menu vo);
 
     ResultMessage insert(MenuVo vo);
 
     ResultMessage update(MenuVo vo);
 
-    int delete(int menuid);
+    ResultMessage delete(Integer menuid);
 
     ResultMessage insertMenuPriv(MenuPrivVo vo);
 

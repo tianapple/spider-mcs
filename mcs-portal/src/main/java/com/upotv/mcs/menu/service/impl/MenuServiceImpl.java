@@ -1,5 +1,7 @@
 package com.upotv.mcs.menu.service.impl;
 
+import com.github.pagehelper.Page;
+import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.menu.dao.MenuDao;
 import com.upotv.mcs.menu.entity.Menu;
@@ -30,40 +32,22 @@ public class MenuServiceImpl implements MenuService{
     }
 
     @Override
-    public Map<String,Object> menuManager(Menu vo){
-        List<Menu>  list = menuDao.getMenuManagerList(vo);
-        Map<String, Object>  param = new HashMap<String,Object>();
-        List<Map<String,Object>> dateList = new ArrayList<Map<String,Object>>();
+    public ResultData menuManager(Menu vo){
+        Page<Menu> list = menuDao.getMenuManagerList(vo);
         if (list.size() > 0) {
-            Map<String,Object> map = null;
-            Map<String, Object>  params = new HashMap<String,Object>();
             for (Menu menu : list) {
-                map = new HashMap<String,Object>();
-                map.put("menuid", menu.getMenuid());
-                map.put("name", menu.getName());
-                map.put("path", menu.getPath());
-                map.put("priority", menu.getPriority());
-                map.put("isEnable", menu.getIsEnable());
-                map.put("isEnableName", menu.getIsEnableName());
-                map.put("remark", menu.getRemark());
-                map.put("createtime", menu.getCreatetime());
-                map.put("updatetime", menu.getUpdatetime());
-                map.put("priv_id", menu.getPriv_id());
-                map.put("priv_name", menu.getPriv_name());
                 if ( menu.getParentid() == -1) {
-                    map.put("_parentId", null);
+                    menu.set_parentId(null);
                 } else {
-                    map.put("_parentId", menu.getParentid());
+                    menu.set_parentId(menu.getParentid());
                 }
                 int count = menuDao.getMenuCount(menu.getMenuid());
                 if(count > 0){
-                    map.put("state", "closed");
+                    menu.setState("closed");
                 }
-                dateList.add(map);
             }
         }
-        param.put("rows", dateList);
-        return param;
+        return new ResultData(list,list.getTotal());
     }
 
     @Override
@@ -94,17 +78,22 @@ public class MenuServiceImpl implements MenuService{
     }
 
     @Override
-    public int delete(int menuid) {
-        String[] menuids = menuDao.getMenuids(menuid).split(",");
-        menuDao.deleteMenuPriv(menuids);
-        menuDao.deletePermission(menuids);
-        return menuDao.delete(menuid);
+    public ResultMessage delete(Integer menuid) {
+        int checkMenuCount = menuDao.checkMenu(menuid);
+        if(checkMenuCount > 0){
+            return new ResultMessage(ResultMessage.FAILE,"该菜单下面包含子菜单，不允许删除！");
+        }else{
+            menuDao.delete(menuid);
+            menuDao.deleteMenuPriv(menuid);
+            menuDao.deletePermission(menuid);
+        }
+
+        return new ResultMessage(ResultMessage.SUCCESS,"删除成功！");
     }
 
     @Override
     public ResultMessage insertMenuPriv(MenuPrivVo vo) {
-        String[] menuids = (vo.getMenuid()+"").split(",");
-        menuDao.deleteMenuPriv(menuids);
+        menuDao.deleteMenuPriv(vo.getMenuid());
         String[] priv_ids = vo.getPriv_id().split(",");
         String[] priv_names = vo.getPriv_name().split(",");
         for (int i = 0; i < priv_ids.length; i++) {
@@ -129,7 +118,6 @@ public class MenuServiceImpl implements MenuService{
             int parentid = mu.getParentid();
             if (!"view".equals(mu.getPriv_id())) {
                 menuid = "priv_" + mu.getMenuid() + "_" + mu.getPriv_id();
-                name = mu.getPriv_name();
                 parentid = mu.getMenuid();
             }
             nodes.append("{'id':'"+menuid+"','pId':'"+parentid+"','name': '"+name+"',open:false},");

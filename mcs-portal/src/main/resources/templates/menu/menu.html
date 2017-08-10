@@ -4,26 +4,63 @@
 <head th:include="head"></head>
 
 <script type="application/javascript">
+    /*<![CDATA[*/
     $(function () {
+
+        var isAdminDict = [{codeId:"1",codeName:"是"},{codeId:"0",codeName:"否"}];
+        var isEnableDict = [{codeId:"1",codeName:"有效"},{codeId:"0",codeName:"无效"}];
+        var permissionDict = upotv.biz.Dict.getDict("permission",true);
+
         $('#menu_treeList').treegrid({
             animate:true,
+            toolbar:'#menu_tb',
+            rownumbers: true,
             loadMsg:'数据加载中请稍后……',
             url:"menu/menuManagerPage?parentid=-1",
             idField:'menuid',
             treeField:'name',
+            fit:true,
             columns:[[
                 {title:"编号",field:'menuid',hidden:true},
                 {title:"父节点",field:'_parentId',hidden:true},
                 {title:"菜单名称",field:'name'},
-                {title:"菜单地址",field:'path'},
-                {title:"排序",field:'priority'},
-                {title:"是否有效",field:'isEnable',hidden:true},
-                {title:"是否有效",field:'isEnableName'},
-                {title:"功能",field:'priv_id',hidden:true},
-                {title:"功能",field:'priv_name'},
-                {title:"备注",field:'remark'},
-                {title:"更新时间",field:'updatetime'},
-                {title:"创建时间",field:'createtime'}
+                {title:"菜单地址",field:'path',align:'center'},
+                {title:"排序",field:'priority',align:'center'},
+                {title:"是否有效",field:'isEnable',align:'center',
+                     formatter: function (value, row, index) {
+                        return upotv.biz.Dict.getValue(value,isEnableDict);
+                    }
+                },
+                {title:"功能",field:'priv_id',width:250,align:'center',
+                     formatter:function(value, row, index){
+                        if(value){
+                            try{
+                                var val = value.split(",");
+                                var rtn = "";
+                                val.forEach(function(val,index,arr){
+                                    var name = upotv.biz.Dict.getValue(val,permissionDict);
+                                    if(name){
+                                        rtn += ","+name;
+                                    }
+                                });
+                                return rtn.slice(1);
+                            }catch(err){
+                                return "";
+                            }
+                        }else{
+                            return "";
+                        }
+                    }
+                },
+                {title:"管理员权限",field:'isAdmin',align:'center',
+                      formatter: function (value, row, index) {
+                        return upotv.biz.Dict.getValue(value,isAdminDict);
+                    }
+                },
+                {title:"图标",field:'iconCls',hidden:true},
+                {title:"备注",field:'remark',align:'center'},
+                {title:"更新时间",field:'updatetime',align:'center'},
+                {title:"创建时间",field:'createtime',align:'center'}
             ]],
             onBeforeLoad:function(row,param){
                 if (!row) {
@@ -32,10 +69,35 @@
                 $(this).treegrid('options').url = 'menu/menuManagerPage?parentid='+param.id;
             }
         });
+
+         $("#isAdmin").combobox({
+            valueField: 'codeId',
+            textField: 'codeName',
+            editable:false,
+            data:isAdminDict
+        });
+         $("#isEnable").combobox({
+            valueField: 'codeId',
+            textField: 'codeName',
+            editable:false,
+            value:1,
+            data:isEnableDict
+        });
+         $("#priv_id").combobox({
+            valueField: 'codeId',
+            textField: 'codeName',
+            editable:false,
+            data:permissionDict
+        });
+
         $("#insert_menu_btn").bind("click",function () {
             var record = $('#menu_treeList').treegrid('getSelected');
-            $("#parentid").val(record.menuid);
-            $("#menuid").val(0);
+            if(record != null){
+                $("#parentid").val(record.menuid);
+                $("#menuid").val(0);
+            }else{
+                $("#parentid").val(-1);
+            }
             var $dialog = $('#menu_dialog');
             $dialog.dialog({
                 title:'增加菜单信息',
@@ -55,15 +117,14 @@
                                 var isValid = $(this).form('enableValidation').form('validate');
                                 if (!isValid){
                                     $.messager.progress('close');
+                                    return  false;
                                 }
                             },
                             success: function (data) {
                                 data = $.parseJSON(data);
                                 if(data.retnCode == '0000'){
-                                    $.messager.alert('提示',"增加成功!",'info',function(){
                                         $dialog.dialog('close');
                                         $('#menu_treeList').treegrid('reload');
-                                    });
                                 }else{
                                     $.messager.alert('提示',data.retnMessage,'error');
                                 }
@@ -105,16 +166,14 @@
                                 var isValid = $(this).form('enableValidation').form('validate');
                                 if (!isValid){
                                     $.messager.progress('close');	// hide progress bar while the form is invalid
+                                    return false;
                                 }
                             },
                             success: function (data) {
                                 data = $.parseJSON(data);
                                 if(data.retnCode == '0000'){
-                                    $.messager.alert('提示',"修改成功!",'info',function(){
                                         $dialog.dialog('close');
-                                        $('#menu_treeList').treegrid('reload');
-
-                                    });
+                                        $('#menu_treeList').treegrid('reload',{id:1, priority:'100'});
                                 }else{
                                     $.messager.alert('提示',data.retnMessage,'error');
                                 }
@@ -141,10 +200,12 @@
                         url: "menu/delete",
                         data:{menuid:$('#menu_treeList').treegrid('getSelected').menuid},
                         success: function(msg){
+                            if(msg.retnCode == '9999'){
+                                $.messager.alert('提示',msg.retnMessage);
+                                return false;
+                            }
                             if(msg.retnCode == '0000'){
-                                $.messager.alert('提示',"删除成功!",'info',function(){
                                     $('#menu_treeList').treegrid('reload');
-                                });
                             }else{
                                 $.messager.alert('提示',msg.retnMessage,'info');
                             }
@@ -183,6 +244,7 @@
                                 var isValid = $(this).form('enableValidation').form('validate');
                                 if (!isValid){
                                     $.messager.progress('close');
+                                    return false;
                                 }
                             },
                             success: function (data) {
@@ -209,10 +271,13 @@
             });
             $dialog.show();
         });
-    })
+    });
+
+     /*]]>*/
 </script>
 <body>
-<div class="tb_btn" style="height: 25px; padding: 5px;padding-top: 5px;">
+
+<div id="menu_tb" class="tb_btn" style="height: 25px; padding: 5px;padding-top: 5px;">
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-add'" id="insert_menu_btn">添加菜单</a>
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-edit'" id="update_menu_btn">修改菜单</a>
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-cancel'" id="delete_menu_btn" >删除菜单</a>
@@ -223,8 +288,8 @@
 
 <div id="menu_dialog" style="display:none;width:400px;padding:15px 40px">
     <form id="menu_form" method="post">
-        <input id="menuid" name="menuid" hidden="hidden" value="0"/>
-        <input id="parentid" name="parentid" hidden="hidden" value="0"/>
+        <input id="menuid" name="menuid" hidden="hidden" />
+        <input id="parentid" name="parentid" hidden="hidden" />
         <div style="margin-bottom:10px">
             <div>菜单名称:</div>
             <input name="name" class="easyui-textbox" data-options="required:true"  style="width:100%;height:32px"/>
@@ -239,10 +304,17 @@
         </div>
         <div style="margin-bottom:10px">
             <div>是否有效:</div>
-            <select id="isEnable" name="isEnable"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-                <option value="1" selected="selected">有效</option>
-                <option value="0">无效</option>
+            <select id="isEnable" name="isEnable" data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
             </select>
+        </div>
+        <div style="margin-bottom:10px">
+            <div>管理员权限:</div>
+            <select id="isAdmin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
+            </select>
+        </div>
+        <div style="margin-bottom:10px">
+            <div>菜单图标:</div>
+            <input id="icon" name="iconCls"  data-options="required:true" class="easyui-textbox" panelHeight="auto" style="width:100%;height:32px"/>
         </div>
         <div style="margin-bottom:10px">
             <div>备注:</div>
@@ -256,12 +328,6 @@
         <div style="margin-bottom:20px">
             <div style="float: left;margin-top: 1%;">功能信息:</div>
             <select id="priv_id" class="easyui-combobox" data-options="multiple:true,panelHeight:'auto',required:true"  style="width:200px;">
-                <option value="view">页面权限</option>
-                <option value="add">新增</option>
-                <option value="update">更新</option>
-                <option value="delete">删除</option>
-                <option value="manager">管理权限</option>
-                <option value="query">查询权限</option>
             </select>
         </div>
     </form>

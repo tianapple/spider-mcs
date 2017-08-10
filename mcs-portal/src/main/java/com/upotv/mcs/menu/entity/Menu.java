@@ -8,17 +8,34 @@ import java.sql.Timestamp;
 public class Menu {
     private int menuid;
     private int parentid;
+    private Integer _parentId;
     private String name;
     private String path;
     private String remark;
     private String priority;
     private int isEnable;
-    private String isEnableName;
     private int isAdmin;
     private String updatetime;
     private String createtime;
     private String priv_id;
-    private String priv_name;
+    private String iconCls;
+    private String state;
+
+    public Integer get_parentId() {
+        return _parentId;
+    }
+
+    public void set_parentId(Integer _parentId) {
+        this._parentId = _parentId;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
 
     public int getMenuid() {
         return menuid;
@@ -100,14 +117,6 @@ public class Menu {
         this.createtime = createtime;
     }
 
-    public String getIsEnableName() {
-        return isEnableName;
-    }
-
-    public void setIsEnableName(String isEnableName) {
-        this.isEnableName = isEnableName;
-    }
-
     public String getPriv_id() {
         return priv_id;
     }
@@ -116,11 +125,11 @@ public class Menu {
         this.priv_id = priv_id;
     }
 
-    public String getPriv_name() {
-        return priv_name;
+    public String getIconCls() {
+        return iconCls;
     }
 
-    public void setPriv_name(String priv_name) {
-        this.priv_name = priv_name;
+    public void setIconCls(String iconCls) {
+        this.iconCls = iconCls;
     }
 }
