@@ -77,6 +77,7 @@
                 title:'增加数据字典',
                 modal: true,
                 closed: false,
+                width:450,
                 onClose : function() {
                     $(this).form('clear');
                 },
@@ -131,6 +132,7 @@
                  title:'修改标签信息',
                  modal: true,
                  closed: false,
+                 width:450,
                  onClose : function() {
                 $(this).form('clear');
             },
@@ -212,14 +214,20 @@
 
 <body>
 <table id="dict_dataList"></table>
-<div id="dict_tb">
+<div id="dict_tb" class="toolbar">
     <div class="tb_qry">
         <form id="dict_qry_form">
-            字典类型：<input name="codeType" class="easyui-textbox" style="width:120px;height:23px"/>
-            <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search" id="dict_query_btn" shiro:hasPermission="dict/view">查询</a>
-            <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" id="dict_clean_btn" shiro:hasPermission="dict/view">清空</a>
+            <div class="inp">
+                <div class="title">字典类型</div>
+                <div class="text"><input name="codeType" class="easyui-textbox"/></div>
+            </div>
+            <div class="qrybtn">
+                <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search" id="dict_query_btn" >查询</a>
+                <a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" id="dict_clean_btn" >清空</a>
+            </div>
         </form>
     </div>
+    <div class="clear"></div>
     <div class="tb_btn">
         <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="dict_create_btn" shiro:hasPermission="dict/manager" >添加</a>
         <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="dict_update_btn" shiro:hasPermission="dict/manager">修改</a>
@@ -227,37 +235,44 @@
     </div>
 </div>
 
-<div id="dict_dialog" style="display:none;width:400px;padding:15px 40px;">
+<div id="dict_dialog" class="dialog" data-options="modal:true">
     <form id="dict_form" method="post">
         <input type="hidden" name="id"/>
-        <div style="margin-bottom:10px">
-            <div>字典类型：</div>
-            <input id="dict_codeType_id" name="codeType" class="easyui-textbox" data-options="required:true"
-                   style="width:100%;height:28px"/>
+        <div class="inp">
+            <div class="title">字典类型</div>
+            <div class="text">
+                <input id="dict_codeType_id" name="codeType" class="easyui-textbox" data-options="required:true"/>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>字典ID：</div>
-            <input name="codeId" class="easyui-textbox" data-options="required:true"
-                   style="width:100%;height:28px"/>
+        <div class="inp">
+            <div class="title">字典ID</div>
+            <div class="text">
+                <input name="codeId" class="easyui-textbox" data-options="required:true"/>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>字典名称：</div>
-            <input name="codeName" class="easyui-textbox" data-options="required:true"
-                   style="width:100%;height:28px"/>
+        <div class="inp">
+            <div class="title">字典名称</div>
+            <div class="text">
+                <input name="codeName" class="easyui-textbox" data-options="required:true"/>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>备注：</div>
-            <input name="remark" class="easyui-textbox" data-options="required:true"  style="width:100%;height:28px"/>
+        <div class="inp">
+            <div class="title">备注</div>
+            <div class="text">
+                <input name="remark" class="easyui-textbox" data-options="required:true"/>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>排序：</div>
-            <input name="priority" class="easyui-textbox" data-options="required:true"
-                   style="width:100%;height:28px"/>
+        <div class="inp">
+            <div class="title">排序</div>
+            <div class="text">
+                <input name="priority" class="easyui-textbox" data-options="required:true"/>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>是否启用：</div>
-            <select id="dict_isEnable_id" name="isEnable" class="easyui-combobox" data-options="required:true"
-                    style="width:100%;height:28px" />
+        <div class="inp">
+            <div class="title">是否启用</div>
+            <div class="text">
+                <select id="dict_isEnable_id" name="isEnable" class="easyui-combobox" data-options="required:true"/>
+            </div>
         </div>
     </form>
 </div>

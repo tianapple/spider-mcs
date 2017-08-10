@@ -103,6 +103,7 @@
                 title:'增加菜单信息',
                 modal: true,
                 closed: false,
+                width:450,
                 onClose : function() {
                     $(this).form('clear');
                 },
@@ -144,14 +145,19 @@
         });
 
         $("#update_menu_btn").bind("click",function () {
-            var record = $('#menu_treeList').treegrid('getSelected');
-            $("#menu_form").form('load',record);
+            var record = $('#menu_treeList').treegrid('getSelections');
+            if(record.length != 1){
+                $.messager.alert('提示',"请选择一条数据执行操作");
+                return false;
+            }
+            $("#menu_form").form('load',record[0]);
             $("#parentid").val(0);
             var $dialog = $('#menu_dialog');
             $dialog.dialog({
                 title:'修改菜单信息',
                 modal: true,
                 closed: false,
+                width:450,
                 onClose : function() {
                     $(this).form('clear');
                 },
@@ -277,7 +283,7 @@
 </script>
 <body>
 
-<div id="menu_tb" class="tb_btn" style="height: 25px; padding: 5px;padding-top: 5px;">
+<div id="menu_tb" class="tb_btn">
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-add'" id="insert_menu_btn">添加菜单</a>
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-edit'" id="update_menu_btn">修改菜单</a>
     <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-cancel'" id="delete_menu_btn" >删除菜单</a>
@@ -286,39 +292,45 @@
 
 <table id="menu_treeList"> </table>
 
-<div id="menu_dialog" style="display:none;width:400px;padding:15px 40px">
+<div id="menu_dialog" class="dialog" data-options="modal:true">
     <form id="menu_form" method="post">
         <input id="menuid" name="menuid" hidden="hidden" />
         <input id="parentid" name="parentid" hidden="hidden" />
-        <div style="margin-bottom:10px">
-            <div>菜单名称:</div>
-            <input name="name" class="easyui-textbox" data-options="required:true"  style="width:100%;height:32px"/>
+        <div class="inp">
+            <div class="title">菜单名称</div>
+            <div class="text"><input name="name" class="easyui-textbox" data-options="required:true"/></div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>菜单地址:</div>
-            <input name="path" class="easyui-textbox" data-options="required:true"  style="width:100%;height:32px"/>
+        <div class="inp">
+            <div class="title">菜单地址</div>
+            <div class="text"><input name="path" class="easyui-textbox" data-options="required:true"/></div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>排序:</div>
-            <input name="priority" class="easyui-numberbox" data-options="required:true"  style="width:100%;height:32px"/>
+        <div class="inp">
+            <div class="title">排序</div>
+            <div class="text"><input name="priority" class="easyui-numberbox" data-options="required:true"/></div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>是否有效:</div>
-            <select id="isEnable" name="isEnable" data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-            </select>
+        <div class="inp">
+            <div class="title">是否有效</div>
+            <div class="text">
+                <select id="isEnable" name="isEnable" data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>管理员权限:</div>
-            <select id="isAdmin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-            </select>
+        <div class="inp">
+            <div class="title">管理员权限</div>
+            <div class="text">
+                <select id="isAdmin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>菜单图标:</div>
-            <input id="icon" name="iconCls"  data-options="required:true" class="easyui-textbox" panelHeight="auto" style="width:100%;height:32px"/>
+        <div class="inp">
+            <div class="title">菜单图标</div>
+            <div class="text">
+                <input id="icon" name="iconCls"  data-options="required:true" class="easyui-textbox" panelHeight="auto"/>
+            </div>
         </div>
-        <div style="margin-bottom:10px">
-            <div>备注:</div>
-            <input name="remark" class="easyui-textbox"  style="width:100%;height:32px"/>
+        <div class="inp">
+            <div class="title">备注</div>
+            <div class="text">
+                <input name="remark" class="easyui-textbox"/>
+            </div>
         </div>
     </form>
 </div>

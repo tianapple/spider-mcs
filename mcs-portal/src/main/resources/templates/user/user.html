@@ -93,6 +93,7 @@
                 title:'创建用户',
                 modal: true,
                 closed: false,
+                width:450,
                 onClose : function() {
                     $(this).form('clear');
                 },
@@ -144,6 +145,7 @@
                 title:'修改用户信息',
                 modal: true,
                 closed: false,
+                width:450,
                 onClose : function() {
                     $(this).form('clear');
                 },
@@ -261,46 +263,62 @@
         </div>
     </div>
 
-    <div id="user_dialog" style="display:none;width:400px;height:450px;padding:15px 40px">
+    <div id="user_dialog" class="dialog" data-options="modal:true">
         <form id="user_form" method="post">
-            <div style="margin-bottom:10px">
-                <div>用户名:</div>
-                <input id="user_userName" name="userName"  data-options="required:true"  class="easyui-textbox" style="width:100%;height:32px"/>
+            <div class="inp">
+                <div class="title">用户名</div>
+                <div class="text">
+                    <input id="user_userName" name="userName"  data-options="required:true"  class="easyui-textbox"/>
+                </div>
             </div>
-            <div style="margin-bottom:10px" id="user_form_password">
-                <div>密码:</div>
-                <input name="password" class="easyui-passwordbox" data-options="required:true"  style="width:100%;height:32px"/>
+            <div class="inp" id="user_form_password">
+                <div class="title">密码</div>
+                <div class="text">
+                    <input name="password" class="easyui-passwordbox" data-options="required:true"/>
+                </div>
             </div>
-            <div style="margin-bottom:10px">
-                <div>姓名:</div>
-                <input name="name" class="easyui-textbox" data-options="required:true"  style="width:100%;height:32px"/>
+            <div class="inp">
+                <div class="title">姓名</div>
+                <div class="text">
+                    <input name="name" class="easyui-textbox" data-options="required:true" />
+                </div>
             </div>
-            <div style="margin-bottom:10px">
-                <div>性别:</div>
-                <select id="user_gender" name="gender"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-                </select>
+            <div class="inp">
+                <div class="title">性别</div>
+                <div class="text">
+                    <select id="user_gender" name="gender"  data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
+                </div>
             </div>
-            <div style="margin-bottom:10px">
-                <div>是否管理员:</div>
-                <select id="user_lock" name="isLock"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-                </select>
+            <div class="inp">
+                <div class="title">是否管理员</div>
+                <div class="text">
+                    <select id="user_lock" name="isLock"  data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
+                </div>
             </div>
-            <div style="margin-bottom:10px">
-                <div>是否锁定:</div>
-                <select id="user_admin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto" style="width:100%;height:32px">
-                </select>
+            <div class="inp">
+                <div class="title">是否锁定</div>
+                <div class="text">
+                    <select id="user_admin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto">
+                    </select>
+                </div>
             </div>
-            <div style="margin-bottom:10px">
-                <div>Email:</div>
-                <input name="email" class="easyui-textbox" data-options="prompt:'请输入Email...',validType:'email'" style="width:100%;height:32px"/>
+            <div class="inp">
+                <div class="title">Email</div>
+                <div class="text">
+                    <input name="email" class="easyui-textbox" data-options="prompt:'请输入Email...',validType:'email'"/>
+                </div>
             </div>
-            <div style="margin-bottom:15px">
-                <div>手机号:</div>
-                <input name="phone" class="easyui-textbox" style="width:100%;height:32px"/>
+            <div class="inp">
+                <div class="title">手机号</div>
+                <div class="text">
+                    <input name="phone" class="easyui-textbox" />
+                </div>
             </div>
-            <div style="margin-bottom:10px">
-                <div>备注:</div>
-                <input name="remark" class="easyui-textbox" style="width:100%;height:32px"/>
+            <div class="inp">
+                <div class="title">备注</div>
+                <div class="text">
+                    <input name="remark" class="easyui-textbox"/>
+                </div>
             </div>
         </form>
     </div>
