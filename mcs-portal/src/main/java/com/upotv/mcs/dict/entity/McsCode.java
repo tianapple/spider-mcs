@@ -1,6 +1,8 @@
 package com.upotv.mcs.dict.entity;
 
 
+import com.upotv.mcs.util.DateUtil;
+
 import java.util.Date;
 
 /**
@@ -73,16 +75,16 @@ public class McsCode {
         this.isEnable = isEnable;
     }
 
-    public Date getUpdatetime() {
-        return updatetime;
+    public String getUpdatetime() {
+        return DateUtil.getDateTimeFormat(updatetime);
     }
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public String getCreatetime() {
+        return DateUtil.getDateTimeFormat(createtime);
     }
 
     public void setCreatetime(Date createtime) {

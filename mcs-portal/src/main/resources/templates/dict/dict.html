@@ -34,18 +34,18 @@
             columns:[[
                 {field:"ck" ,checkbox:true},
                 {field:'id',hidden:true},
-                {field:'codeType',title:'字典类型',width:100},
-                {field:'codeId',title:'字典ID',width:150},
-                {field:'codeName',title:'字典名称', width:100},
-                {field:'remark',title:'备注',width:100},
-                {field:'priority',title:'排序', width:100},
-                {field:'isEnable',title:'是否启用', width:100,
+                {field:'codeType',title:'字典类型',width:100,align:'center'},
+                {field:'codeId',title:'字典ID',width:150,align:'center'},
+                {field:'codeName',title:'字典名称', width:100,align:'center'},
+                {field:'remark',title:'备注',width:100,align:'center'},
+                {field:'priority',title:'排序', width:100,align:'center'},
+                {field:'isEnable',title:'是否启用', width:100,align:'center',
                     formatter:function(value, row, index){
                         return upotv.biz.Dict.getValue(value,isEnableDict);
                     }
                 },
-                {field:'updatetime',title:'更新时间', width:200},
-                {field:'createtime',title:'创建时间', width:200}
+                {field:'updatetime',title:'更新时间', width:200,align:'center'},
+                {field:'createtime',title:'创建时间', width:200,align:'center'}
             ]],
         });
 
