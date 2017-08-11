@@ -191,6 +191,10 @@
                 $.messager.alert('提示','请选择要删除的行!','info');
                 return false;
             }
+            if("admin" == record.userId){
+                $.messager.alert('提示','超级管理员用户不可删除','info');
+                return false;
+            }
             $.messager.confirm('提示','确定要删除该用户吗?',function(result){
                 if (result){
                     $.ajax({
