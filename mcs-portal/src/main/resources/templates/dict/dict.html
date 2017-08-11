@@ -204,6 +204,21 @@
                  }
             });
         });
+
+        $("#dict_init_btn").click(function(){
+            $.ajax({
+                type: "POST",
+                url: "dict/init",
+                data:{},
+                success: function(msg){
+                    if(msg.retnCode == '0000'){
+                        $.messager.alert('提示',"刷新成功!",'info');
+                    }else{
+                        $.messager.alert('提示',msg.retnMessage,'info');
+                    }
+                }
+            });
+        })
     });
 
 
@@ -232,6 +247,7 @@
         <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" id="dict_create_btn" shiro:hasPermission="dict/manager" >添加</a>
         <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" id="dict_update_btn" shiro:hasPermission="dict/manager">修改</a>
         <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" id="dict_del_btn" shiro:hasPermission="dict/manager">删除</a>
+        <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-2012080412111" id="dict_init_btn" shiro:hasPermission="dict/manager">刷新缓存</a>
     </div>
 </div>
 
