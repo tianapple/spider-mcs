@@ -37,6 +37,7 @@ public class DictServiceImpl implements DictService {
     @PostConstruct
     public int initDict() {
         LOGGER.debug("初始化字典表");
+        typecodes.clear();
         List<McsCode> dictList = dictDao.getAllDict();
         for (McsCode mcsCode : dictList) {
             if (!typecodes.containsKey(mcsCode.getCodeType())) {
