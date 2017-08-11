@@ -54,7 +54,7 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         logEntity.setParam(paramData);
 
         logEntity.setPath(uri);
-        Mcs_user user = (Mcs_user) SecurityUtils.getSubject().getPrincipal();
+        Mcs_user user = (Mcs_user)request.getSession().getAttribute("session_user");
         if(user != null){
             logEntity.setUsername(user.getUserName());
         }else{

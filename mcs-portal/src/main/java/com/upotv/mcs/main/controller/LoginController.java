@@ -60,6 +60,7 @@ public class LoginController {
         session.setAttribute("loginMsg", info);
 
         if ("success".equals(info)) {
+            session.setAttribute("session_user",(Mcs_user) SecurityUtils.getSubject().getPrincipal());
             response.sendRedirect("/main");
         } else {
             response.sendRedirect("/");
