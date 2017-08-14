@@ -36,6 +36,26 @@ $.fn.serializeObject = function () {
     return o;
 };
 
+/**
+ *
+ * @requires jQuery
+ *
+ * 将form表单元素的值序列化成对象
+ *
+ * @returns object
+ */
+$.serializeObject2 = function(form) {
+    var o = {};
+    $.each(form.serializeArray(), function(index) {
+        if (o[this['name']]) {
+            o[this['name']] = o[this['name']] + "," + this['value'];
+        } else {
+            o[this['name']] = this['value'];
+        }
+    });
+    return o;
+};
+
 //全局配置ajax
 $.ajaxSetup({
     type: 'POST',
@@ -46,7 +66,15 @@ $.ajaxSetup({
                 top.window.location.href = '/';
             });
         }
-    }
+    },
+    error : function(XMLHttpRequest, textStatus, errorThrown) {
+        try {
+            $.messager.progress('close');
+            $.messager.alert('错误', XMLHttpRequest.responseText);
+        } catch (e) {
+            alert(XMLHttpRequest.responseText);
+        }
+    },
 });
 
 /**
@@ -143,3 +171,25 @@ $.fn.panel.defaults.onBeforeDestroy = function() {
     } catch (e) {
     }
 };
+
+/**
+ *
+ * @requires jQuery
+ *
+ * 页面加载加载进度条启用
+ * **/
+function progressLoad(){
+    $("<div class=\"datagrid-mask\" style=\"position:absolute;z-index: 9999;\"></div>").css({display:"block",width:"100%",height:$(window).height()}).appendTo("body");
+    $("<div class=\"datagrid-mask-msg\" style=\"position:absolute;z-index: 9999;\"></div>").html("正在处理，请稍候。。。").appendTo("body").css({display:"block",left:($(document.body).outerWidth(true) - 190) / 2,top:($(window).height() - 45) / 2});
+}
+
+/**
+ *
+ * @requires jQuery
+ *
+ * 页面加载加载进度条关闭
+ * **/
+function progressClose(){
+    $(".datagrid-mask").remove();
+    $(".datagrid-mask-msg").remove();
+}
