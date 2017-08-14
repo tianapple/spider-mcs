@@ -35,7 +35,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(mcsInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/js", "/css", "/images")
-                .excludePathPatterns("/login","/logout","/getMenu","/dict/*")
+                .excludePathPatterns("/login","/logout","/getMenu","/dict/getDict")
+                .excludePathPatterns("/interface/**")
                 .excludePathPatterns("/");
         super.addInterceptors(registry);
     }

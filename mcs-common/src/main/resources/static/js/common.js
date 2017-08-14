@@ -70,12 +70,34 @@ $.ajaxSetup({
     error : function(XMLHttpRequest, textStatus, errorThrown) {
         try {
             $.messager.progress('close');
-            $.messager.alert('错误', XMLHttpRequest.responseText);
+            data = $.parseJSON(XMLHttpRequest.responseText);
+            $.messager.alert('错误',data.retnMessage);
         } catch (e) {
-            alert(XMLHttpRequest.responseText);
+            $.messager.alert('错误', XMLHttpRequest.responseText);
         }
-    },
+    }
 });
+
+/**
+ *
+ *
+ * @requires jQuery,EasyUI
+ *
+ * 通用错误提示
+ *
+ * 用于datagrid/treegrid/tree/combogrid/combobox/form加载数据出错时的操作
+ */
+var easyuiErrorFunction = function(XMLHttpRequest) {
+    data = $.parseJSON(XMLHttpRequest.responseText);
+    $.messager.alert('错误',data.retnMessage);
+};
+
+$.fn.datagrid.defaults.onLoadError = easyuiErrorFunction;
+$.fn.treegrid.defaults.onLoadError = easyuiErrorFunction;
+$.fn.tree.defaults.onLoadError = easyuiErrorFunction;
+$.fn.combogrid.defaults.onLoadError = easyuiErrorFunction;
+$.fn.combobox.defaults.onLoadError = easyuiErrorFunction;
+$.fn.form.defaults.onLoadError = easyuiErrorFunction;
 
 /**
  * 在页面中任何嵌套层次的窗口中获取顶层窗口
