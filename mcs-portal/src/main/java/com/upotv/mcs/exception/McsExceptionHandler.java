@@ -42,9 +42,12 @@ public class McsExceptionHandler {
         } else if (ex instanceof ParamValidException) {
             resp.setRetnCode("30001");
             resp.setRetnMessage(ex.getMessage());
+        } else if (ex instanceof McsException) {
+            resp.setRetnCode("80001");
+            resp.setRetnMessage(ex.getMessage());
         } else {
             resp.setRetnCode("9999");
-            resp.setRetnMessage(ex.getMessage());
+            resp.setRetnMessage("系统错误，请联系管理员");
         }
 
         StringWriter sw = new StringWriter();
