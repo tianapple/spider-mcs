@@ -44,7 +44,7 @@ public class McsExceptionHandler {
             resp.setRetnMessage(ex.getMessage());
         } else {
             resp.setRetnCode("9999");
-            resp.setRetnMessage("系统错误,请联系管理员");
+            resp.setRetnMessage(ex.getMessage());
         }
 
         StringWriter sw = new StringWriter();
