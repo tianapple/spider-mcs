@@ -41,8 +41,6 @@ public class UserServiceImpl implements UserService {
             return new ResultMessage(ResultMessage.FAILE,"用户已经存在");
         }
         vo.setPassword(md5(vo.getPassword(), 1));
-        vo.setIsLock(1);
-        vo.setIsAdmin(0);
         int cnt = userDao.insert(vo);
         return new ResultMessage(ResultMessage.SUCCESS,cnt+"");
     }

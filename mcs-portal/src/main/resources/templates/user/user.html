@@ -13,7 +13,7 @@
         var genderDict = [{codeId:"0",codeName:"女"},{codeId:"1",codeName:"男"}];
 
         //是否锁定
-        var isLockDict = [{codeId:"0",codeName:"不启用"},{codeId:"1",codeName:"启用"}];
+        var isLockDict = [{codeId:"0",codeName:"启用"},{codeId:"1",codeName:"禁用"}];
 
         //是否管理员
         var isAdminDict = [{codeId:"1",codeName:"是"},{codeId:"0",codeName:"否"}];
@@ -50,7 +50,7 @@
                         return upotv.biz.Dict.getValue(value,isAdminDict);
                     }
                 },
-                {field:'isLock',title:'是否锁定',align:'center',width:120,
+                {field:'isLock',title:'是否启用',align:'center',width:120,
                     formatter:function(value, row, index){
                         return upotv.biz.Dict.getValue(value,isLockDict);
                     }
@@ -73,13 +73,13 @@
         $("#user_lock").combobox({
             valueField: 'codeId',
             textField: 'codeName',
-            data:isAdminDict
+            data:isLockDict
         });
 
         $("#user_admin").combobox({
             valueField: 'codeId',
             textField: 'codeName',
-            data:isLockDict
+            data:isAdminDict
         });
 
         //新增用户
@@ -296,13 +296,13 @@
             <div class="inp">
                 <div class="title">是否管理员</div>
                 <div class="text">
-                    <select id="user_lock" name="isLock"  data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
+                    <select id="user_admin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
                 </div>
             </div>
             <div class="inp">
-                <div class="title">是否锁定</div>
+                <div class="title">是否启用</div>
                 <div class="text">
-                    <select id="user_admin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto">
+                    <select id="user_lock" name="isLock"  data-options="required:true" class="easyui-combobox" panelHeight="auto">
                     </select>
                 </div>
             </div>
