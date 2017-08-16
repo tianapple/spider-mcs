@@ -24,4 +24,6 @@ public interface UserDao extends McsBaseDao {
     public int insertUserRole(UserRoleVo vo);
 
     public int delUserRole(UserRoleVo vo);
+
+    public int changepwd(ChangePwdVo vo);
 }

@@ -21,4 +21,6 @@ public interface UserService {
     public Page<UserRole> getUserRoleListPage(UserRoleQryVo vo);
 
     public int relateRole(UserRoleVo vo);
+
+    public ResultMessage changepwd(ChangePwdVo vo);
 }

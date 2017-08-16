@@ -74,6 +74,27 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public ResultMessage changepwd(ChangePwdVo vo) {
+        if(!vo.getPassword().equals(vo.getRepassword())){
+            return new ResultMessage(ResultMessage.FAILE,"输入的两次密码不一致");
+        }
+
+        User user = userDao.getUserByUserName(vo.getUserName());
+        if(user == null){
+            return new ResultMessage(ResultMessage.FAILE,"用户不存在");
+        }
+
+        if(!user.getPassword().equals(md5(vo.getOldPassword(), 1))){
+            return new ResultMessage(ResultMessage.FAILE,"原密码不正确");
+        }
+
+        vo.setPassword(md5(vo.getPassword(), 1));
+
+        int cnt = userDao.changepwd(vo);
+        return  new ResultMessage(ResultMessage.SUCCESS,cnt+"");
+    }
+
 
     /**
      * MD5

@@ -4,7 +4,8 @@
 <head th:include="head"></head>
 <title>集成播控平台V4</title>
 
-<script type="text/javascript">
+<script th:inline="javascript">
+    var userName =  [[${session.session_user.userName}]];
 /*<![CDATA[*/
     $(document).ready(function() {
         $.ajax({
@@ -84,6 +85,57 @@
         });
     }
 
+    function changepwd(){
+        var $dialog = $('#changepwd_dialog');
+        $("#userName").val(userName);
+        $dialog.dialog({
+            title:'修改密码',
+            modal: true,
+            closed: false,
+            width:450,
+            height:200,
+            onClose : function() {
+                $(this).form('clear');
+            },
+            buttons:[{
+                text:'保存',
+                iconCls:'icon-ok',
+                handler:function(){
+                    $.messager.progress({title:'正在执行'});
+                    $('#changepwd_form').form('submit',{
+                        url:basePath+'user/changepwd',
+                        onSubmit:function(param){
+                            var isValid = $(this).form('enableValidation').form('validate');
+                            if (!isValid){
+                                $.messager.progress('close');
+                                return false;
+                            }
+                        },
+                        success: function (data) {
+                            data = $.parseJSON(data);
+                            if(data.retnCode == '0000'){
+                                $dialog.dialog('close');
+                                $.messager.alert('提示',"修改成功,点击确定重新登录",'info',function(){
+                                    window.location.href='/logout';
+                                });
+                            }else{
+                                $.messager.alert('提示',data.retnMessage,'error');
+                            }
+                            $.messager.progress('close');
+                        }
+                    });
+                }
+            },{
+                text:'关闭',
+                iconCls:'icon-no',
+                handler:function(){
+                    $dialog.dialog('close');
+                }
+            }]
+        });
+        $dialog.show();
+    }
+
 /*]]>*/
 </script>
 
@@ -93,10 +145,11 @@
             <div class="topleft">
                 <a href="#" target="_parent"><img src="images/logo.png" title="系统首页" /></a>
             </div>
-            <div class="topright" style="width: 167px">
+            <div class="topright" style="width: 267px">
                 <div style="margin: 60px 0 0 20px;color: #fafafa;">
-                <span style="float: left;display: block"><shiro:principal property="userName" /></span>
+                <span style="float: left;display: block"><shiro:principal property="name" /></span>
                 <a href="javascript:void(0)" onclick="logout()" style="float: left;padding-left: 20px;color: #fafafa;">安全退出</a>
+                <a href="javascript:void(0)" onclick="changepwd()" style="float: left;padding-left: 20px;color: #fafafa;">修改密码</a>
                 </div>
             </div>
         </div>
@@ -108,6 +161,24 @@
             <div id="tabs" class="easyui-tabs" data-options="fit:true,border:false">
             </div>
         </div>
+    </div>
+
+    <div id="changepwd_dialog" class="dialog" data-options="modal:true">
+        <form id="changepwd_form" method="post">
+            <div class="inp">
+                <div class="title">原密码</div>
+                <div class="text"><input name="oldPassword" class="easyui-passwordbox" data-options="required:true"/></div>
+            </div>
+            <div class="inp">
+                <div class="title">新密码</div>
+                <div class="text"><input id="password" name="password" class="easyui-passwordbox" data-options="required:true,validType:'isPwd'"/></div>
+            </div>
+            <div class="inp">
+                <div class="title">确认密码</div>
+                <div class="text"><input id="repassword"  name="repassword" class="easyui-passwordbox" validType="equalTo['#password']" data-options='required:true'/></div>
+            </div>
+            <input id="userName" name="userName" type="hidden" />
+        </form>
     </div>
 </body>
 

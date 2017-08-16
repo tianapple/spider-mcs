@@ -89,8 +89,10 @@ public class UserController {
      *
      * @return
      */
-    @RequestMapping("/toEditPwd")
-    public String editPwd() {
-        return "user/userEditPwd";
+    @ResponseBody
+    @RequestMapping("/changepwd")
+    @RequiresPermissions("user/manager")
+    public ResultMessage update(@Validated ChangePwdVo vo, BindingResult result) {
+        return userService.changepwd(vo);
     }
 }

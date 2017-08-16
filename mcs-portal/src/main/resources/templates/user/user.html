@@ -160,6 +160,7 @@
                                 var isValid = $(this).form('enableValidation').form('validate');
                                 if (!isValid){
                                     $.messager.progress('close');	// hide progress bar while the form is invalid
+                                    return false;
                                 }
                             },
                             success: function (data) {

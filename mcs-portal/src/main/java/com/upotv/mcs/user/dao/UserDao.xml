@@ -53,6 +53,10 @@
         where  user_name = #{userName}
     </update>
 
+    <update id="changepwd"  parameterType="com.upotv.mcs.user.entity.ChangePwdVo">
+        update mcs_user set password = #{password} where user_name = #{userName}
+    </update>
+
     <delete id="delete" parameterType="int">
         DELETE  from mcs_user where user_id = #{userId}
     </delete>
