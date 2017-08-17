@@ -44,9 +44,9 @@ $.fn.serializeObject = function () {
  *
  * @returns object
  */
-$.serializeObject2 = function(form) {
+$.fn.serializeObject2 = function() {
     var o = {};
-    $.each(form.serializeArray(), function(index) {
+    $.each(this.serializeArray(), function(index) {
         if (o[this['name']]) {
             o[this['name']] = o[this['name']] + "," + this['value'];
         } else {
