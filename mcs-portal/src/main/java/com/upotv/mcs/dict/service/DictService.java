@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.dict.entity.McsCode;
 import com.upotv.mcs.dict.entity.McsCodeSelectVo;
+import com.upotv.mcs.dict.entity.McsCodeType;
 import com.upotv.mcs.dict.entity.McsCodeVo;
 
 import java.util.List;
@@ -24,4 +25,6 @@ public interface DictService {
     ResultMessage update(McsCodeVo vo);
 
     ResultMessage del(Integer id);
+
+    List<McsCodeType> getCodeType();
 }

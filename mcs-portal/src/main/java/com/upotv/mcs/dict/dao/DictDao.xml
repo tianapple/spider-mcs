@@ -59,4 +59,12 @@
         DELETE  from mcs_code where id = #{id}
     </delete>
 
+    <resultMap id="McsCodeTypeMap" type="com.upotv.mcs.dict.entity.McsCodeType">
+        <result property="codeType" column="code_type"/>
+    </resultMap>
+
+    <select id="getCodeType" resultMap="McsCodeTypeMap">
+        SELECT DISTINCT code_type FROM mcs_code
+    </select>
+
 </mapper>
