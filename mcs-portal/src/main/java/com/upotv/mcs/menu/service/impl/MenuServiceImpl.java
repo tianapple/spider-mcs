@@ -7,7 +7,6 @@ import com.upotv.mcs.menu.dao.MenuDao;
 import com.upotv.mcs.menu.entity.Menu;
 import com.upotv.mcs.menu.entity.MenuPrivVo;
 import com.upotv.mcs.menu.entity.MenuVo;
-import com.upotv.mcs.role.entity.PermissionVo;
 import com.upotv.mcs.menu.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -5,7 +5,6 @@ import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.menu.entity.Menu;
 import com.upotv.mcs.menu.entity.MenuPrivVo;
 import com.upotv.mcs.menu.entity.MenuVo;
-import com.upotv.mcs.role.entity.PermissionVo;
 
 import java.util.List;
 import java.util.Map;
