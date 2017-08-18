@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head th:include="head"></head>
 <script th:inline="javascript">
-  var basePath = [[${#httpServletRequest.getAttribute('basePath')}]];
+
     /*<![CDATA[*/
     $(function(){
         $('#role_dataList').datagrid({
@@ -10,7 +10,7 @@
             toolbar:'#tb',
             width:'100%',
             height:'100%',
-            url:'role/getRoleListPage',
+            url:basePath+'role/getRoleListPage',
             loadMsg:'数据加载中,请稍后……',
             singleSelect: true,
             autoRowHeight:false,
@@ -18,16 +18,17 @@
             nowrap:true,
             striped: true,
             rownumbers:true,
-            fitColumns:true,
+            //fitColumns:true,
             showFooter:true,
             pageSize:20,
             pageList:[20,30,50],
             columns:[[
-                {field:'roleid',hidden:true},
-                {field:'name',title:'角色名称'},
-                {field:'remark',title:'备注'},
-                {field:'updateTime',title:'更新时间'},
-                {field:'createTime',title:'创建时间'}
+                {field: 'ck', title: '', checkbox: true},
+                {field:'roleid',title:'角色ID' , width: 100},
+                {field:'name',title:'角色名称',align:'center' , width: 100 },
+                {field:'remark',title:'备注' , width: 500},
+                {field:'updateTime',title:'更新时间',align:'center', width: 180 },
+                {field:'createTime',title:'创建时间',align:'center', width: 180 }
             ]]
         });
 
@@ -37,7 +38,7 @@
             $('#role_dataList').datagrid('load',params);
         });
 
-        //新增用户
+        //新增角色
         $("#insert_btn").click(function(){
             var $dialog = $('#role_dialog');
             $dialog.dialog({
@@ -53,17 +54,15 @@
                     iconCls:'icon-ok',
                     handler:function(){
                         $('#role_form').form('submit',{
-                            url:'role/insert',
+                            url:basePath+'role/insert',
                             onSubmit:function(){
                                 return $(this).form('enableValidation').form('validate');
                             },
                             success: function (data) {
                                 data = $.parseJSON(data);
                                 if(data.retnCode == '0000'){
-                                    $.messager.alert('提示',"添加成功!",'info',function(){
-                                        $dialog.dialog('close');
-                                        $('#role_dataList').datagrid('reload');
-                                    });
+                                    $dialog.dialog('close');
+                                    $('#role_dataList').datagrid('reload');
                                 }else{
                                     $.messager.alert('提示',data.retnMessage,'error');
                                 }
@@ -81,13 +80,18 @@
             $dialog.show();
         });
 
-        //更新用户
+        //更新角色
         $("#update_btn").click(function(){
             var record = $('#role_dataList').datagrid('getSelected');
+            if(!record){
+                $.messager.alert('提示','请选择一行!','info');
+                return false;
+            }
+
             $("#role_form").form('load',record);
             var $dialog = $('#role_dialog');
             $dialog.dialog({
-                title:'修改用户信息',
+                title:'修改角色信息',
                 modal: true,
                 closed: false,
                 width:450,
@@ -98,24 +102,104 @@
                     text:'保存',
                     iconCls:'icon-ok',
                     handler:function(){
-                        $.messager.progress({title:'正在执行'});
                         $('#role_form').form('submit',{
-                            url:'role/update',
+                            url:basePath+'role/update',
                             onSubmit:function(param){
-                                var isValid = $(this).form('enableValidation').form('validate');
-                                if (!isValid){
-                                    $.messager.progress('close');	// hide progress bar while the form is invalid
-                                }
+                                return $(this).form('enableValidation').form('validate');
                             },
                             success: function (data) {
                                 data = $.parseJSON(data);
                                 if(data.retnCode == '0000'){
-                                    $.messager.alert('提示',"修改成功!",'info',function(){
-                                        $dialog.dialog('close');
-                                        $('#role_dataList').datagrid('reload');
-                                    });
+                                    $dialog.dialog('close');
+                                    $('#role_dataList').datagrid('reload');
                                 }else{
                                     $.messager.alert('提示',data.retnMessage,'error');
+                                }
+                            }
+                        });
+                    }
+                },{
+                    text:'关闭',
+                    iconCls:'icon-no',
+                    handler:function(){
+                        $dialog.dialog('close');
+                    }
+                }]
+            });
+            $dialog.show();
+        });
+
+        //删除角色
+        $("#delete_btn").click(function(){
+            var record = $('#role_dataList').datagrid('getSelected');
+            if(!record){
+                $.messager.alert('提示','请选择一行!','info');
+                return false;
+            }
+            var roleId = record.roleid;
+
+            $.messager.confirm('提示','确定要删除该角色吗?',function(result){
+                if (result){
+                    $.ajax({
+                        type: "POST",
+                        url: basePath+"role/delete",
+                        data:{roleid:roleId},
+                        success: function(msg){
+                            if(msg.retnCode == '0000'){
+                                $('#role_dataList').datagrid('reload');
+                            }else{
+                                $.messager.alert('提示',msg.retnMessage,'info');
+                            }
+                        }
+                    });
+                }
+            });
+        });
+
+        <!--设置权限-->
+        $("#role_relate_btn").click(function(){
+            var record = $('#role_dataList').datagrid('getSelected');
+            if(!record){
+                $.messager.alert('提示','请选择一行!','info');
+                return false;
+            }
+            var roleId = record.roleid ;
+
+            var $dialog = $('<div></div>');
+            $dialog.dialog({
+                title: roleId+"-->设置权限",
+                href:basePath+'/role/toAuthPriv?roleId='+roleId,
+                width:350,
+                height:500,
+                border:0,
+                modal: true,
+                onClose : function() {
+                    $(this).dialog('destroy');
+                },
+                buttons:[{
+                    text:'保存',
+                    iconCls:'icon-ok',
+                    handler:function(){
+                        var nodes = $('#tt').tree('getChecked', ['checked','indeterminate']);
+                        var ids = [];
+                        for(var i=0; i<nodes.length; i++){
+                            ids.push(nodes[i].id);
+                        }
+                        $.ajax({
+                            type: "POST",
+                            url: basePath + "role/authPriv",
+                            data:{
+                                ids:ids,
+                                roleId:roleId
+                            },
+                            beforeSend:function(){
+                                $.messager.progress({title:'正在执行'});
+                            },
+                            success: function(msg){
+                                if(msg.retnCode == '0000'){
+                                    $.messager.alert('提示',"设置成功！",'info');
+                                }else{
+                                    $.messager.alert('提示',msg.retnMessage,'info');
                                 }
                                 $.messager.progress('close');
                             }
@@ -132,27 +216,6 @@
             $dialog.show();
         });
 
-        //删除用户
-        $("#delete_btn").click(function(){
-            $.messager.confirm('提示','确定要删除该角色吗?',function(result){
-                if (result){
-                    $.ajax({
-                        type: "POST",
-                        url: "role/delete",
-                        data:{roleid:$('#role_dataList').datagrid('getSelected').roleid},
-                        success: function(msg){
-                            if(msg.retnCode == '0000'){
-                                $.messager.alert('提示',"删除成功!",'info',function(){
-                                    $('#role_dataList').datagrid('reload');
-                                });
-                            }else{
-                                $.messager.alert('提示',msg.retnMessage,'info');
-                            }
-                        }
-                    });
-                }
-            });
-        })
     });
     /*]]>*/
 </script>
@@ -163,11 +226,11 @@
         <div class="tb_qry">
             <form id="role_qry_form">
                 <div class="inp">
-                    <div class="title">用户名</div>
+                    <div class="title">角色名称</div>
                     <div class="text"><input name="name" class="easyui-textbox"/></div>
                 </div>
                 <div class="qrybtn">
-                    <a href="#" class="easyui-linkbutton" iconCls="icon-search" id="query_btn">查询</a>
+                    <a href="#" class="easyui-linkbutton"  plain="true" iconCls="icon-search" id="query_btn">查询</a>
                 </div>
             </form>
         </div>
@@ -182,7 +245,6 @@
 
     <div id="role_dialog" class="dialog" data-options="modal:true">
         <form id="role_form" method="post">
-            <input name="roleid" hidden="hidden" value="0"/>
             <div class="inp">
                 <div class="title">角色名称</div>
                 <div class="text"><input name="name" class="easyui-textbox" data-options="required:true"/></div>
