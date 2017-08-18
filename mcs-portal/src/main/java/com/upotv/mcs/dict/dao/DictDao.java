@@ -3,6 +3,7 @@ package com.upotv.mcs.dict.dao;
 import com.upotv.mcs.core.McsBaseDao;
 import com.upotv.mcs.dict.entity.McsCode;
 import com.upotv.mcs.dict.entity.McsCodeSelectVo;
+import com.upotv.mcs.dict.entity.McsCodeType;
 import com.upotv.mcs.dict.entity.McsCodeVo;
 import com.upotv.mcs.menu.controller.MenuController;
 
@@ -35,5 +36,7 @@ public interface DictDao extends McsBaseDao {
     int update(McsCodeVo vo);
 
     int del(Integer id);
+
+    List<McsCodeType> getCodeType();
 }
 

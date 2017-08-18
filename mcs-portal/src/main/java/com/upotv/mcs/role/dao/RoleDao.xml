@@ -72,4 +72,17 @@
           priv
         from mcs_permission where role_id = #{role_id} and is_half = 1
     </select>
+
+    <resultMap id="mcsMenuMap" type="com.upotv.mcs.main.entity.Mcs_menu">
+        <result property="menuId" column="menu_id"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="name" column="name"/>
+        <result property="isEnable" column="is_enable"/>
+        <result property="isAdmin" column="is_admin"/>
+        <result property="icon" column="icon"/>
+    </resultMap>
+
+    <select id="getMenu" resultMap="mcsMenuMap">
+        select * from mcs_menu ORDER BY priority
+    </select>
 </mapper>

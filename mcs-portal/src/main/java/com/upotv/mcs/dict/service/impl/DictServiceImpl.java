@@ -6,6 +6,7 @@ import com.upotv.mcs.core.ResultMessage;
 import com.upotv.mcs.dict.dao.DictDao;
 import com.upotv.mcs.dict.entity.McsCode;
 import com.upotv.mcs.dict.entity.McsCodeSelectVo;
+import com.upotv.mcs.dict.entity.McsCodeType;
 import com.upotv.mcs.dict.entity.McsCodeVo;
 import com.upotv.mcs.dict.service.DictService;
 import jdk.nashorn.internal.objects.annotations.Constructor;
@@ -99,5 +100,10 @@ public class DictServiceImpl implements DictService {
     public ResultMessage del(Integer id) {
         int count = dictDao.del(id);
         return new ResultMessage(ResultMessage.SUCCESS,"删除成功");
+    }
+
+    @Override
+    public List<McsCodeType> getCodeType() {
+        return dictDao.getCodeType();
     }
 }

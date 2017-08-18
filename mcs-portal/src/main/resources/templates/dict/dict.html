@@ -10,10 +10,18 @@
 
     /*<![CDATA[*/
     $(document).ready(function() {
-
-         //是否启用
+        //是否启用
         var isEnableDict = [{codeId:"1",codeName:"启用"},{codeId:"2",codeName:"不启用"}];
 
+        var dict = {};
+        $.ajax({
+            type: "POST",
+            async: false,
+            url: "../dict/getCodeType",
+            success: function (result) {
+                dict = result;
+            }
+        });
         $('#dict_dataList').datagrid({
             fit : true,
             toolbar:'#dict_tb',
@@ -56,10 +64,18 @@
             editable:false,
             data:isEnableDict
         });
+        $("#dict_codeType_select_id").combobox({
+            valueField: 'codeType',
+            textField: 'codeType',
+            editable:false,
+            data:dict
+        });
+
 
         //查询
         $("#dict_query_btn").click(function(){
             var params = $('#dict_qry_form').serializeObject();
+            console.log(params);
             $('#dict_dataList').datagrid('load',params);
         });
 
@@ -222,6 +238,7 @@
     });
 
 
+
     /*]]>*/
 
 
@@ -234,7 +251,9 @@
         <form id="dict_qry_form">
             <div class="inp">
                 <div class="title">字典类型</div>
-                <div class="text"><input name="codeType" class="easyui-textbox"/></div>
+                <div class="text">
+                    <input id="dict_codeType_select_id" name="codeType" class="easyui-combobox"/>
+                </div>
             </div>
             <div class="qrybtn">
                 <a href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search" id="dict_query_btn" >查询</a>
@@ -273,21 +292,21 @@
             </div>
         </div>
         <div class="inp">
-            <div class="title">备注</div>
-            <div class="text">
-                <input name="remark" class="easyui-textbox" data-options="required:true"/>
-            </div>
-        </div>
-        <div class="inp">
             <div class="title">排序</div>
             <div class="text">
-                <input name="priority" class="easyui-textbox" data-options="required:true"/>
+                <input name="priority" class="easyui-numberspinner" data-options="required:true"/>
             </div>
         </div>
         <div class="inp">
             <div class="title">是否启用</div>
             <div class="text">
                 <select id="dict_isEnable_id" name="isEnable" class="easyui-combobox" data-options="required:true"/>
+            </div>
+        </div>
+        <div class="inp">
+            <div class="title">备注</div>
+            <div class="text">
+                <input name="remark" class="easyui-textbox" data-options="required:true"/>
             </div>
         </div>
     </form>

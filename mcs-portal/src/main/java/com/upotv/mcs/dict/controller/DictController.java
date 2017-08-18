@@ -77,4 +77,13 @@ public class DictController {
         int cnt = dictService.initDict();
         return new ResultMessage(ResultMessage.SUCCESS,cnt);
     }
+
+    //获取字典类型
+    @ResponseBody
+    @RequestMapping("/getCodeType")
+    public List getCodeType(){
+        return dictService.getCodeType();
+    }
+
+
 }
