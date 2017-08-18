@@ -164,10 +164,11 @@
                 return false;
             }
             var roleId = record.roleid ;
+            var roleName = record.name;
 
             var $dialog = $('<div></div>');
             $dialog.dialog({
-                title: roleId+"-->设置权限",
+                title: roleName+"-->设置权限",
                 href:basePath+'/role/toAuthPriv?roleId='+roleId,
                 width:350,
                 height:500,
