@@ -3,20 +3,19 @@ package com.upotv.mcs.role.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.upotv.mcs.core.ResultMessage;
+import com.upotv.mcs.main.entity.Mcs_menu;
 import com.upotv.mcs.role.dao.RoleDao;
-import com.upotv.mcs.role.entity.PermissionVo;
-import com.upotv.mcs.role.entity.Role;
-import com.upotv.mcs.role.entity.RoleVo;
+import com.upotv.mcs.role.entity.*;
 import com.upotv.mcs.role.service.RoleService;
 import com.upotv.mcs.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * Created by wangyunpeng on 2017/7/18.
- */
+
 @Service
 public class RoleServiceImpl implements RoleService{
 
@@ -26,12 +25,7 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public Page<Role> getRoleListPage(RoleVo vo) {
         PageHelper.startPage(vo.getPage(), vo.getRows());
-        return (Page<Role>) roleDao.getRoleListPage(vo);
-    }
-
-    @Override
-    public List<Role> getRoleList(RoleVo vo){
-        return roleDao.getRoleListPage(vo);
+        return (Page<Role>) roleDao.getRoleList(vo);
     }
 
     @Override
@@ -62,40 +56,72 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<PermissionVo> getPermissionList(PermissionVo vo) {
-        return roleDao.getPermissionList(vo);
+    public List<TreeData> getRoleMenu(int roleId,int pid) {
+        List<TreeData> treeDataList = new ArrayList<>();
+
+        List<Menu> menuList = roleDao.getMenuList(pid);
+
+        for (Menu menu : menuList) {
+            TreeData treeData = new TreeData();
+            treeData.setId(menu.getMenuId()+"");
+            treeData.setIconCls(menu.getIcon());
+            treeData.setText(menu.getName());
+
+            TreeData.TreeAttribute attribute = new TreeData().new TreeAttribute();
+            attribute.setUrl(menu.getPath());
+            treeData.setAttributes(attribute);
+            treeDataList.add(treeData);
+
+            List<TreeData> child = getRoleMenu(roleId,menu.getMenuId());
+            if(child.size() == 0) {
+                List<MenuPriv> menuPrivs = roleDao.getMenuPriv(roleId, menu.getMenuId());
+                for (MenuPriv menuPriv : menuPrivs) {
+                    TreeData treeData2 = new TreeData();
+                    treeData2.setId(menuPriv.getId());
+                    treeData2.setText(menuPriv.getName());
+                    treeData2.setChecked(menuPriv.isChecked());
+                    treeData2.setState("open");
+                    treeData2.setIconCls("icon-anchor");
+                    child.add(treeData2);
+                }
+            }
+            treeData.setChildren(child);
+            treeData.setState("open");
+        }
+        return treeDataList;
     }
 
     @Override
-    public ResultMessage insertPermission(PermissionVo vo) {
-        roleDao.deletePermission(vo.getRole_id());
-        String[] nodes=vo.getMenu_ids().split("@");
-        if(nodes.length!=0) {
-            if(nodes[0]!=null) {
-                for(String menuid:nodes[0].split(",")) {
-                    setPermissionVo(vo, menuid, 1);
-                    roleDao.insertPermission(vo);
-                }
-            }
-            if(nodes.length!=1) {
-                for(String menuid:nodes[1].split(",")) {
-                    setPermissionVo(vo, menuid, 0);
-                    roleDao.insertPermission(vo);
-                }
-            }
-        }
-        return new ResultMessage(ResultMessage.SUCCESS,"授权成功");
-    }
+    public int authPriv(int roleId, List<String> menuPirvlist) {
+        roleDao.deletePermission(roleId);
 
-    private void setPermissionVo(PermissionVo vo, String menuid, int is_half){
-        vo.setIs_half(is_half);
-        if (menuid.startsWith("priv")) {
-            String[] str = menuid.split("_");
-            vo.setMenu_id(Integer.parseInt(str[1]));
-            vo.setPriv(str[2]);
-        } else {
-            vo.setMenu_id(Integer.parseInt(menuid));
-            vo.setPriv("view");
+        List<PermissionDto> list = new ArrayList<PermissionDto>();
+        for(String menuPirv : menuPirvlist){
+            PermissionDto dto = new PermissionDto();
+            dto.setRoleId(roleId);
+            if(menuPirv.indexOf("-") != -1){
+                String menuId = menuPirv.split("-")[0];
+                String priv = menuPirv.split("-")[1];
+                dto.setMenuId(Integer.parseInt(menuId));
+                dto.setMenuPriv(priv);
+                list.add(dto);
+                if("manager".equals(priv)){
+                    PermissionDto viewDto = new PermissionDto();
+                    viewDto.setRoleId(roleId);
+                    viewDto.setMenuId(Integer.parseInt(menuId));
+                    viewDto.setMenuPriv("view");
+                    list.add(viewDto);
+                }
+            }else{
+                dto.setMenuId(Integer.parseInt(menuPirv));
+                dto.setMenuPriv("view");
+                list.add(dto);
+            }
         }
+        list = list.stream().distinct().collect(Collectors.toList()); //排除重复
+        if(list.size() == 0){
+            return 0;
+        }
+        return roleDao.insertPermission(list);
     }
 }

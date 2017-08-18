@@ -1,9 +1,9 @@
 package com.upotv.mcs.role.service;
 import com.github.pagehelper.Page;
 import com.upotv.mcs.core.ResultMessage;
-import com.upotv.mcs.role.entity.PermissionVo;
 import com.upotv.mcs.role.entity.Role;
 import com.upotv.mcs.role.entity.RoleVo;
+import com.upotv.mcs.role.entity.TreeData;
 
 import java.util.List;
 
@@ -14,15 +14,13 @@ public interface RoleService {
 
     Page<Role> getRoleListPage(RoleVo vo);
 
-    List<Role> getRoleList(RoleVo vo);
-
     ResultMessage insert(RoleVo vo);
 
     ResultMessage update(RoleVo vo);
 
     int delete(int roleid);
 
-    List<PermissionVo> getPermissionList(PermissionVo vo);
+    List<TreeData> getRoleMenu(int roleId,int pid);
 
-    ResultMessage insertPermission(PermissionVo vo);
+    int authPriv(int roleId,List<String> menuPirv);
 }

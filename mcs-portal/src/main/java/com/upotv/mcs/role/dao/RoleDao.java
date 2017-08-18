@@ -1,17 +1,17 @@
 package com.upotv.mcs.role.dao;
+
 import com.upotv.mcs.core.McsBaseDao;
-import com.upotv.mcs.role.entity.PermissionVo;
-import com.upotv.mcs.role.entity.Role;
-import com.upotv.mcs.role.entity.RoleVo;
+import com.upotv.mcs.role.entity.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+
 /**
  * Created by wangyunpeng on 2017/7/17.
  */
 public interface RoleDao extends McsBaseDao {
 
-    List<Role> getRoleListPage(RoleVo vo);
+    List<Role> getRoleList(RoleVo vo);
 
     Role getRoleByName(String name);
 
@@ -21,9 +21,11 @@ public interface RoleDao extends McsBaseDao {
 
     int delete(int roleid);
 
-    int insertPermission(PermissionVo vo);
+    List<MenuPriv> getMenuPriv(int roleId, int menuId);
 
-    int deletePermission(int roleid);
+    List<Menu> getMenuList(int parentId);
 
-    List<PermissionVo> getPermissionList(PermissionVo vo);
+    int deletePermission(int roleId);
+
+    int insertPermission(List<PermissionDto> list);
 }
