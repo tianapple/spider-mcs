@@ -105,6 +105,7 @@
                         $('#role_form').form('submit',{
                             url:basePath+'role/update',
                             onSubmit:function(param){
+                                param.roleid = record.roleid;
                                 return $(this).form('enableValidation').form('validate');
                             },
                             success: function (data) {
