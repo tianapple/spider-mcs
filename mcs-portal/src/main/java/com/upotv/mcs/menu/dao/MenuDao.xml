@@ -3,8 +3,8 @@
 <mapper namespace="com.upotv.mcs.menu.dao.MenuDao">
 
     <resultMap id="MenuMap" type="com.upotv.mcs.menu.entity.Menu">
-        <result property="menuid" column="menu_id"/>
-        <result property="parentid" column="parent_id"/>
+        <result property="menuId" column="menu_id"/>
+        <result property="parentId" column="parent_id"/>
         <result property="name" column="name"/>
         <result property="path" column="path"/>
         <result property="remark" column="remark"/>
@@ -13,72 +13,26 @@
         <result property="isAdmin" column="is_admin"/>
         <result property="updatetime" column="update_time"/>
         <result property="createtime" column="create_time"/>
-        <result property="priv_id" column="priv_id"/>
+        <result property="privId" column="privId"/>
+        <result property="privName" column="privName"/>
         <result property="iconCls" column="icon"/>
     </resultMap>
 
-    <select id="getMenuListPage" resultMap="MenuMap">
-        SELECT * from mcs_menu
-    </select>
-
-    <select id="getMenuManagerList" resultMap="MenuMap">
-        SELECT mu.menu_id,
-        mu.parent_id,
-        mu.name,
-        mu.path,
-        mu.remark,
-        mu.priority,
-        mu.icon,
-        is_enable,
-        mu.is_admin,
-        mu.update_time,
-        mu.create_time,
-        GROUP_CONCAT(priv.priv_id) priv_id
-        from mcs_menu mu left join mcs_menu_priv as priv on mu.menu_id=priv.menu_id
-        <where>
-            <if test="parentid != 0">
-                mu.parent_id = #{parentid}
-            </if>
-        </where>
-        group by mu.menu_id ORDER  BY mu.priority
-    </select>
-
-    <select id="getRoleMenuList" resultMap="MenuMap">
-        SELECT priv.menu_id,
-          priv.priv_id,
-          priv.priv_name,
-          mu.parent_id,
-          mu.name,
-          mu.path,
-          mu.remark,
-          mu.priority
-        FROM mcs_menu_priv priv LEFT JOIN mcs_menu mu ON mu.menu_id=priv.menu_id
-        ORDER  BY mu.priority
-    </select>
-
-    <select id="getMenuCount" resultType="int">
-        select count(menu_id) from mcs_menu where parent_id = #{parentid}
+    <select id="getMenuList" resultMap="MenuMap">
+        SELECT menu.*,GROUP_CONCAT(priv.`priv_name`) privName,GROUP_CONCAT(priv.`priv_id`) privId FROM mcs_menu menu
+            JOIN `mcs_menu_priv` priv ON menu.`menu_id` = priv.`menu_id`
+        where parent_id = #{parentId}
+        GROUP BY menu.`menu_id`
+        ORDER BY priority
     </select>
 
     <select id="getMenuByName" resultMap="MenuMap">
-        SELECT menu_id,
-        parent_id,
-        name,
-        path,
-        remark,
-        priority,
-        is_enable,
-        is_admin,
-        update_time,
-        create_time
-        from mcs_menu WHERE name = #{name}
+        SELECT * from mcs_menu WHERE name = #{name}
     </select>
     
     <insert id="insert" parameterType="com.upotv.mcs.menu.entity.MenuVo">
-        insert into mcs_menu
-          (parent_id,name,path,priority,is_enable,is_admin,icon,remark,update_time,create_time)
-        values
-          (#{parentid},#{name},#{path},#{priority},#{isEnable},#{isAdmin},#{iconCls},#{remark},now(),now())
+        insert into mcs_menu (parent_id,name,path,priority,is_enable,is_admin,icon,remark,update_time,create_time)
+        values (#{parentid},#{name},#{path},#{priority},#{isEnable},#{isAdmin},#{iconCls},#{remark},now(),now())
         <selectKey resultType="int" keyProperty="menuid">
             select max(menu_id) menuid from mcs_menu
         </selectKey>
@@ -99,14 +53,6 @@
         where menu_id = #{menuid}
     </update>
 
-    <select id="getMenuids" parameterType="int" resultType="java.lang.String">
-        select GROUP_CONCAT(menu_id) from mcs_menu where parent_id = #{menuid} or menu_id = #{menuid}
-    </select>
-
-    <select id="checkMenu" resultType="Integer">
-        SELECT COUNT(0) FROM mcs_menu WHERE parent_id = #{menuid}
-    </select>
-
     <delete id="delete" parameterType="int">
         DELETE  from mcs_menu where menu_id = #{menuid}
     </delete>
@@ -120,9 +66,6 @@
     </delete>
 
     <insert id="insertMenuPriv" parameterType="com.upotv.mcs.menu.entity.MenuPrivVo">
-        insert into mcs_menu_priv
-          (menu_id,priv_id,priv_name,create_time)
-        values
-          (#{menuid},#{priv_id},#{priv_name},now())
+        insert into mcs_menu_priv (menu_id,priv_id,priv_name,create_time) values  (#{menuid},#{priv_id},#{priv_name},now())
     </insert>
 </mapper>

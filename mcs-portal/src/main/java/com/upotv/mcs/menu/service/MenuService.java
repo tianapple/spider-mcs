@@ -1,10 +1,9 @@
 package com.upotv.mcs.menu.service;
 
+import com.github.pagehelper.Page;
 import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
-import com.upotv.mcs.menu.entity.Menu;
-import com.upotv.mcs.menu.entity.MenuPrivVo;
-import com.upotv.mcs.menu.entity.MenuVo;
+import com.upotv.mcs.menu.entity.*;
 
 import java.util.List;
 import java.util.Map;
@@ -13,9 +12,8 @@ import java.util.Map;
  * Created by wow on 2017/6/20.
  */
 public interface MenuService {
-    List<Menu> getMenuListPage(Menu menu);
 
-    ResultData menuManager(Menu vo);
+    public List<MenuTreeGrid> getMenu(int parentId);
 
     ResultMessage insert(MenuVo vo);
 
@@ -25,5 +23,4 @@ public interface MenuService {
 
     ResultMessage insertMenuPriv(MenuPrivVo vo);
 
-    ResultMessage roleMenu();
 }

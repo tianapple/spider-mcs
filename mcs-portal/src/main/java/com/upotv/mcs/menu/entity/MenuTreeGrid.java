@@ -1,48 +1,36 @@
 package com.upotv.mcs.menu.entity;
 
-import java.sql.Timestamp;
+import com.upotv.mcs.util.DateUtil;
+
 import java.util.Date;
+import java.util.List;
 
 /**
- * Created by wow on 2017/6/20.
+ * Created by wow on 2017/8/21.
  */
-public class Menu {
-    private int menuId;
-    private int parentId;
-    private String name;
+public class MenuTreeGrid {
     private String path;
     private String remark;
     private int priority;
     private int isEnable;
     private int isAdmin;
-    private String iconCls;
     private String privId;
     private String privName;
     private Date updatetime;
     private Date createtime;
 
-    public int getMenuId() {
-        return menuId;
+    private Integer id;
+    private String name;
+    private String iconCls;
+    private String state = "closed";
+    private List<MenuTreeGrid> children;
+
+    public String getIconCls() {
+        return iconCls;
     }
 
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setIconCls(String iconCls) {
+        this.iconCls = iconCls;
     }
 
     public String getPath() {
@@ -69,6 +57,14 @@ public class Menu {
         this.priority = priority;
     }
 
+    public String getPrivName() {
+        return privName;
+    }
+
+    public void setPrivName(String privName) {
+        this.privName = privName;
+    }
+
     public int getIsEnable() {
         return isEnable;
     }
@@ -85,14 +81,6 @@ public class Menu {
         this.isAdmin = isAdmin;
     }
 
-    public String getIconCls() {
-        return iconCls;
-    }
-
-    public void setIconCls(String iconCls) {
-        this.iconCls = iconCls;
-    }
-
     public String getPrivId() {
         return privId;
     }
@@ -101,27 +89,51 @@ public class Menu {
         this.privId = privId;
     }
 
-    public String getPrivName() {
-        return privName;
-    }
-
-    public void setPrivName(String privName) {
-        this.privName = privName;
-    }
-
-    public Date getUpdatetime() {
-        return updatetime;
+    public String getUpdatetime() {
+        return DateUtil.getDateTimeFormat(updatetime);
     }
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
-    public Date getCreatetime() {
-        return createtime;
+    public String getCreatetime() {
+        return DateUtil.getDateTimeFormat(createtime);
     }
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public List<MenuTreeGrid> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MenuTreeGrid> children) {
+        this.children = children;
     }
 }

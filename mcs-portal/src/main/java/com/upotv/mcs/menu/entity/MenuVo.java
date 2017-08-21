@@ -11,21 +11,27 @@ import java.util.Date;
  */
 public class MenuVo {
     private Integer menuid;
+
     private Integer parentid;
+
     @NotEmpty(message="菜单名称不能为空")
     private String name;
-    @NotEmpty(message="菜单地址不能为空")
+
     private String path;
+
     private String remark;
+
     @NotEmpty(message="菜单排序不能为空")
     private String priority;
+
     private Integer isEnable;
+
     @NotNull(message="管理员权限不能为空")
     private Integer isAdmin;
+
     @NotEmpty(message="菜单图标不能为空")
     private String iconCls;
-    private Date updatetime;
-    private Date createtime;
+
 
     public Integer getMenuid() {
         return menuid;
@@ -97,21 +103,5 @@ public class MenuVo {
 
     public void setIconCls(String iconCls) {
         this.iconCls = iconCls;
-    }
-
-    public String getUpdatetime() {
-        return DateUtil.getDateTimeFormat(updatetime);
-    }
-
-    public void setUpdatetime(Date updatetime) {
-        this.updatetime = updatetime;
-    }
-
-    public String getCreatetime() {
-        return DateUtil.getDateTimeFormat(createtime);
-    }
-
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
     }
 }

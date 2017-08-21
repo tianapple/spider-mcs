@@ -3,10 +3,10 @@ package com.upotv.mcs.menu.controller;
 import com.github.pagehelper.Page;
 import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
-import com.upotv.mcs.menu.entity.Menu;
-import com.upotv.mcs.menu.entity.MenuPrivVo;
-import com.upotv.mcs.menu.entity.MenuVo;
+import com.upotv.mcs.menu.entity.*;
 import com.upotv.mcs.menu.service.MenuService;
+import com.upotv.mcs.user.entity.UserRole;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,20 +28,16 @@ public class MenuController {
     private MenuService menuService;
 
     @RequestMapping("")
+    @RequiresPermissions("menu/view")
     public String toMenu() {
         return "menu/menu";
     }
 
     @ResponseBody
     @RequestMapping("/menuListPage")
-    public List<Menu> getMenu(Menu vo) {
-        return menuService.getMenuListPage(vo);
-    }
-
-    @ResponseBody
-    @RequestMapping("/menuManagerPage")
-    public ResultData menuManager(Menu vo) {
-        return menuService.menuManager(vo);
+    @RequiresPermissions("menu/view")
+    public List<MenuTreeGrid> getMenu(Integer parentId){
+        return menuService.getMenu(parentId);
     }
 
     @ResponseBody
@@ -66,13 +63,4 @@ public class MenuController {
     public ResultMessage insertMenuPriv(@Validated MenuPrivVo vo, BindingResult result) {
         return menuService.insertMenuPriv(vo);
     }
-
-    @ResponseBody
-    @RequestMapping("/roleMenu")
-    public ResultMessage roleMenu(){
-        return menuService.roleMenu();
-    }
-
-
-
 }
