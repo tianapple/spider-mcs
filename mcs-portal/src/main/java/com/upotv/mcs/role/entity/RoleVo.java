@@ -7,19 +7,19 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 public class RoleVo {
 
-    private String roleid;
-    @NotEmpty(message="角色名称不能为空")
+    private Integer roleid;
+    @NotEmpty(message = "角色名称不能为空")
     private String name;
     private String remark;
 
     private int rows;
     private int page;
 
-    public String getRoleid() {
+    public Integer getRoleid() {
         return roleid;
     }
 
-    public void setRoleid(String roleid) {
+    public void setRoleid(Integer roleid) {
         this.roleid = roleid;
     }
 

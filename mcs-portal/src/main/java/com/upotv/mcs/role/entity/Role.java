@@ -1,5 +1,9 @@
 package com.upotv.mcs.role.entity;
 
+import com.upotv.mcs.util.DateUtil;
+
+import java.util.Date;
+
 /**
  * Created by wangyunpeng on 2017/7/17.
  */
@@ -8,8 +12,8 @@ public class Role {
     private int roleid;
     private String name;
     private String remark;
-    private String updateTime;
-    private String createTime;
+    private Date updateTime;
+    private Date createTime;
 
     public int getRoleid() {
         return roleid;
@@ -36,18 +40,18 @@ public class Role {
     }
 
     public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+        return  DateUtil.getDateTimeFormat(updateTime);
     }
 
     public String getCreateTime() {
-        return createTime;
+        return  DateUtil.getDateTimeFormat(createTime);
     }
 
-    public void setCreateTime(String createTime) {
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 }

@@ -41,10 +41,8 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public ResultMessage update(RoleVo vo) {
         Role role = roleDao.getRoleByName(vo.getName());
-        if(role != null){
-            if (!(role.getRoleid()+"").equals(vo.getRoleid())) {
-                return new ResultMessage(ResultMessage.FAILE,"角色已经存在");
-            }
+        if(role != null && vo.getRoleid() != role.getRoleid()){
+            return new ResultMessage(ResultMessage.FAILE,"角色已经存在");
         }
         int ct = roleDao.update(vo);
         return new ResultMessage(ResultMessage.SUCCESS,ct+"");
@@ -96,28 +94,32 @@ public class RoleServiceImpl implements RoleService{
         roleDao.deletePermission(roleId);
 
         List<PermissionDto> list = new ArrayList<PermissionDto>();
-        for(String menuPirv : menuPirvlist){
-            PermissionDto dto = new PermissionDto();
-            dto.setRoleId(roleId);
-            if(menuPirv.indexOf("-") != -1){
-                String menuId = menuPirv.split("-")[0];
-                String priv = menuPirv.split("-")[1];
-                dto.setMenuId(Integer.parseInt(menuId));
-                dto.setMenuPriv(priv);
-                list.add(dto);
-                if("manager".equals(priv)){
-                    PermissionDto viewDto = new PermissionDto();
-                    viewDto.setRoleId(roleId);
-                    viewDto.setMenuId(Integer.parseInt(menuId));
-                    viewDto.setMenuPriv("view");
-                    list.add(viewDto);
+
+        if(menuPirvlist != null){
+            for(String menuPirv : menuPirvlist){
+                PermissionDto dto = new PermissionDto();
+                dto.setRoleId(roleId);
+                if(menuPirv.indexOf("-") != -1){
+                    String menuId = menuPirv.split("-")[0];
+                    String priv = menuPirv.split("-")[1];
+                    dto.setMenuId(Integer.parseInt(menuId));
+                    dto.setMenuPriv(priv);
+                    list.add(dto);
+                    if("manager".equals(priv)){
+                        PermissionDto viewDto = new PermissionDto();
+                        viewDto.setRoleId(roleId);
+                        viewDto.setMenuId(Integer.parseInt(menuId));
+                        viewDto.setMenuPriv("view");
+                        list.add(viewDto);
+                    }
+                }else{
+                    dto.setMenuId(Integer.parseInt(menuPirv));
+                    dto.setMenuPriv("view");
+                    list.add(dto);
                 }
-            }else{
-                dto.setMenuId(Integer.parseInt(menuPirv));
-                dto.setMenuPriv("view");
-                list.add(dto);
             }
         }
+
         list = list.stream().distinct().collect(Collectors.toList()); //排除重复
         if(list.size() == 0){
             return 0;

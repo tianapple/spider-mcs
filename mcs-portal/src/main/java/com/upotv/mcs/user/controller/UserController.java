@@ -91,7 +91,6 @@ public class UserController {
      */
     @ResponseBody
     @RequestMapping("/changepwd")
-    @RequiresPermissions("user/manager")
     public ResultMessage update(@Validated ChangePwdVo vo, BindingResult result) {
         return userService.changepwd(vo);
     }
