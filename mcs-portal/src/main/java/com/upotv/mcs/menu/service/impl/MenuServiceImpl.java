@@ -37,13 +37,15 @@ public class MenuServiceImpl implements MenuService{
             treeData.setId(menu.getMenuId());
             treeData.setIconCls(menu.getIconCls());
             treeData.setName(menu.getName());
-            treeData.setRemark(menu.getRemark());
             treeData.setPriority(menu.getPriority());
-            treeData.setCreatetime(menu.getCreatetime());
-            treeData.setUpdatetime(menu.getUpdatetime());
             treeData.setPath(menu.getPath());
             treeData.setPrivId(menu.getPrivId());
             treeData.setPrivName(menu.getPrivName());
+            treeData.setIsAdmin(menu.getIsAdmin());
+            treeData.setIsEnable(menu.getIsEnable());
+            treeData.setRemark(menu.getRemark());
+            treeData.setCreatetime(menu.getCreatetime());
+            treeData.setUpdatetime(menu.getUpdatetime());
             treeDataList.add(treeData);
             List<MenuTreeGrid> child = initAllMenu(menu.getMenuId());
             treeData.setChildren(child);

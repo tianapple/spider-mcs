@@ -41,13 +41,13 @@
     <update id="update" parameterType="com.upotv.mcs.menu.entity.MenuVo">
         update mcs_menu
         <set>
-            <if test="name != null">name = #{name},</if>
-            <if test="path != null">path = #{path},</if>
-            <if test="remark != null">remark = #{remark},</if>
+            name = #{name},
+            path = #{path},
+            remark = #{remark},
             is_admin = #{isAdmin},
-            icon = #{iconCls},
             priority = #{priority},
             is_enable = #{isEnable},
+            <if test="iconCls != null">icon = #{iconCls},</if>
             update_time = now()
         </set>
         where menu_id = #{menuid}
