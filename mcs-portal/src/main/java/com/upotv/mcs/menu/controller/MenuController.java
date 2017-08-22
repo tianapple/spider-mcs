@@ -42,24 +42,28 @@ public class MenuController {
 
     @ResponseBody
     @RequestMapping("/insert")
+    @RequiresPermissions("menu/manager")
     public ResultMessage insert(@Validated MenuVo vo, BindingResult result) {
         return menuService.insert(vo);
     }
 
     @ResponseBody
     @RequestMapping("/update")
+    @RequiresPermissions("menu/manager")
     public ResultMessage update(@Validated MenuVo vo, BindingResult result) {
         return menuService.update(vo);
     }
 
     @ResponseBody
     @RequestMapping("/delete")
+    @RequiresPermissions("menu/manager")
     public ResultMessage delete(@NotNull Integer menuid) {
         return menuService.delete(menuid);
     }
 
     @ResponseBody
     @RequestMapping("/insertMenuPriv")
+    @RequiresPermissions("menu/manager")
     public ResultMessage insertMenuPriv(@Validated MenuPrivVo vo, BindingResult result) {
         return menuService.insertMenuPriv(vo);
     }

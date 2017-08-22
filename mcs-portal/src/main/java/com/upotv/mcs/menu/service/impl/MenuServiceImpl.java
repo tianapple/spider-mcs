@@ -1,22 +1,18 @@
 package com.upotv.mcs.menu.service.impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.core.ResultMessage;
-import com.upotv.mcs.core.TreeGrid;
-import com.upotv.mcs.main.entity.Mcs_menu;
 import com.upotv.mcs.menu.dao.MenuDao;
-import com.upotv.mcs.menu.entity.*;
+import com.upotv.mcs.menu.entity.Menu;
+import com.upotv.mcs.menu.entity.MenuPrivVo;
+import com.upotv.mcs.menu.entity.MenuTreeGrid;
+import com.upotv.mcs.menu.entity.MenuVo;
 import com.upotv.mcs.menu.service.MenuService;
-import com.upotv.mcs.user.entity.UserRole;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by wow on 2017/6/20.

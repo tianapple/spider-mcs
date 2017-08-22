@@ -53,6 +53,10 @@
         where menu_id = #{menuid}
     </update>
 
+    <select id="checkMenu" resultType="Integer">
+        SELECT COUNT(0) FROM mcs_menu WHERE parent_id = #{menuid}
+    </select>
+
     <delete id="delete" parameterType="int">
         DELETE  from mcs_menu where menu_id = #{menuid}
     </delete>

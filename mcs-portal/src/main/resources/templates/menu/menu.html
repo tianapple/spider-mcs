@@ -25,7 +25,7 @@
                 {title:"菜单名称",field:'name',width:280},
                 {title:"菜单地址",field:'path',width:100},
                 {title:"排序",field:'priority',align:'center',width:50},
-                {title:"有效",field:'isEnable',align:'center',width:50,
+                {title:"是否有效",field:'isEnable',align:'center',width:80,
                     formatter : function(value, row, index) {
                         if(!value){
                             return '有效';
@@ -35,7 +35,7 @@
                     }
                 },
                 {title:"功能",field:'privName',width:200},
-                {title:"管理员权限",field:'isAdmin',align:'center',width:50,
+                {title:"管理员菜单",field:'isAdmin',align:'center',width:80,
                     formatter : function(value, row, index) {
                         if(value){
                             return '是';
@@ -270,10 +270,10 @@
         <div class="tb_qry">
         </div>
         <div class="tb_btn">
-            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-add'" id="insert_menu_btn" >添加菜单</a>
-            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-edit'" id="update_menu_btn" >修改菜单</a>
-            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-remove'" id="delete_menu_btn">删除菜单</a>
-            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-link'" id="update_menu_priv_btn">关联功能</a>
+            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-add'" id="insert_menu_btn"  shiro:hasPermission="menu/manager">添加菜单</a>
+            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-edit'" id="update_menu_btn" shiro:hasPermission="menu/manager">修改菜单</a>
+            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-remove'" id="delete_menu_btn" shiro:hasPermission="menu/manager">删除菜单</a>
+            <a href="#" class="easyui-linkbutton" plain="true" data-options="iconCls:'icon-link'" id="update_menu_priv_btn" shiro:hasPermission="menu/manager">关联功能</a>
         </div>
     </div>
 
@@ -304,7 +304,7 @@
                 </div>
             </div>
             <div class="inp">
-                <div class="title">管理员权限</div>
+                <div class="title">管理员菜单</div>
                 <div class="text">
                     <select id="menu_isAdmin" name="isAdmin"  data-options="required:true" class="easyui-combobox" panelHeight="auto"></select>
                 </div>

@@ -17,17 +17,11 @@ public interface MenuDao extends McsBaseDao {
 
     public List<Menu> getMenuList(Integer parentId);
 
-    List<Menu> getRoleMenuList();
-
-    int getMenuCount(int parentid);
-
     Menu getMenuByName(String name);
 
     int insert(MenuVo vo);
 
     int update(MenuVo vo);
-
-    String getMenuids(int menuid);
 
     int insertMenuPriv(MenuPrivVo vo);
 
