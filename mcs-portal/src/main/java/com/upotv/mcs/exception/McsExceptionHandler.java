@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import com.upotv.mcs.core.ResultMessage;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,7 +43,10 @@ public class McsExceptionHandler {
         } else if (ex instanceof ParamValidException) {
             resp.setRetnCode("30001");
             resp.setRetnMessage(ex.getMessage());
-        } else if (ex instanceof McsException) {
+        } else if (ex instanceof BindException) {
+            resp.setRetnCode("20002");
+            resp.setRetnMessage("查询参数错误");
+        }else if (ex instanceof McsException) {
             resp.setRetnCode("80001");
             resp.setRetnMessage(ex.getMessage());
         } else {
