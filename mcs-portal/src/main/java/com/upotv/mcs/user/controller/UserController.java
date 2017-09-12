@@ -1,6 +1,9 @@
 package com.upotv.mcs.user.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.github.pagehelper.Page;
+import com.upotv.mcs.core.BaseController;
 import com.upotv.mcs.core.ResultData;
 import com.upotv.mcs.user.entity.*;
 import com.upotv.mcs.user.service.UserService;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -22,7 +26,7 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController{
 
     @Autowired
     private UserService userService;
@@ -79,7 +83,8 @@ public class UserController {
     @ResponseBody
     @RequestMapping("/relateRole")
     @RequiresPermissions("user/manager")
-    public ResultMessage relateRole(@Validated @RequestBody UserRoleVo vo, BindingResult result) {
+    public ResultMessage relateRole(HttpServletRequest request,@Validated @RequestBody UserRoleVo vo, BindingResult result) {
+        request.setAttribute(PARAM,JSON.toJSONString(vo,SerializerFeature.WriteMapNullValue));
         int cnt = userService.relateRole(vo);
         return new ResultMessage(ResultMessage.SUCCESS, cnt + "");
     }

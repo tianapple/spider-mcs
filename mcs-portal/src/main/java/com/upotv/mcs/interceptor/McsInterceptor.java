@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by wow on 2017/6/26.
@@ -42,18 +44,16 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         Log logEntity = new Log();
 
         //请求路径
-        String url = request.getRequestURL().toString();
         String uri = request.getRequestURI();
+
         //请求方法
         String method = request.getMethod();
-        //获取请求参数信息
-        String paramData = JSON.toJSONString(request.getParameterMap(), SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.WriteMapNullValue);
+
         //客户端IP
         logEntity.setIp(request.getRemoteAddr());
-        //请求参数内容json字符串
-        logEntity.setParam(paramData);
 
         logEntity.setPath(uri);
+
         Mcs_user user = (Mcs_user)request.getSession().getAttribute("session_user");
         if(user != null){
             logEntity.setUsername(user.getUserName());
@@ -70,7 +70,6 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         request.setAttribute(BASE_PATH, basePath);
         request.setAttribute(LOGGER_ENTITY, logEntity);
 
-        LOGGER.info(String.format("请求参数, url: %s, method: %s, uri: %s, params: %s", url, method, uri, paramData));
         return super.preHandle(request, response, handler);
     }
 
@@ -91,6 +90,22 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         logEntity.setDuration(consumeTime);
         logEntity.setStatus(status);
 
+        //获取请求参数信息
+        Map<String,String> paramDataMap = new HashMap<>();
+
+        Map paramMap = request.getParameterMap();
+        String formData = "";
+        if(paramMap != null && paramMap.size() > 0){
+            formData = JSON.toJSONString(request.getParameterMap(), SerializerFeature.WriteMapNullValue);
+        }
+
+        paramDataMap.put("formData",formData);
+
+        String diyData = (String)request.getAttribute("params");
+        paramDataMap.put("diyData",diyData);
+
+        logEntity.setParam(JSON.toJSONString(paramDataMap,SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.WriteMapNullValue));
+
         ResultMessage exception = (ResultMessage)request.getAttribute("mcs_exception");
         if (exception != null) {
             logEntity.setRemark(exception.getErrorStack());
@@ -98,6 +113,8 @@ public class McsInterceptor extends HandlerInterceptorAdapter {
         }
 
         logService.insert(logEntity);
+
+        LOGGER.info(String.format("请求参数,user: %s, uri: %s, params: %s, status: %s, remark: %s", logEntity.getUsername(),logEntity.getPath(), logEntity.getParam(),logEntity.getStatus(), logEntity.getRemark()));
 
         super.afterCompletion(request, response, handler, ex);
     }

@@ -36,6 +36,8 @@ public abstract class BaseController {
     @Value("${exportXls}")
     private String exportXls;
 
+    public static final String PARAM = "params";
+
     @InitBinder
     public void initBinder(ServletRequestDataBinder binder) {
         /**
