@@ -38,5 +38,7 @@ public interface DictDao extends McsBaseDao {
     int del(Integer id);
 
     List<McsCodeType> getCodeType();
+
+    List<McsCode> getMtypeList(List<Integer> list);
 }
 

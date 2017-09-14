@@ -67,4 +67,15 @@
         SELECT DISTINCT code_type FROM mcs_code
     </select>
 
+    <select id="getMtypeList" resultMap="McsCodeMap" parameterType="list">
+        SELECT * FROM mcs_code WHERE code_type = 'movietype'
+        <if test="list != null and list.size > 0">
+            ORDER BY (field(code_id,
+            <foreach item="item" index="index" collection="list" open="" separator="," close="">
+                #{item}
+            </foreach>
+            )) DESC
+        </if>
+    </select>
+
 </mapper>

@@ -27,4 +27,6 @@ public interface DictService {
     ResultMessage del(Integer id);
 
     List<McsCodeType> getCodeType();
+
+    List<McsCode> getMtypeList(List<Integer> searchMtype);
 }
