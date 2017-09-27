@@ -23,6 +23,29 @@
                 return dictStore[k]["codeName"];
             }
         }
-        return null;
+        return code;
     };
+
+    upotv.biz.Dict.getMultiValue = function (value, dictStore) {
+        if (value) {
+            try {
+                var val = value.split(",");
+                var rtn = "";
+                val.forEach(function (val, index, arr) {
+                    var name = upotv.biz.Dict.getValue(val, dictStore);
+                    if (name) {
+                        rtn += "," + name;
+                    } else {
+                        rtn += "," + val;
+                    }
+                });
+                return rtn.slice(1);
+            } catch (err) {
+                return "";
+            }
+        } else {
+            return "";
+        }
+    };
+
 })();
