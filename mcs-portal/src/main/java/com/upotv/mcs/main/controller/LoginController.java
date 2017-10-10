@@ -58,6 +58,7 @@ public class LoginController {
     public void dologin(HttpServletResponse response, HttpSession session, Mcs_user user, Model model) throws IOException {
         String info = loginUser(user);
         session.setAttribute("loginMsg", info);
+        session.setMaxInactiveInterval(-1);
 
         if ("success".equals(info)) {
             session.setAttribute("session_user",(Mcs_user) SecurityUtils.getSubject().getPrincipal());
