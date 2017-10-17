@@ -19,7 +19,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @ConfigurationProperties(prefix = "jdbc.mcs")
-@MapperScan(basePackages = "com.upotv.mcs", markerInterface = McsBaseDao.class,sqlSessionFactoryRef = "mcsSqlSessionFactory")
+@MapperScan(basePackages = "com.upotv", markerInterface = McsBaseDao.class,sqlSessionFactoryRef = "mcsSqlSessionFactory")
 @EnableTransactionManagement
 public class McsDBConfig extends MyBatisConfig {
 
