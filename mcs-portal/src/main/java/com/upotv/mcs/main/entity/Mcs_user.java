@@ -1,6 +1,7 @@
 package com.upotv.mcs.main.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by tianapple on 2017/2/4.
@@ -13,6 +14,8 @@ public class Mcs_user implements Serializable{
     private String email;
     private String phone;
     private int gender;
+
+    private List<Integer> roleids;
 
     /**
      * 是否管理员
@@ -98,5 +101,13 @@ public class Mcs_user implements Serializable{
 
     public void setIsLock(boolean isLock) {
         this.isLock = isLock;
+    }
+
+    public List<Integer> getRoleids() {
+        return roleids;
+    }
+
+    public void setRoleids(List<Integer> roleids) {
+        this.roleids = roleids;
     }
 }

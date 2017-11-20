@@ -51,9 +51,14 @@
         <result property="userName" column="user_name"/>
         <result property="isAdmin" column="is_admin"/>
         <result property="isLock" column="is_lock"/>
+        <association property="roleids" column="user_id" select="getRoles" />
     </resultMap>
 
     <select id="getUserByUserName" resultMap="UserMap">
-        SELECT * FROM mcs_user  where user_name=#{userPame}
+        SELECT * FROM mcs_user  where user_name= #{userPame}
+    </select>
+
+    <select id="getRoles" parameterType="int" resultType="int">
+        SELECT role_Id roleid FROM mcs_user_role where user_Id = #{userId}
     </select>
 </mapper>
