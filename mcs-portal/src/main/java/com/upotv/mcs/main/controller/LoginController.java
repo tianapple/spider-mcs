@@ -4,6 +4,7 @@ import com.upotv.mcs.main.entity.Mcs_menu;
 import com.upotv.mcs.main.entity.Mcs_user;
 import com.upotv.mcs.main.entity.TreeAttribute;
 import com.upotv.mcs.main.entity.TreeData;
+import com.upotv.mcs.main.shiro.LoginHandler;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
@@ -38,6 +39,9 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
+    @Autowired
+    private LoginHandler loginHandler;
+
     @RequestMapping("/")
     public String index(Model model) {
         if (isRelogin()) {
@@ -62,6 +66,7 @@ public class LoginController {
 
         if ("success".equals(info)) {
             session.setAttribute("session_user",(Mcs_user) SecurityUtils.getSubject().getPrincipal());
+            loginHandler.login(session,user);
             response.sendRedirect("/main");
         } else {
             response.sendRedirect("/");
