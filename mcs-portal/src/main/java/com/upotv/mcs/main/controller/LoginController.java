@@ -65,8 +65,9 @@ public class LoginController {
         session.setMaxInactiveInterval(-1);
 
         if ("success".equals(info)) {
-            session.setAttribute("session_user",(Mcs_user) SecurityUtils.getSubject().getPrincipal());
-            loginHandler.login(session,user);
+            Mcs_user session_user = (Mcs_user) SecurityUtils.getSubject().getPrincipal();
+            session.setAttribute("session_user",session_user);
+            loginHandler.login(session,session_user);
             response.sendRedirect("/main");
         } else {
             response.sendRedirect("/");
